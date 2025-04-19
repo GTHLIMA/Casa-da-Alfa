@@ -1,0 +1,9 @@
+*.exe
+*.dll
+*.zip
+*.mp4
+*.psd
+*.unitypackage
+Library/
+Temp/
+Build/
