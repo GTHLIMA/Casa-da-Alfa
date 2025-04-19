@@ -1,9 +1,15 @@
-*.exe
-*.dll
-*.zip
-*.mp4
-*.psd
-*.unitypackage
+# Unity .gitignore padrão
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
 Library/
 Temp/
+Obj/
 Build/
+Builds/
