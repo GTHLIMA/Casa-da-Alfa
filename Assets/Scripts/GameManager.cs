@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject bomb;
+    public GameObject[] spawnnablePrefabs;
     public float maxX;
     public Transform spawnPoint;
     public float spawnRate;
@@ -26,10 +26,14 @@ public class GameManager : MonoBehaviour
 
         private void SpawnPrefab()
     {
+        if (spawnnablePrefabs.Length == 0) return;
+
+        GameObject prefabtoSpawn = spawnnablePrefabs[Random.Range(0, spawnnablePrefabs.Length)];
+
         Vector3 spawnPosition = spawnPoint.position;
         spawnPosition.x = Random.Range(-maxX, maxX);
 
-        Instantiate(bomb, spawnPosition, Quaternion.identity);
+        Instantiate(prefabtoSpawn, spawnPosition, Quaternion.identity);
 
     }
 }

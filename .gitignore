@@ -1,6 +1,6 @@
 # Unity .gitignore padrão
-[Ll]ogs/
-[Uu]ser[Ss]ettings/
+Logs/
+*.logs
 *.csproj
 *.unityproj
 *.sln
@@ -13,3 +13,10 @@ Temp/
 Obj/
 Build/
 Builds/
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
