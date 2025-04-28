@@ -38,3 +38,13 @@ Assets/AssetStoreTools*
 /[Uu]ser[Ss]ettings/
 *.log
 >>>>>>> 922a62dc019eebd25bfad5085e8b6834dcec8efc
+
+
+# Pastas
+Packages/
+vscode/
+.vscode/
+
+# Arquivos
+*.csproj
+Mobile.sln
