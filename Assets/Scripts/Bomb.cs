@@ -5,6 +5,8 @@ using UnityEngine;
 public class Bomb : MonoBehaviour
 {
 
+    private bool hasScored = false;
+
     void Update()
     {
         if (Input.touchCount > 0)
@@ -22,13 +24,21 @@ public class Bomb : MonoBehaviour
 
         }
     }
+    private IEnumerator DestroyAfterFrame()
+    {
+        yield return null; // espera um frame
+        Destroy(gameObject);
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
-{
-    if (other.CompareTag("Ground"))
     {
-        Destroy(gameObject);
-    }   
-}
+        if (hasScored) return; // Evita múltiplas pontuações
+        if (other.CompareTag("Ground"))
+        {
+            hasScored = true;
+            GameManager.Instance.AddScore(1);
+            StartCoroutine(DestroyAfterFrame());
+        }   
+    }
 
 }
