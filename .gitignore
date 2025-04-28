@@ -1,6 +1,9 @@
-# Unity .gitignore padrão
+# Arquivos de Log (correção: .log em vez de .logs)
+*.log
 Logs/
-*.logs
+/[Ll]ogs/
+
+# Arquivos gerados pelo Unity e IDEs
 *.csproj
 *.unityproj
 *.sln
@@ -8,6 +11,8 @@ Logs/
 *.tmp
 *.user
 *.userprefs
+
+# Pastas geradas pelo Unity
 Library/
 Temp/
 Obj/
@@ -18,5 +23,12 @@ Builds/
 /[Oo]bj/
 /[Bb]uild/
 /[Bb]uilds/
-/[Ll]ogs/
+
+# Configurações de usuário
 /[Uu]ser[Ss]ettings/
+
+# Arquivos de cache do pacote (Unity 2019.3+)
+PackageCache/
+
+# Arquivos do Asset Store
+Assets/AssetStoreTools*
