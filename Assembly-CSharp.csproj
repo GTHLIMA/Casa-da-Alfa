@@ -66,9 +66,12 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Bomb.cs" />
     <Compile Include="Assets\Scripts\ToggleFunctionality.cs" />
+    <Compile Include="Assets\Scripts\NumberCounterUpdater.cs" />
+    <Compile Include="Assets\Scripts\WaitButton.cs" />
     <Compile Include="Assets\Scripts\Button.cs" />
-    <Compile Include="Assets\Scripts\test.cs" />
+    <Compile Include="Assets\Scripts\LoadScenes.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
+    <Compile Include="Assets\Scripts\NumberCounter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

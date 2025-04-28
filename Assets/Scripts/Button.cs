@@ -1,26 +1,75 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class ButtonBehavior : MonoBehaviour
 {
-    public void LoadSettings()
+    [Header("Menus")]
+    [SerializeField] private GameObject startMenu;
+    [SerializeField] private GameObject settingsParent;
+    [SerializeField] private GameObject settingsOptions;
+    [SerializeField] private GameObject[] subMenus;
+
+    [Header("Voltar")]
+    [SerializeField] private GameObject backToMenuButton;
+    [SerializeField] private GameObject backToSettingsButton;
+
+    private GameObject currentSubMenu;
+
+    public void ShowSubMenu(int index)
     {
-        SceneManager.LoadScene("Settings");
-        Debug.Log("Button clicked! Loading next scene...");
+        if (index >= 0 && index < subMenus.Length)
+        {
+            settingsOptions.SetActive(false);
+
+            foreach (var menu in subMenus)
+                menu.SetActive(false);
+
+            subMenus[index].SetActive(true);
+            currentSubMenu = subMenus[index];
+
+            backToMenuButton.SetActive(false);
+            backToSettingsButton.SetActive(true);
+        }
+        else
+        {
+            Debug.LogWarning("Índice inválido para submenu.");
+        }
     }
 
-    public void LoadLevels()
+    public void BackToSettings()
     {
-        SceneManager.LoadScene("Levels");
-        Debug.Log("Button clicked! Loading next scene...");
+        if (currentSubMenu != null)
+        {
+            currentSubMenu.SetActive(false);
+            currentSubMenu = null;
+        }
+
+        settingsOptions.SetActive(true);
+        backToSettingsButton.SetActive(false);
+        backToMenuButton.SetActive(true);
     }
 
-    public void LoadStart()
+    public void backToStartMenu()
     {
-        SceneManager.LoadScene("Start");
-        Debug.Log("Button clicked! Loading next scene...");
+        startMenu.SetActive(true);
+        settingsParent.SetActive(false);
+        backToMenuButton.SetActive(false);
+        backToSettingsButton.SetActive(false);
+
+        foreach (var menu in subMenus)
+            menu.SetActive(false);
     }
+
+    public void hideStartMenu()
+    {
+        startMenu.SetActive(false);
+        settingsParent.SetActive(true);
+        backToMenuButton.SetActive(true);
+        backToSettingsButton.SetActive(false);
+    }
+
+
+
 
 }
