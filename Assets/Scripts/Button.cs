@@ -6,6 +6,7 @@ public class ButtonBehavior : MonoBehaviour
 {
     [Header("Menus")]
     [SerializeField] private GameObject startMenu;
+    [SerializeField] private GameObject levelsMenu;
     [SerializeField] private GameObject settingsParent;
     [SerializeField] private GameObject settingsOptions;
     [SerializeField] private GameObject[] subMenus;
@@ -67,6 +68,18 @@ public class ButtonBehavior : MonoBehaviour
         settingsParent.SetActive(true);
         backToMenuButton.SetActive(true);
         backToSettingsButton.SetActive(false);
+    }
+
+    public void showLevels()
+    {
+        startMenu.SetActive(false);
+        levelsMenu.SetActive(true);
+    }
+
+    public void hideLevels()
+    {
+        startMenu.SetActive(true);
+        levelsMenu.SetActive(false);
     }
 
 
