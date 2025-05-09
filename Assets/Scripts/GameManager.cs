@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private NumberCounter numberCounter;
     private int score = 0;
 
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -25,6 +26,7 @@ public class GameManager : MonoBehaviour
     public void AddScore(int amount)
     {
         score += amount;
+        if (score < 0) score = 0; // Prevent negative score
         numberCounter.Value = score;
     }
     public int GetScore() => score;
