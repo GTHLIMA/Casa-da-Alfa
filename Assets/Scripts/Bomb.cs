@@ -8,21 +8,20 @@ public class Bomb : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rb;
-    private bool hasScored = false;
     private bool hasExploded = false;
 
     void Start()
     {
-        // Get the SpriteRenderer and Rigidbody2D components
+         // Get the SpriteRenderer and Rigidbody2D components
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
-        // Only start if thouched the screen
         if (hasExploded) return;
 
+         // Only start if thouched the screen
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
@@ -30,9 +29,16 @@ public class Bomb : MonoBehaviour
             {
                 Vector2 touchPosition = Camera.main.ScreenToWorldPoint(touch.position);
                 Collider2D hit = Physics2D.OverlapPoint(touchPosition);
+
                 if (hit != null && hit.transform == transform)
                 {
-                    Explode(false);
+                    int scoreChange = 0;
+
+                    if (CompareTag("House"))
+                        scoreChange = 10;
+                    else if (CompareTag("Bomb"))
+                        scoreChange = -5;
+                    Explode(scoreChange);
                 }
             }
         }
@@ -42,31 +48,30 @@ public class Bomb : MonoBehaviour
     {
         if (hasExploded) return;
 
-        if (other.CompareTag("Ground") && !hasScored)
+        if (other.CompareTag("Ground"))
         {
-            hasScored = true;
-            Explode(true);
+            Explode(0);
         }
     }
 
-    private void Explode(bool addScore)
+    private void Explode(int scoreChange)
     {
         hasExploded = true;
 
-        if (addScore)
-            GameManager.Instance.AddScore(1);
+        if (scoreChange != 0)
+            GameManager.Instance.AddScore(scoreChange);
 
-        // Change the sprite to the explosion sprite
+         // Change the sprite to the explosion sprite
         if (spriteRenderer != null && explosionSprite != null)
             spriteRenderer.sprite = explosionSprite;
 
-        // 
         if (rb != null)
         {
-            // Stop the Rigidbody2D from moving 
+            // Stop the Rigidbody2D from moving
             rb.angularVelocity = 0f;
             rb.bodyType = RigidbodyType2D.Static;
         }
+
         StartCoroutine(DestroyAfterDelay());
     }
 
