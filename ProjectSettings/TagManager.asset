@@ -9,6 +9,7 @@ TagManager:
   - Ground
   - Settings
   - Play
+  - Audio
   layers:
   - Default
   - TransparentFX
