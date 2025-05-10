@@ -5,14 +5,22 @@ public class Bomb : MonoBehaviour
 {
     [SerializeField] private Sprite explosionSprite;
     [SerializeField] private float explosionDelay = 0.3f;
-
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rb;
     private bool hasExploded = false;
+    private AudioClip spawnSound;
+
+    AudioManager audioManager;
+    private void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>(); 
+    }
 
     void Start()
     {
-         // Get the SpriteRenderer and Rigidbody2D components
+        if (audioManager != null && CompareTag("Bomb")) audioManager.PlaySFX(audioManager.bombFall);
+        
+        // Get the SpriteRenderer and Rigidbody2D components
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
     }
@@ -35,9 +43,15 @@ public class Bomb : MonoBehaviour
                     int scoreChange = 0;
 
                     if (CompareTag("House"))
+                    {
+                        audioManager.PlaySFX(audioManager.touchImage);
                         scoreChange = 10;
+                    }
                     else if (CompareTag("Bomb"))
+                    {
+                        audioManager.PlaySFX(audioManager.bombExplosion);
                         scoreChange = -5;
+                    }    
                     Explode(scoreChange);
                 }
             }
@@ -50,6 +64,9 @@ public class Bomb : MonoBehaviour
 
         if (other.CompareTag("Ground"))
         {
+            if (CompareTag("Bomb")) audioManager.PlaySFX(audioManager.bombExplosion);
+            
+            audioManager.PlaySFX(audioManager.groundFall);
             Explode(0);
         }
     }
