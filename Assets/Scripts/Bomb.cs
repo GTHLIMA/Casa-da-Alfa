@@ -8,28 +8,33 @@ public class Bomb : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rb;
     private bool hasExploded = false;
-    private AudioClip spawnSound;
 
-    AudioManager audioManager;
+    private AudioManager audioManager;
+
     private void Awake()
     {
-        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>(); 
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
     }
 
     void Start()
     {
-        if (audioManager != null && CompareTag("Bomb")) audioManager.PlaySFX(audioManager.bombFall);
-        
-        // Get the SpriteRenderer and Rigidbody2D components
+        if (audioManager != null && CompareTag("Bomb"))
+            audioManager.PlaySFX(audioManager.bombFall);
+
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
+
+        if (CompareTag("House") && spriteRenderer != null)
+        {
+            Sprite newSprite = GameManager.Instance.GetCurrentSprite();
+            if (newSprite != null) spriteRenderer.sprite = newSprite;
+        }
     }
 
     void Update()
     {
         if (hasExploded) return;
 
-         // Only start if thouched the screen
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
@@ -40,19 +45,18 @@ public class Bomb : MonoBehaviour
 
                 if (hit != null && hit.transform == transform)
                 {
-                    int scoreChange = 0;
-
-                    if (CompareTag("House"))
+                    if (CompareTag("Bomb"))
+                    {
+                        audioManager.PlaySFX(audioManager.touchImage); 
+                        GameManager.Instance.BombTouch();
+                        Explode(0);
+                    }
+                    else if (CompareTag("House"))
                     {
                         audioManager.PlaySFX(audioManager.touchImage);
-                        scoreChange = 10;
+                        GameManager.Instance.ImageTouch();
+                        Explode(10);
                     }
-                    else if (CompareTag("Bomb"))
-                    {
-                        audioManager.PlaySFX(audioManager.bombExplosion);
-                        scoreChange = -5;
-                    }    
-                    Explode(scoreChange);
                 }
             }
         }
@@ -65,7 +69,7 @@ public class Bomb : MonoBehaviour
         if (other.CompareTag("Ground"))
         {
             if (CompareTag("Bomb")) audioManager.PlaySFX(audioManager.bombExplosion);
-            
+
             audioManager.PlaySFX(audioManager.groundFall);
             Explode(0);
         }
@@ -78,13 +82,11 @@ public class Bomb : MonoBehaviour
         if (scoreChange != 0)
             GameManager.Instance.AddScore(scoreChange);
 
-         // Change the sprite to the explosion sprite
         if (spriteRenderer != null && explosionSprite != null)
             spriteRenderer.sprite = explosionSprite;
 
         if (rb != null)
         {
-            // Stop the Rigidbody2D from moving
             rb.angularVelocity = 0f;
             rb.bodyType = RigidbodyType2D.Static;
         }
