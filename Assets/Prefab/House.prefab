@@ -101,6 +101,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   explosionSprite: {fileID: 21300000, guid: 22f0f9e31ad0a5d4ba14d35d3e90db24, type: 3}
   explosionDelay: 0.2
+  sprites:
+  - {fileID: 21300000, guid: 1a05a309c5d25db41bfda436dd5778c3, type: 3}
+  - {fileID: 21300000, guid: a55086b82f039eb4585a217921bae382, type: 3}
 --- !u!50 &-6366005936414056439
 Rigidbody2D:
   serializedVersion: 4
