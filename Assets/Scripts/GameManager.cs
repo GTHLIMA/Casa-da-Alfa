@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -19,11 +20,20 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     [SerializeField] private NumberCounter numberCounter;
     private int score = 0;
+
+    private bool isSpeedUp = false;
+    private int speedLevel = 1;
+    public float normalGravityScale = 1f;
+    public float mediumGravityScale = 1f;
+    public float fastUpGravityScale = 3f;
+    private AudioManager audioManager;
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
     }
 
     public Sprite GetCurrentSprite()
@@ -82,13 +92,58 @@ public class GameManager : MonoBehaviour
     {
         if (spawnnablePrefabs.Length == 0) return;
 
-        GameObject prefabtoSpawn = spawnnablePrefabs[Random.Range(0, spawnnablePrefabs.Length)];
+        GameObject prefabtoSpawn = spawnnablePrefabs[UnityEngine.Random.Range(0, spawnnablePrefabs.Length)];
 
         Vector3 spawnPosition = spawnPoint.position;
-        spawnPosition.x = Random.Range(-maxX, maxX);
+        spawnPosition.x = UnityEngine.Random.Range(-maxX, maxX);
 
-        Instantiate(prefabtoSpawn, spawnPosition, Quaternion.identity);
+        GameObject instance = Instantiate(prefabtoSpawn, spawnPosition, Quaternion.identity);
 
+        Rigidbody2D rb = instance.GetComponent<Rigidbody2D>();
+
+        if (rb != null)
+        {
+            float gravityToApply = speedLevel == 1 ? normalGravityScale :
+                                   speedLevel == 2 ? mediumGravityScale : fastUpGravityScale;
+
+
+            rb.gravityScale = gravityToApply;
+        }
+    }
+
+    public void ToggleSpeedUp()
+    {
+        isSpeedUp = !isSpeedUp;
+        speedLevel++;
+
+        if (speedLevel > 3) speedLevel = 1;
+
+        float newGravityScale = normalGravityScale;
+        float newPitch = audioManager.normalPitch;
+
+        switch (speedLevel)
+        {
+            case 1:
+                newGravityScale = normalGravityScale;
+                newPitch = audioManager.normalPitch;
+                break;
+            case 2:
+                newGravityScale = mediumGravityScale;
+                newPitch = Mathf.Lerp(audioManager.normalPitch, audioManager.speedUpPitch, 0.5f);
+                break;
+            case 3:
+                newGravityScale = fastUpGravityScale;
+                newPitch = audioManager.speedUpPitch;
+                break;
+        }
+
+        if (audioManager != null) audioManager.SetPitch(newPitch);
+
+        foreach (var rb in FindObjectsOfType<Rigidbody2D>())
+        {
+            rb.gravityScale = newGravityScale;
+        }
+        
     }
 }
 
