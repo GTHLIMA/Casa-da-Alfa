@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
     private bool isSpeedUp = false;
     private int speedLevel = 1;
     public float normalGravityScale = 1f;
-    public float mediumGravityScale = 1f;
+    public float mediumGravityScale = 2f;
     public float fastUpGravityScale = 3f;
     private AudioManager audioManager;
 

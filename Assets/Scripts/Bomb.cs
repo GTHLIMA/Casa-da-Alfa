@@ -8,8 +8,12 @@ public class Bomb : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rb;
     private bool hasExploded = false;
-
     private AudioManager audioManager;
+
+    [SerializeField] private GameObject popupPrefab;
+
+    private float destructTime = 1f;
+    private float timer;
 
     private void Awake()
     {
@@ -29,6 +33,8 @@ public class Bomb : MonoBehaviour
             Sprite newSprite = GameManager.Instance.GetCurrentSprite();
             if (newSprite != null) spriteRenderer.sprite = newSprite;
         }
+
+        timer = destructTime;
     }
 
     void Update()
@@ -55,7 +61,13 @@ public class Bomb : MonoBehaviour
                     {
                         audioManager.PlaySFX(audioManager.touchImage);
                         GameManager.Instance.ImageTouch();
+                        Instantiate(popupPrefab, transform.position, Quaternion.identity);
                         Explode(10);
+
+                        if (timer <= 0)
+                        {
+                            Destroy(gameObject);
+                        }
                     }
                 }
             }
