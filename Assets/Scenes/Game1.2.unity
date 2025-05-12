@@ -380,6 +380,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 233da6c7570f99d4d8bed29402bbe5c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: 21300000, guid: 07d0d46801a798945afc26d8727f88ca, type: 3}
+  - {fileID: 21300000, guid: e549977760e99ef458fc2518cd5b4cf5, type: 3}
+  - {fileID: 21300000, guid: 42a5ad8b88cf3d74a92917206b16fc36, type: 3}
+  - {fileID: 21300000, guid: be15d6aac5a8bab4b965c61c9e7bea0e, type: 3}
+  - {fileID: 21300000, guid: ac6cbab8649d83b4c9e08bdcf3487dc0, type: 3}
   spawnnablePrefabs:
   - {fileID: 6619959229620704995, guid: 24f5cdaf99f921a46be25ce25d743dbf, type: 3}
   - {fileID: 6619959229620704995, guid: 3e28e2ad0194ac448b1023dd2130469e, type: 3}
