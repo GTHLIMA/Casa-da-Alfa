@@ -101,6 +101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   explosionSprite: {fileID: 0}
   explosionDelay: 0
+  popupPrefab: {fileID: 3703959989916914373, guid: d33648a5615a12b42ae07269ea44b1e4, type: 3}
 --- !u!50 &-6366005936414056439
 Rigidbody2D:
   serializedVersion: 4
