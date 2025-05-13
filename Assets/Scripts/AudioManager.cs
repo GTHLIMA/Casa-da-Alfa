@@ -14,6 +14,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip bombFall;
     public AudioClip touchImage;
     public AudioClip groundFall;
+    public AudioClip ballonPop;
 
     public float normalPitch = 1f;
     public float speedUpPitch = 1.5f;

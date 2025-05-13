@@ -13,6 +13,9 @@ public class Slingshot : MonoBehaviour
     public bool isReadyToShoot = true; // <--variável de controle
     public float forceMultiplier = 10f;
 
+    [Header("Drag Limit")]
+    public float maxDragDistance = 1;
+
     private void Start()
     {
         startPosition = transform.position + new Vector3(0, 0.2f, 0);
@@ -35,10 +38,19 @@ public class Slingshot : MonoBehaviour
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePos.z = 0;
-            projectile.position = mousePos;
 
-            DrawLine(mousePos);
+            // will limit how far you can drag the stone
+            Vector3 toMouse = mousePos - startPosition;
+            if (toMouse.magnitude > maxDragDistance)
+            {
+                toMouse = toMouse.normalized * maxDragDistance;
+            }
+
+            projectile.position = startPosition + toMouse;
+
+            DrawLine(projectile.position);
         }
+
 
         if (Input.GetMouseButtonUp(0) && isDragging)
         {
@@ -48,6 +60,8 @@ public class Slingshot : MonoBehaviour
             rb.velocity = force;
             isReadyToShoot = false;
             lineRenderer.enabled = false;
+
+            Invoke(nameof(ResetProjectile), 1f); // Reset the projectile after 1 second
         }
     }
 

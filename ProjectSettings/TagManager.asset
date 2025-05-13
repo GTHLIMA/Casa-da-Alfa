@@ -10,6 +10,8 @@ TagManager:
   - Settings
   - Play
   - Audio
+  - Ballon
+  - Slingshot
   layers:
   - Default
   - TransparentFX
