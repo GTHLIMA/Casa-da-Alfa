@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class Balloon : MonoBehaviour
 {
-    public float upSpeed; 
-    AudioManager audioManager;
+    public float upSpeed;
+    private bool gameStarted = false;
+    private AudioManager audioManager;
+
+    [SerializeField] private GameObject[] balloonDropPrefabs; 
 
     void Awake()
     {
@@ -14,18 +17,25 @@ public class Balloon : MonoBehaviour
 
     void Update()
     {
+
+        if (!gameStarted && Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Began)
+            {
+                gameStarted = true; 
+            }
+        }
+
         if (transform.position.y > 7f)
         {
             ResetPosition();
         }
-
-        
     }
 
     private void FixedUpdate()
     {
-        transform.Translate(0, upSpeed, 0);
-        
+       if (gameStarted) transform.Translate(0, upSpeed, 0);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -38,17 +48,63 @@ public class Balloon : MonoBehaviour
             {
                 GameManager.Instance.AddScore(10);
                 audioManager.PlaySFX(audioManager.ballonPop);
+
+                DropRandomBalloonPrefab(); 
+
                 ResetPosition();
             }
         }
     }
 
-    private void ResetPosition()
-    {
-        float randomX = Random.Range(-2.5f, 2.5f);
-        transform.position = new Vector2(randomX, -7f);
+    private void DropRandomBalloonPrefab()
+{
+    if (balloonDropPrefabs.Length == 0) return;
 
+    int index = Random.Range(0, balloonDropPrefabs.Length);
+    GameObject dropPrefab = balloonDropPrefabs[index];
+
+    GameObject drop = Instantiate(dropPrefab, transform.position, Quaternion.identity);
+
+    if (drop.name.Contains("House 1"))
+    {
+        audioManager.PlaySFX(audioManager.house);
+    }
+    else if (drop.name.Contains("Map"))
+    {
+        audioManager.PlaySFX(audioManager.map);
+    }
+    else if (drop.name.Contains("Dice"))
+    {
+        audioManager.PlaySFX(audioManager.dice);
+    }
+    else if (drop.name.Contains("Vase"))
+    {
+        audioManager.PlaySFX(audioManager.vase);
+    }
+    else if (drop.name.Contains("Bag"))
+    {
+        audioManager.PlaySFX(audioManager.bag);
     }
 
+    Rigidbody2D rb = drop.GetComponent<Rigidbody2D>();
+    if (rb != null)
+    {
+        rb.gravityScale = 1f;
+        rb.velocity = Vector2.zero;
+    }
+}
+    private void ResetPosition()
+{
+    float randomX = Random.Range(-2.5f, 2.5f);
+    float posY = -7f; 
 
+    if (gameObject.name.Contains("RedBallon")) posY = -7f;
+    
+    else if (gameObject.name.Contains("YellowBallon")) posY = -9f;
+    
+    else if (gameObject.name.Contains("PinkBallon")) posY = -11f;
+    
+
+    transform.position = new Vector2(randomX, posY);
+}
 }

@@ -12,9 +12,6 @@ public class Bomb : MonoBehaviour
 
     [SerializeField] private GameObject popupPrefab;
 
-    private float destructTime = 1f;
-    private float timer;
-
     private void Awake()
     {
         audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
@@ -33,8 +30,6 @@ public class Bomb : MonoBehaviour
             Sprite newSprite = GameManager.Instance.GetCurrentSprite();
             if (newSprite != null) spriteRenderer.sprite = newSprite;
         }
-
-        timer = destructTime;
     }
 
     void Update()
@@ -59,16 +54,15 @@ public class Bomb : MonoBehaviour
                     }
                     else if (CompareTag("House"))
                     {
-                        audioManager.PlaySFX(audioManager.touchImage);
+                        AudioClip spriteAudio = GameManager.Instance.GetCurrentSpriteAudio();
+                        if (spriteAudio != null)
+                            audioManager.PlaySFX(spriteAudio);
+
                         GameManager.Instance.ImageTouch();
                         Instantiate(popupPrefab, transform.position, Quaternion.identity);
                         Explode(10);
-
-                        if (timer <= 0)
-                        {
-                            Destroy(gameObject);
-                        }
                     }
+
                 }
             }
         }
