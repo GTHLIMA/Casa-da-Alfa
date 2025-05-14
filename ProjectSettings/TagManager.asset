@@ -12,6 +12,10 @@ TagManager:
   - Audio
   - Ballon
   - Slingshot
+  - Dice
+  - Bag
+  - Map
+  - Vase
   layers:
   - Default
   - TransparentFX
@@ -21,8 +25,8 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
+  - Slingshot
+  - BallonDrop
   - 
   - 
   - 

@@ -14,6 +14,12 @@ public class AudioManager : MonoBehaviour
     public AudioClip bombFall;
     public AudioClip touchImage;
     public AudioClip groundFall;
+    [Header("------------- Level 1 sounds -------------")]
+    public AudioClip house;
+    public AudioClip map;
+    public AudioClip dice;
+    public AudioClip vase;
+    public AudioClip bag;
     public AudioClip ballonPop;
 
     public float normalPitch = 1f;
@@ -21,15 +27,19 @@ public class AudioManager : MonoBehaviour
 
     private void Start() 
     {
-        audioSource.clip = background;
         audioSource.pitch = normalPitch;
         audioSource.loop = true;
-        audioSource.Play();
     }
 
     public void PlaySFX(AudioClip clip)
     {
         SFXSource.PlayOneShot(clip);
+    }
+
+    public void PlayAudio(AudioClip clip)
+    {
+        audioSource.clip = clip;
+        audioSource.Play();
     }
 
     public void SetPitch(float isSpeedUp)

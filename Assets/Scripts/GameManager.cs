@@ -27,6 +27,9 @@ public class GameManager : MonoBehaviour
     public float mediumGravityScale = 2f;
     public float fastUpGravityScale = 3f;
     private AudioManager audioManager;
+    
+    [Header("------------- Audio Clip -------------")]
+    public AudioClip[] spriteAudios;
 
     private void Awake()
     {
@@ -53,6 +56,12 @@ public class GameManager : MonoBehaviour
             currentSpriteIndex++;
             if (currentSpriteIndex >= sprites.Length) currentSpriteIndex = 0;
         }
+    }
+    public AudioClip GetCurrentSpriteAudio()
+    {
+        if (spriteAudios != null && currentSpriteIndex < spriteAudios.Length)
+            return spriteAudios[currentSpriteIndex];
+        return null;
     }
 
     public void ImageTouch()
