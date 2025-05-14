@@ -13,10 +13,16 @@ public class NumberCounter : MonoBehaviour
     private int _value;
 
     public int Value
+{
+    get { return _value; }
+    set 
     {
-        get { return _value; }
-        set { UpadteText(value); _value = value; } 
-    }
+        int clampedValue = Mathf.Clamp(value, 0, 999); // 👈 limita entre 0 e 999
+        UpadteText(clampedValue);
+        _value = clampedValue;
+    } 
+}
+
 
     private Coroutine CountingCoroutine;
 
