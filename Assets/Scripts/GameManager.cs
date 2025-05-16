@@ -13,8 +13,8 @@ public class GameManager : MonoBehaviour
     private int spriteTouchCount = 0;
 
     public GameObject[] spawnnablePrefabs;
-    public float maxX;
     public Transform spawnPoint;
+    private float maxVisibleX;
     public float spawnRate;
     bool gameStarted = false;
     public static GameManager Instance;
@@ -37,6 +37,8 @@ public class GameManager : MonoBehaviour
         else Destroy(gameObject);
 
         audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+
+        maxVisibleX = Camera.main.orthographicSize * Camera.main.aspect;
     }
 
     public Sprite GetCurrentSprite()
@@ -104,7 +106,8 @@ public class GameManager : MonoBehaviour
         GameObject prefabtoSpawn = spawnnablePrefabs[UnityEngine.Random.Range(0, spawnnablePrefabs.Length)];
 
         Vector3 spawnPosition = spawnPoint.position;
-        spawnPosition.x = UnityEngine.Random.Range(-maxX, maxX);
+        spawnPosition.x = UnityEngine.Random.Range(-maxVisibleX, maxVisibleX);
+
 
         GameObject instance = Instantiate(prefabtoSpawn, spawnPosition, Quaternion.identity);
 
