@@ -49,16 +49,16 @@ public class Bomb : MonoBehaviour
                     if (CompareTag("Bomb"))
                     {
                         audioManager.PlaySFX(audioManager.touchImage); 
-                        GameManager.Instance.BombTouch();
                         Explode(0);
                     }
                     else if (CompareTag("House"))
                     {
+                        GameManager.Instance.ImageTouch();
+                        
                         AudioClip spriteAudio = GameManager.Instance.GetCurrentSpriteAudio();
                         if (spriteAudio != null)
                             audioManager.PlaySFX(spriteAudio);
 
-                        GameManager.Instance.ImageTouch();
                         Instantiate(popupPrefab, transform.position, Quaternion.identity);
                         Explode(10);
                     }
