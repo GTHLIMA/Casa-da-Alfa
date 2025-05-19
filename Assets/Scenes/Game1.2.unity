@@ -319,17 +319,30 @@ MonoBehaviour:
   - {fileID: 6619959229620704995, guid: 3e28e2ad0194ac448b1023dd2130469e, type: 3}
   spawnPoint: {fileID: 1020511657}
   horizontalSpawnPadding: 1
-  spawnRate: 1.5
+  spawnRate: 1.2
+  bombTouchCount: 0
   numberCounter: {fileID: 1566004494}
   normalGravityScale: 1
   mediumGravityScale: 1.5
   fastUpGravityScale: 2
   spriteAudios:
   - {fileID: 8300000, guid: 244ec0e7d759d014d81b9b776f55eb66, type: 3}
-  - {fileID: 8300000, guid: 7211fe4fc141e1f4e87a7325f1a5019f, type: 3}
   - {fileID: 8300000, guid: 7db016608aaf4634eaaed4c230b3bfe2, type: 3}
-  - {fileID: 8300000, guid: 6265760c69a19a646a11b43656225f56, type: 3}
-  - {fileID: 8300000, guid: a6c0672d8327d1649a79b5e40633ded1, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!4 &297001662
 Transform:
   m_ObjectHideFlags: 0
@@ -363,7 +376,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &371944292
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1806,7 +1819,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_UiScaleMode: 1
-  m_ReferencePixelsPerUnit: 100
+  m_ReferencePixelsPerUnit: 1
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1080, y: 1920}
   m_ScreenMatchMode: 0
@@ -1837,7 +1850,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_TargetDisplay: 0
 --- !u!224 &1659526167
 RectTransform:
@@ -2026,9 +2039,10 @@ MonoBehaviour:
   background: {fileID: 8300000, guid: 1634df1390fe68e448ae1cdf4ac3e7bd, type: 3}
   bombExplosion: {fileID: 8300000, guid: 443b8fe4e168f2a45b298419ee3b1c35, type: 3}
   bombFall: {fileID: 8300000, guid: f0984d1366f783941bd14ef20e678b44, type: 3}
+  warning: {fileID: 8300000, guid: 9b774b43ae3fd53438115e30ada1aac4, type: 3}
   touchImage: {fileID: 8300000, guid: 1b6a7086e77ba2147b981e5654ec4e67, type: 3}
   groundFall: {fileID: 8300000, guid: 11df34dfcb20bf749a5f6bc2bd55a3cd, type: 3}
-  house: {fileID: 0}
+  house: {fileID: 8300000, guid: 244ec0e7d759d014d81b9b776f55eb66, type: 3}
   map: {fileID: 0}
   dice: {fileID: 0}
   vase: {fileID: 0}

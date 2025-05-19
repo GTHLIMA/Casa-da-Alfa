@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     public float horizontalSpawnPadding = 1f;
     private float maxVisibleX;
     public float spawnRate;
+    public int bombTouchCount = 0;
     bool gameStarted = false;
     public static GameManager Instance;
     [SerializeField] private NumberCounter numberCounter;
