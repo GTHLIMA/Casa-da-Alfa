@@ -10,13 +10,12 @@ public class GameManager : MonoBehaviour
     [Header("Sprite Manager")]
     public Sprite[] sprites;
     private int currentSpriteIndex = 0;
+    private int spriteTouchCount = 0;
 
     public GameObject[] spawnnablePrefabs;
     public Transform spawnPoint;
-    public float horizontalSpawnPadding = 1f;
     private float maxVisibleX;
     public float spawnRate;
-    public int bombTouchCount = 0;
     bool gameStarted = false;
     public static GameManager Instance;
     [SerializeField] private NumberCounter numberCounter;
@@ -28,7 +27,7 @@ public class GameManager : MonoBehaviour
     public float mediumGravityScale = 2f;
     public float fastUpGravityScale = 3f;
     private AudioManager audioManager;
-
+    
     [Header("------------- Audio Clip -------------")]
     public AudioClip[] spriteAudios;
 
@@ -38,6 +37,7 @@ public class GameManager : MonoBehaviour
         else Destroy(gameObject);
 
         audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+
         maxVisibleX = Camera.main.orthographicSize * Camera.main.aspect;
     }
 
@@ -46,7 +46,19 @@ public class GameManager : MonoBehaviour
         if (sprites.Length == 0) return null;
         return sprites[currentSpriteIndex];
     }
+    public void RegisterTouch(int amount)
+    {
+        spriteTouchCount += amount;
 
+        if (spriteTouchCount < 0) spriteTouchCount = 0;
+
+        if (spriteTouchCount >= 5)
+        {
+            spriteTouchCount = 0;
+            currentSpriteIndex++;
+            if (currentSpriteIndex >= sprites.Length) currentSpriteIndex = 0;
+        }
+    }
     public AudioClip GetCurrentSpriteAudio()
     {
         if (spriteAudios != null && currentSpriteIndex < spriteAudios.Length)
@@ -56,17 +68,20 @@ public class GameManager : MonoBehaviour
 
     public void ImageTouch()
     {
-        currentSpriteIndex++;
-        if (currentSpriteIndex >= sprites.Length) currentSpriteIndex = 0;
+        RegisterTouch(1);
+    }
+
+    public void BombTouch()
+    {
+        RegisterTouch(-1);
     }
 
     public void AddScore(int amount)
     {
         score += amount;
-        if (score < 0) score = 0;
+        if (score < 0) score = 0; // Prevent negative score
         numberCounter.Value = score;
     }
-
     public int GetScore() => score;
 
     void Update()
@@ -76,6 +91,7 @@ public class GameManager : MonoBehaviour
             StartSpawning();
             gameStarted = true;
         }
+        
     }
 
     private void StartSpawning()
@@ -83,14 +99,14 @@ public class GameManager : MonoBehaviour
         InvokeRepeating("SpawnPrefab", 0.5f, spawnRate);
     }
 
-    private void SpawnPrefab()
+        private void SpawnPrefab()
     {
         if (spawnnablePrefabs.Length == 0) return;
 
         GameObject prefabtoSpawn = spawnnablePrefabs[UnityEngine.Random.Range(0, spawnnablePrefabs.Length)];
 
         Vector3 spawnPosition = spawnPoint.position;
-        spawnPosition.x = UnityEngine.Random.Range(-maxVisibleX + horizontalSpawnPadding, maxVisibleX - horizontalSpawnPadding);
+        spawnPosition.x = UnityEngine.Random.Range(-maxVisibleX, maxVisibleX);
 
 
         GameObject instance = Instantiate(prefabtoSpawn, spawnPosition, Quaternion.identity);
@@ -101,6 +117,7 @@ public class GameManager : MonoBehaviour
         {
             float gravityToApply = speedLevel == 1 ? normalGravityScale :
                                    speedLevel == 2 ? mediumGravityScale : fastUpGravityScale;
+
 
             rb.gravityScale = gravityToApply;
         }
@@ -138,5 +155,7 @@ public class GameManager : MonoBehaviour
         {
             rb.gravityScale = newGravityScale;
         }
+        
     }
 }
+
