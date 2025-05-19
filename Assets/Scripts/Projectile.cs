@@ -17,10 +17,6 @@ public class Projectile : MonoBehaviour
         CallResetFromSlingshot();
     }
 
-    // private void OnBecameInvisible()
-    // {
-    //     CallResetFromSlingshot();
-    // }
 
     void CallResetFromSlingshot()
     {
