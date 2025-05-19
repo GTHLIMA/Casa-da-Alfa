@@ -48,3 +48,4 @@ test/
 # Arquivos
 *.csproj
 Mobile.sln
+.gitignore
