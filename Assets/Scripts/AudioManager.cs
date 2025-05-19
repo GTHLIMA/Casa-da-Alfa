@@ -12,7 +12,6 @@ public class AudioManager : MonoBehaviour
     public AudioClip background;
     public AudioClip bombExplosion;
     public AudioClip bombFall;
-    public AudioClip warning;
     public AudioClip touchImage;
     public AudioClip groundFall;
     [Header("------------- Level 1 sounds -------------")]
