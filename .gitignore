@@ -44,7 +44,7 @@ Assets/AssetStoreTools*
 Packages/
 vscode/
 .vscode/
-
+test/
 # Arquivos
 *.csproj
 Mobile.sln
