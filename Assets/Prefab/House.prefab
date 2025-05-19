@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 6619959229620704995}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.009, y: -0.047, z: 0}
+  m_LocalPosition: {x: -0.67, y: 1.557, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -76,12 +76,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 96bc77ebba642a64e94176a300069c46, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 07d0d46801a798945afc26d8727f88ca, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.024, y: 1.024}
+  m_Size: {x: 1.5377778, y: 1.2644445}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -101,7 +101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   explosionSprite: {fileID: 0}
   explosionDelay: 0
-  floatingPoints: {fileID: 4886261898834757915, guid: 780301c9cbfb31948a801c57a98b1596, type: 3}
+  popupPrefab: {fileID: 3703959989916914373, guid: d33648a5615a12b42ae07269ea44b1e4, type: 3}
 --- !u!50 &-6366005936414056439
 Rigidbody2D:
   serializedVersion: 4
@@ -161,16 +161,16 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.26}
+  m_Offset: {x: 0, y: 0.05}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.024, y: 1.024}
-    newSize: {x: 1.024, y: 1.024}
+    oldSize: {x: 1.5377778, y: 1.2644619}
+    newSize: {x: 1.5377778, y: 1.2644445}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.5, y: 1.5}
+  m_Size: {x: 1.8, y: 1.5}
   m_EdgeRadius: 0
