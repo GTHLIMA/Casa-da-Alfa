@@ -156,6 +156,7 @@ MonoBehaviour:
   background: {fileID: 8300000, guid: 1634df1390fe68e448ae1cdf4ac3e7bd, type: 3}
   bombExplosion: {fileID: 8300000, guid: 443b8fe4e168f2a45b298419ee3b1c35, type: 3}
   bombFall: {fileID: 8300000, guid: f0984d1366f783941bd14ef20e678b44, type: 3}
+  warning: {fileID: 0}
   touchImage: {fileID: 8300000, guid: 1b6a7086e77ba2147b981e5654ec4e67, type: 3}
   groundFall: {fileID: 8300000, guid: 11df34dfcb20bf749a5f6bc2bd55a3cd, type: 3}
   house: {fileID: 8300000, guid: 244ec0e7d759d014d81b9b776f55eb66, type: 3}
@@ -715,7 +716,9 @@ MonoBehaviour:
   sprites: []
   spawnnablePrefabs: []
   spawnPoint: {fileID: 0}
+  horizontalSpawnPadding: 1
   spawnRate: 0
+  bombTouchCount: 0
   numberCounter: {fileID: 182244623}
   normalGravityScale: 0
   mediumGravityScale: -1.5
@@ -2199,7 +2202,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_TargetDisplay: 0
 --- !u!224 &2086059457
 RectTransform:

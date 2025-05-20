@@ -162,9 +162,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   upSpeed: 0.04
-  balloonDropPrefabs:
-  - {fileID: 6619959229620704995, guid: 020088888a4459844a757e3f7f154e5d, type: 3}
-  - {fileID: 6619959229620704995, guid: 6a4d92ec7b611f040aeea9b7f0a45040, type: 3}
-  - {fileID: 6619959229620704995, guid: 20da3e9b58755cf4b8a9f0777cfa4b52, type: 3}
-  - {fileID: 6619959229620704995, guid: dff65516e75a67b49add9475b91f50db, type: 3}
-  - {fileID: 6619959229620704995, guid: a458b9e1508091948a2d7655c878ec77, type: 3}
+  balloonDropSprites:
+  - {fileID: 21300000, guid: d51d41dc1ff3c694fb8c9693d7e9f2d1, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  floatingPoints: {fileID: 4886261898834757915, guid: 780301c9cbfb31948a801c57a98b1596, type: 3}
