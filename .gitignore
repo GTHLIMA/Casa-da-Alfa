@@ -21,6 +21,7 @@ Assets/AssetStoreTools*
 *.pidb
 *.booproj
 *.svd
+*.meta
 
 # ===== IDEs =====
 .vscode/
@@ -43,6 +44,10 @@ Thumbs.db
 
 # ===== Pasta do projeto e arquivos desnecessários =====
 Packages/
+vscode/
 test/
 Mobile.sln
 .gitignore
+*.sln
+UniversalRenderPipeline/
+UniversalRenderPipelineGlobalSettings.asset
