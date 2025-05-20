@@ -1,1 +1,48 @@
-/Library/Artifacts
+# ===== Unity - Pastas a serem ignoradas =====
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+[Uu]ser[Ss]ettings/
+PackageCache/
+Assets/AssetStoreTools*
+
+# ===== Unity - Arquivos temporários =====
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+
+# ===== IDEs =====
+.vscode/
+.vs/
+.vscode/*
+.idea/
+
+# ===== Arquivos de Log =====
+*.log
+Logs/
+logs/
+
+# ===== Outros arquivos e pastas =====
+sysinfo.txt
+.DS_Store
+Thumbs.db
+*.stackdump
+*.bak
+*.swp
+
+# ===== Pasta do projeto e arquivos desnecessários =====
+Packages/
+test/
+Mobile.sln
+.gitignore
