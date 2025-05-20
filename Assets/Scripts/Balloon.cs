@@ -9,6 +9,7 @@ public class Balloon : MonoBehaviour
     private AudioManager audioManager;
 
     [SerializeField] private GameObject[] balloonDropPrefabs; 
+    public GameObject floatingPoints;
 
     void Awake()
     {
@@ -46,6 +47,8 @@ public class Balloon : MonoBehaviour
 
             if (rb != null && rb.velocity.magnitude > 1f)
             {
+                GameObject points = Instantiate(floatingPoints, transform.position, Quaternion.identity);
+                points.transform.GetChild(0).GetComponent<TextMesh>().text = "+10";
                 GameManager.Instance.AddScore(10);
                 audioManager.PlaySFX(audioManager.ballonPop);
 
