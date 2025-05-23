@@ -12,10 +12,6 @@ TagManager:
   - Audio
   - Ballon
   - Slingshot
-  - Dice
-  - Bag
-  - Map
-  - Vase
   layers:
   - Default
   - TransparentFX
@@ -52,4 +48,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 1797530741
+    locked: 0
+  - name: Prefab
+    uniqueID: 4135242145
+    locked: 0
+  - name: UI
+    uniqueID: 1496705285
     locked: 0

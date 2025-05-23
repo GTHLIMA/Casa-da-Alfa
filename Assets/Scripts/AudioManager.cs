@@ -26,7 +26,9 @@ public class AudioManager : MonoBehaviour
     public float normalPitch = 1f;
     public float speedUpPitch = 1.5f;
 
-    private void Start() 
+    private float savedTime;
+
+    private void Start()
     {
         audioSource.pitch = normalPitch;
         audioSource.loop = true;
@@ -46,6 +48,18 @@ public class AudioManager : MonoBehaviour
     public void SetPitch(float isSpeedUp)
     {
         audioSource.pitch = isSpeedUp;
+    }
+    
+    public void PauseAudio(AudioClip clip)
+    {
+        savedTime = audioSource.time; // Para o audio
+        audioSource.Stop();
+    }
+
+    public void ResumeAudio(AudioClip clip)
+    {
+        audioSource.time = savedTime; // Retoma de onde parou
+        audioSource.Play();
     }
 
 
