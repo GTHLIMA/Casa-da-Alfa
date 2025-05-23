@@ -5,10 +5,12 @@ using UnityEngine;
 public class Balloon : MonoBehaviour
 {
     public float upSpeed;
-    private bool gameStarted = false;
     private AudioManager audioManager;
+    private GameManager gameManager;
 
-    [SerializeField] private GameObject[] balloonDropPrefabs; 
+    [SerializeField] private GameObject spriteDropPrefab;
+    [SerializeField] private Sprite[] dropSprites; 
+    [SerializeField] private AudioClip[] dropAudioClips; 
     public GameObject floatingPoints;
 
     void Awake()
@@ -18,25 +20,31 @@ public class Balloon : MonoBehaviour
 
     void Update()
     {
-
-        if (!gameStarted && Input.touchCount > 0)
+        // Controle por toque (para mobile)
+        if (!GameManager.GameStarted && Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
             if (touch.phase == TouchPhase.Began)
             {
-                gameStarted = true; 
+                GameManager.GameStarted = true; 
             }
+        }
+
+
+        if (!GameManager.GameStarted && Input.GetMouseButtonDown(0))
+        {
+            GameManager.GameStarted = true;
         }
 
         if (transform.position.y > 7f)
         {
-            ResetPosition();
+            Destroy(gameObject);
         }
     }
 
     private void FixedUpdate()
     {
-       if (gameStarted) transform.Translate(0, upSpeed, 0);
+       if (GameManager.GameStarted) transform.Translate(0, upSpeed, 0);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -52,64 +60,63 @@ public class Balloon : MonoBehaviour
                 GameManager.Instance.AddScore(10);
                 audioManager.PlaySFX(audioManager.ballonPop);
 
-                DropRandomBalloonPrefab(); 
+                Projectile projectile = other.GetComponent<Projectile>();
+                if (projectile != null)
+                {
+                    projectile.CallResetFromSlingshot();
+                }
 
-                ResetPosition();
+                DropNextSprite(); 
+
+                // ResetPosition();
             }
         }
     }
 
-    private void DropRandomBalloonPrefab()
+    private void DropNextSprite()
     {
-        if (balloonDropPrefabs.Length == 0) return;
+        if (dropSprites.Length == 0 || spriteDropPrefab == null) return;
 
-        int index = Random.Range(0, balloonDropPrefabs.Length);
-        GameObject dropPrefab = balloonDropPrefabs[index];
-
-        GameObject drop = Instantiate(dropPrefab, transform.position, Quaternion.identity);
-
-        if (drop.name.Contains("House 1"))
+        if (GameManager.CurrentDropIndex >= dropSprites.Length)
         {
-            audioManager.PlaySFX(audioManager.house);
-        }
-        else if (drop.name.Contains("Map"))
-        {
-            audioManager.PlaySFX(audioManager.map);
-        }
-        else if (drop.name.Contains("Dice"))
-        {
-            audioManager.PlaySFX(audioManager.dice);
-        }
-        else if (drop.name.Contains("Vase"))
-        {
-            audioManager.PlaySFX(audioManager.vase);
-        }
-        else if (drop.name.Contains("Bag"))
-        {
-            audioManager.PlaySFX(audioManager.bag);
+            GameManager.CurrentDropIndex = 0;
         }
 
-        Rigidbody2D rb = drop.GetComponent<Rigidbody2D>();
-        if (rb != null)
+        GameObject dropInstance = Instantiate(spriteDropPrefab, transform.position, Quaternion.identity);
+
+        SpriteRenderer sr = dropInstance.GetComponent<SpriteRenderer>();
+        if (sr != null)
         {
-            rb.gravityScale = 1f;
-            rb.velocity = Vector2.zero;
+            sr.sprite = dropSprites[GameManager.CurrentDropIndex];
         }
+
+        if (GameManager.CurrentDropIndex < dropAudioClips.Length && dropAudioClips[GameManager.CurrentDropIndex] != null)
+        {
+            audioManager.PlaySFX(dropAudioClips[GameManager.CurrentDropIndex]);
+        }
+        Destroy(dropInstance, 4f);
+
+        GameManager.CurrentDropIndex++; 
+        GameManager.Instance.CheckEndPhase(GameManager.CurrentDropIndex, dropSprites.Length);
     }
-    private void ResetPosition()
-    {
-        float safeMargin = 0.5f; 
-        float screenHalfWidth = Camera.main.orthographicSize * Camera.main.aspect;
-        float randomX = Random.Range(-screenHalfWidth + safeMargin, screenHalfWidth - safeMargin);
-        float posY = -7f; 
 
-        if (gameObject.name.Contains("RedBallon")) posY = -7f;
+
+
+
+    // private void ResetPosition()
+    // {
+    //     float safeMargin = 0.5f; 
+    //     float screenHalfWidth = Camera.main.orthographicSize * Camera.main.aspect;
+    //     float randomX = Random.Range(-screenHalfWidth + safeMargin, screenHalfWidth - safeMargin);
+    //     float posY = -7f; 
+
+    //     if (gameObject.name.Contains("RedBallon")) posY = -7f;
         
-        else if (gameObject.name.Contains("YellowBallon")) posY = -9f;
+    //     else if (gameObject.name.Contains("YellowBallon")) posY = -12f;
         
-        else if (gameObject.name.Contains("PinkBallon")) posY = -11f;
+    //     else if (gameObject.name.Contains("PinkBallon")) posY = -17f;
         
 
-        transform.position = new Vector2(randomX, posY);
-    }
+    //     transform.position = new Vector2(randomX, posY);
+    // }
 }

@@ -5,22 +5,27 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     public Rigidbody2D rb;
+    private Slingshot slingshot;
 
     private void Start()
     {
         if (rb == null)
             rb = GetComponent<Rigidbody2D>();
+
+        slingshot = FindObjectOfType<Slingshot>();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        CallResetFromSlingshot();
+        if (collision.gameObject.CompareTag("Balloon"))
+        {
+            CallResetFromSlingshot();
+        }
     }
 
 
-    void CallResetFromSlingshot()
+    public void CallResetFromSlingshot()
     {
-        Slingshot slingshot = FindObjectOfType<Slingshot>();
 
         if (slingshot != null)
         {
