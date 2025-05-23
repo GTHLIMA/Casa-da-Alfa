@@ -73,8 +73,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -159725151
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: f49d89e86c96b5146a3d579841a5c230, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -161,11 +161,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d460137e272752c4b8b02eb9ef9ce874, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  upSpeed: 0.04
-  balloonDropPrefabs:
-  - {fileID: 6619959229620704995, guid: 020088888a4459844a757e3f7f154e5d, type: 3}
-  - {fileID: 6619959229620704995, guid: 6a4d92ec7b611f040aeea9b7f0a45040, type: 3}
-  - {fileID: 6619959229620704995, guid: 20da3e9b58755cf4b8a9f0777cfa4b52, type: 3}
-  - {fileID: 6619959229620704995, guid: dff65516e75a67b49add9475b91f50db, type: 3}
-  - {fileID: 6619959229620704995, guid: a458b9e1508091948a2d7655c878ec77, type: 3}
+  upSpeed: 0.05
+  spriteDropPrefab: {fileID: 5844261761850071405, guid: ce1f406d10d2865409d97a523ab8679c, type: 3}
+  dropSprites:
+  - {fileID: 21300000, guid: e630823da395193488033f1cce68cbe8, type: 3}
+  - {fileID: 21300000, guid: 48f4db9758b527a428ef0e3b5e796c24, type: 3}
+  dropAudioClips:
+  - {fileID: 8300000, guid: 7db016608aaf4634eaaed4c230b3bfe2, type: 3}
+  - {fileID: 8300000, guid: 244ec0e7d759d014d81b9b776f55eb66, type: 3}
   floatingPoints: {fileID: 4886261898834757915, guid: 780301c9cbfb31948a801c57a98b1596, type: 3}
