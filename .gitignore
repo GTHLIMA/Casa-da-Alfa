@@ -47,7 +47,6 @@ Packages/
 vscode/
 test/
 Mobile.sln
-.gitignore
 *.sln
 UniversalRenderPipeline/
 UniversalRenderPipelineGlobalSettings.asset
