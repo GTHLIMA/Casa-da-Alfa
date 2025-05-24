@@ -148,7 +148,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.39
+  m_Radius: 0.3
 --- !u!114 &1586154973216339248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,7 +165,7 @@ MonoBehaviour:
   spriteDropPrefab: {fileID: 5844261761850071405, guid: 83234f58adee82e479f0aabab87bc587, type: 3}
   dropSprites:
   - {fileID: 21300000, guid: e630823da395193488033f1cce68cbe8, type: 3}
-  - {fileID: 21300000, guid: 48f4db9758b527a428ef0e3b5e796c24, type: 3}
+  - {fileID: 21300000, guid: e630823da395193488033f1cce68cbe8, type: 3}
   dropAudioClips:
   - {fileID: 8300000, guid: 7db016608aaf4634eaaed4c230b3bfe2, type: 3}
   - {fileID: 8300000, guid: 244ec0e7d759d014d81b9b776f55eb66, type: 3}
