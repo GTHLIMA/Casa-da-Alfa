@@ -107,9 +107,8 @@ public class GameManager : MonoBehaviour
             Debug.LogError("Slingshot object not found!");
         }
 
-        spawnPoint.gameObject.SetActive(false);
+        audioManager.PauseAudio(audioManager.background);      
     }
-
 
     public Sprite GetCurrentSprite()
     {
