@@ -129,7 +129,11 @@ public class GameManager : MonoBehaviour
         currentSpriteIndex++;
         if (currentSpriteIndex >= sprites.Length) currentSpriteIndex = 0;
     }
-
+    public void BombTouch()
+    {
+    Debug.Log("Bomba Tocou! Lógica de fim de jogo ou perda de vida vai aqui.");
+    bombTouchCount++; // Atualiza a contagem (que você já tinha)
+    }
     public void AddScore(int amount)
     {
         currentScore += amount;

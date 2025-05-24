@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: -159725151
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 96bc77ebba642a64e94176a300069c46, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -101,7 +101,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   explosionSprite: {fileID: 0}
   explosionDelay: 0
-  floatingPoints: {fileID: 4886261898834757915, guid: 780301c9cbfb31948a801c57a98b1596, type: 3}
+  popupPrefab: {fileID: 4886261898834757915, guid: 550e322fed651ba45a8d8c0f7d9cc806, type: 3}
+  handAnimationPrefab: {fileID: 7904282597417562455, guid: 0c2dd92cbba2b354184f8e4de3e5924b, type: 3}
 --- !u!50 &-6366005936414056439
 Rigidbody2D:
   serializedVersion: 4
