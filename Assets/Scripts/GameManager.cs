@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     [Range(0f, 1f)] // serve para definir o valor entre 0% e 100%
     public float rareChance = 0.2f; // 20% de chance de spawn 
     public Material goldenMaterial;
+    public int rareScore = 50;
 
 
     public int bombTouchCount = 0;
@@ -173,28 +174,34 @@ public class GameManager : MonoBehaviour
         Vector3 spawnPosition = spawnPoint.position;
         spawnPosition.x = UnityEngine.Random.Range(-maxVisibleX + horizontalSpawnPadding, maxVisibleX - horizontalSpawnPadding);
 
-       GameObject instance = Instantiate(prefabtoSpawn, spawnPosition, Quaternion.identity);
+        GameObject instance = Instantiate(prefabtoSpawn, spawnPosition, Quaternion.identity);
 
-    bool isRare = UnityEngine.Random.value < rareChance;
-    SpriteRenderer sr = instance.GetComponent<SpriteRenderer>();
+        bool isRare = UnityEngine.Random.value < rareChance;
+        SpriteRenderer sr = instance.GetComponent<SpriteRenderer>();
 
-    if (isRare && sr != null && goldenMaterial != null)
-    {
-        Debug.Log("SPAWNOU UM RARO!");
-        sr.material = goldenMaterial; // Aplica o material dourado
-
-        // --- NOVO: Ativar Partículas ---
-        ParticleSystem ps = instance.GetComponentInChildren<ParticleSystem>(true); // Pega o ParticleSystem (mesmo que inativo)
-        if (ps != null)
+        if (isRare && sr != null && goldenMaterial != null)
         {
-            ps.Play(); // Manda as partículas começarem a tocar!
-            Debug.Log("Partículas do item raro ativadas!");
+            Debug.Log("SPAWNOU UM RARO! Pontos: " + rareScore); // <-- DEBUG
+            sr.material = goldenMaterial;
+
+            ParticleSystem ps = instance.GetComponentInChildren<ParticleSystem>(true);
+            if (ps != null)
+            {
+                ps.Play();
+            }
+
+            // --- NOVO: Avisa o script Bomb que ele é raro e vale mais ---
+            Bomb bombScript = instance.GetComponent<Bomb>();
+            if (bombScript != null)
+            {
+                bombScript.SetAsRare(rareScore); // Chama o novo método e passa os 50 pontos
+                GameManager.Instance.AddScore(rareScore); // Adiciona os pontos ao GameManager
+               
+                
+            }
+            // --- FIM DO NOVO ---
         }
-        else
-        {
-            Debug.LogWarning("Item raro criado, mas não encontrou ParticleSystem filho!");
-        }
-    }
+
         Rigidbody2D rb = instance.GetComponent<Rigidbody2D>();
 
         if (rb != null)
