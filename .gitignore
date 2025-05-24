@@ -47,4 +47,5 @@ Packages/
 vscode/
 test/
 Mobile.sln
+.gitignore
 *.sln
