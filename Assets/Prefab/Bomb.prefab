@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d74408f9fcfa337438cd61a8d6158b86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionSprite: {fileID: 21300000, guid: 22f0f9e31ad0a5d4ba14d35d3e90db24, type: 3}
+  explosionSprite: {fileID: 21300000, guid: 68862f7541c6a614290a7471503f84d3, type: 3}
   explosionDelay: 0.2
   popupPrefab: {fileID: 0}
   handAnimationPrefab: {fileID: 0}
@@ -162,6 +162,6 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.1, y: 0.15}
+  m_Offset: {x: -0.076280594, y: -0.005870104}
   serializedVersion: 2
-  m_Radius: 0.8
+  m_Radius: 0.84405017

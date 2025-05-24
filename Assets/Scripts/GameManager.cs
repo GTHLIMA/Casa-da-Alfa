@@ -16,7 +16,13 @@ public class GameManager : MonoBehaviour
     public float horizontalSpawnPadding = 1f;
     private float maxVisibleX;
     public float spawnRate;
-    
+
+    [Header("rarity settings")]
+    [Range(0f, 1f)] // serve para definir o valor entre 0% e 100%
+    public float rareChance = 0.2f; // 20% de chance de spawn 
+    public Material goldenMaterial;
+
+
     public int bombTouchCount = 0;
     bool gameStarted = false;
     public static bool GameStarted = false;
@@ -167,8 +173,28 @@ public class GameManager : MonoBehaviour
         Vector3 spawnPosition = spawnPoint.position;
         spawnPosition.x = UnityEngine.Random.Range(-maxVisibleX + horizontalSpawnPadding, maxVisibleX - horizontalSpawnPadding);
 
-        GameObject instance = Instantiate(prefabtoSpawn, spawnPosition, Quaternion.identity);
+       GameObject instance = Instantiate(prefabtoSpawn, spawnPosition, Quaternion.identity);
 
+    bool isRare = UnityEngine.Random.value < rareChance;
+    SpriteRenderer sr = instance.GetComponent<SpriteRenderer>();
+
+    if (isRare && sr != null && goldenMaterial != null)
+    {
+        Debug.Log("SPAWNOU UM RARO!");
+        sr.material = goldenMaterial; // Aplica o material dourado
+
+        // --- NOVO: Ativar Partículas ---
+        ParticleSystem ps = instance.GetComponentInChildren<ParticleSystem>(true); // Pega o ParticleSystem (mesmo que inativo)
+        if (ps != null)
+        {
+            ps.Play(); // Manda as partículas começarem a tocar!
+            Debug.Log("Partículas do item raro ativadas!");
+        }
+        else
+        {
+            Debug.LogWarning("Item raro criado, mas não encontrou ParticleSystem filho!");
+        }
+    }
         Rigidbody2D rb = instance.GetComponent<Rigidbody2D>();
 
         if (rb != null)
