@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d74408f9fcfa337438cd61a8d6158b86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionSprite: {fileID: 0}
+  explosionSprite: {fileID: 21300000, guid: 68862f7541c6a614290a7471503f84d3, type: 3}
   explosionDelay: 0
   popupPrefab: {fileID: 4886261898834757915, guid: 550e322fed651ba45a8d8c0f7d9cc806, type: 3}
   handAnimationPrefab: {fileID: 7904282597417562455, guid: 0c2dd92cbba2b354184f8e4de3e5924b, type: 3}
