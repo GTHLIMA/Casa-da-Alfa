@@ -1032,6 +1032,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &396047717
 GameObject:
   m_ObjectHideFlags: 0
@@ -1196,6 +1197,11 @@ Transform:
 --- !u!1001 &530114188
 PrefabInstance:
   m_ObjectHideFlags: 0
+=======
+--- !u!1001 &530114188
+PrefabInstance:
+  m_ObjectHideFlags: 0
+>>>>>>> parent of ff1d07f9 (shaders dourado)
 =======
 --- !u!1001 &530114188
 PrefabInstance:
@@ -4311,6 +4317,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!114 &1904300810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4736,6 +4743,8 @@ CanvasRenderer:
 >>>>>>> parent of ff1d07f9 (shaders dourado)
 =======
 >>>>>>> parent of ff1d07f9 (shaders dourado)
+=======
+>>>>>>> parent of ff1d07f9 (shaders dourado)
 --- !u!1 &2086059451
 GameObject:
   m_ObjectHideFlags: 0
@@ -4977,6 +4986,9 @@ SceneRoots:
   - {fileID: 530114188}
   - {fileID: 707731344}
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of ff1d07f9 (shaders dourado)
+=======
 >>>>>>> parent of ff1d07f9 (shaders dourado)
 =======
 >>>>>>> parent of ff1d07f9 (shaders dourado)
