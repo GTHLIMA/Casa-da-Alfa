@@ -1,20 +1,25 @@
 using System.Collections;
 using UnityEngine;
+using TMPro; // NOVO: Adicione esta linha se você usa TextMeshPro
+             // Se usar TextMesh normal, esta linha não é estritamente necessária, mas não atrapalha.
 
 public class Bomb : MonoBehaviour
 {
+    [Header("Configurações Base")]
     [SerializeField] private Sprite explosionSprite;
     [SerializeField] private float explosionDelay = 0.3f;
     [SerializeField] private GameObject popupPrefab;
-    [SerializeField] private GameObject handAnimationPrefab; // NOVO: Referência para o Prefab da Mão
+    [SerializeField] private GameObject handAnimationPrefab;
 
+    // Componentes e Variáveis Internas
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rb;
     private bool hasExploded = false;
     private AudioManager audioManager;
+    private int pointsToAward = 10; // Valor padrão de pontos
+    private bool isRareItem = false; // Flag para saber se é raro
 
-    private float destructTime = 1f;
-    private float timer;
+    // --- MÉTODOS DA UNITY ---
 
     private void Awake()
     {
@@ -29,96 +34,118 @@ public class Bomb : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
 
+        // Se for "House", define o sprite vindo do GameManager
+        // O material dourado será aplicado pelo GameManager se for raro.
         if (CompareTag("House") && spriteRenderer != null)
         {
             Sprite newSprite = GameManager.Instance.GetCurrentSprite();
             if (newSprite != null) spriteRenderer.sprite = newSprite;
         }
-
-        timer = destructTime;
     }
 
     void Update()
     {
         if (hasExploded) return;
 
-        // --- VERIFICA TOQUE ---
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
             if (touch.phase == TouchPhase.Began)
             {
-                HandleInteraction(touch.position); // MODIFICADO: Chama uma função para lidar com o toque/clique
+                HandleInteraction(touch.position);
             }
         }
-        // --- VERIFICA CLIQUE (PARA TESTE) ---
         if (Input.GetMouseButtonDown(0))
         {
-             HandleInteraction(Input.mousePosition); // MODIFICADO: Chama a mesma função
+             HandleInteraction(Input.mousePosition);
         }
-        // --- FIM VERIFICAÇÕES ---
-
-
-        // MODIFICADO: A lógica de destruição por tempo foi removida do Update
-        // Se precisar dela, talvez precise repensar onde ela se encaixa com a nova lógica.
-        /*
-        if (CompareTag("House") && hasExploded) // Checagem se deve destruir por tempo
-        {
-            timer -= Time.deltaTime;
-            if (timer <= 0)
-            {
-                Destroy(gameObject);
-            }
-        }
-        */
     }
 
-    // NOVO: Função centralizada para lidar com o toque ou clique
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (hasExploded || !other.CompareTag("Ground")) return;
+
+        hasExploded = true;
+
+        if (CompareTag("Bomb"))
+        {
+            Debug.Log("Bomba atingiu o chão. Explodindo sem pontos.");
+            audioManager.PlaySFX(audioManager.bombExplosion);
+            Explode(0, false);
+        }
+        else if (CompareTag("House"))
+        {
+            Debug.Log("Casa atingiu o chão. Destruindo sem pontos.");
+            audioManager.PlaySFX(audioManager.groundFall);
+            if (rb != null) rb.bodyType = RigidbodyType2D.Static;
+            if (spriteRenderer != null) spriteRenderer.enabled = false;
+            Destroy(gameObject, 0.2f);
+        }
+    }
+
+    // --- MÉTODOS PERSONALIZADOS ---
+
+    public void SetAsRare(int rareScoreValue)
+    {
+        pointsToAward = rareScoreValue;
+        isRareItem = true;
+        Debug.Log("Item " + gameObject.name + " definido como Raro. Pontos: " + pointsToAward);
+    }
+
     void HandleInteraction(Vector3 screenPosition)
     {
         Vector2 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
         Collider2D hit = Physics2D.OverlapPoint(worldPosition);
 
-        if (hit != null && hit.transform == transform && !hasExploded) // Garante que não foi explodido ainda
+        if (hit != null && hit.transform == transform && !hasExploded)
         {
             if (CompareTag("Bomb"))
             {
                 audioManager.PlaySFX(audioManager.touchImage);
                 GameManager.Instance.BombTouch();
-                Explode(0, false); // MODIFICADO: Passa 'false' para indicar que não é 'House'
+                Explode(0, false);
             }
             else if (CompareTag("House"))
             {
                 audioManager.PlaySFX(audioManager.touchImage);
                 GameManager.Instance.ImageTouch();
-                Instantiate(popupPrefab, transform.position, Quaternion.identity);
 
-                // NOVO: Instancia a animação da mão na posição do item
+                // --- MODIFICAÇÃO PARA O TEXTO DO POPUP ---
+                // 1. Instancia o popup E guarda a referência
+                GameObject popupInstance = Instantiate(popupPrefab, transform.position, Quaternion.identity);
+
+                // 2. Tenta encontrar e configurar o texto (TMP ou TextMesh)
+                TextMeshProUGUI tmpText = popupInstance.GetComponentInChildren<TextMeshProUGUI>();
+                if (tmpText != null)
+                {
+                    tmpText.text = "+" + pointsToAward.ToString(); // Usa pointsToAward (10 ou 50)
+                }
+                else
+                {
+                    TextMesh tmText = popupInstance.GetComponentInChildren<TextMesh>();
+                    if (tmText != null)
+                    {
+                        tmText.text = "+" + pointsToAward.ToString(); // Usa pointsToAward (10 ou 50)
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Não foi possível encontrar TextMeshProUGUI ou TextMesh no popupPrefab!");
+                    }
+                }
+                // --- FIM DA MODIFICAÇÃO ---
+
+                // Instancia a animação da mão
                 if (handAnimationPrefab != null)
                 {
                     Instantiate(handAnimationPrefab, transform.position, Quaternion.identity);
                 }
 
-                Explode(10, true); // MODIFICADO: Passa 'true' para indicar que é 'House'
+                // Explode, passando os pontos corretos
+                Explode(pointsToAward, true);
             }
         }
     }
 
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (hasExploded) return;
-
-        if (other.CompareTag("Ground"))
-        {
-            if (CompareTag("Bomb")) audioManager.PlaySFX(audioManager.bombExplosion);
-
-            audioManager.PlaySFX(audioManager.groundFall);
-            Explode(0, false); // MODIFICADO: Passa 'false'
-        }
-    }
-
-    // MODIFICADO: Adicionado 'bool isHouse' para saber como explodir/sumir
     private void Explode(int scoreChange, bool isHouse)
     {
         hasExploded = true;
@@ -128,23 +155,19 @@ public class Bomb : MonoBehaviour
 
         if (rb != null)
         {
-            rb.velocity = Vector2.zero; // MODIFICADO: Zera a velocidade
+            rb.velocity = Vector2.zero;
             rb.angularVelocity = 0f;
             rb.bodyType = RigidbodyType2D.Static;
         }
 
-        // MODIFICADO: Lógica de sprite/visibilidade
         if (spriteRenderer != null)
         {
             if (isHouse)
             {
-                // Se for 'House', apenas o torna invisível imediatamente.
-                // A animação da mão aparecerá no lugar.
                 spriteRenderer.enabled = false;
             }
             else if (explosionSprite != null)
             {
-                // Se for 'Bomb', mostra a explosão.
                 spriteRenderer.sprite = explosionSprite;
             }
         }
@@ -154,9 +177,6 @@ public class Bomb : MonoBehaviour
 
     private IEnumerator DestroyAfterDelay()
     {
-        // Se for 'House', ele já ficou invisível, então o delay
-        // é apenas para limpar o GameObject da cena.
-        // Se for 'Bomb', é o tempo que a explosão fica na tela.
         yield return new WaitForSeconds(explosionDelay);
         Destroy(gameObject);
     }
