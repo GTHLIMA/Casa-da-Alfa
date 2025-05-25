@@ -48,30 +48,39 @@ public class Balloon : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D other)
+{
+    if (other.CompareTag("Slingshot"))
     {
-        if (other.CompareTag("Slingshot"))
-        {
-            Rigidbody2D rb = other.GetComponent<Rigidbody2D>();
+        Rigidbody2D rb = other.GetComponent<Rigidbody2D>();
 
-            if (rb != null && rb.velocity.magnitude > 1f)
+        if (rb != null && rb.velocity.magnitude > 1f)
+        {
+            // --- MODIFICADO: Adiciona checagem ---
+            if (floatingPoints != null)
             {
                 GameObject points = Instantiate(floatingPoints, transform.position, Quaternion.identity);
                 points.transform.GetChild(0).GetComponent<TextMesh>().text = "+10";
-                GameManager.Instance.AddScore(10);
-                audioManager.PlaySFX(audioManager.ballonPop);
-
-                Projectile projectile = other.GetComponent<Projectile>();
-                if (projectile != null)
-                {
-                    projectile.CallResetFromSlingshot();
-                }
-
-                DropNextSprite(); 
-
-                // ResetPosition();
             }
+            else
+            {
+                // Mostra um erro claro no console se não estiver atribuído
+                Debug.LogError("ERRO: A variável 'floatingPoints' não está atribuída no Inspector do Balão: " + gameObject.name);
+            }
+            // --- FIM DA MODIFICAÇÃO ---
+
+            GameManager.Instance.AddScore(10);
+            audioManager.PlaySFX(audioManager.ballonPop);
+
+            Projectile projectile = other.GetComponent<Projectile>();
+            if (projectile != null)
+            {
+                projectile.CallResetFromSlingshot();
+            }
+
+            DropNextSprite();
         }
     }
+}
 
     private void DropNextSprite()
     {
@@ -119,4 +128,4 @@ public class Balloon : MonoBehaviour
 
     //     transform.position = new Vector2(randomX, posY);
     // }
-}
+} 
