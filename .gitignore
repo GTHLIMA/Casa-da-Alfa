@@ -21,7 +21,7 @@ Assets/AssetStoreTools*
 *.pidb
 *.booproj
 *.svd
-*.meta
+
 
 # ===== IDEs =====
 .vscode/
