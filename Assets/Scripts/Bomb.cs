@@ -1,25 +1,17 @@
 using System.Collections;
 using UnityEngine;
-using TMPro; // NOVO: Adicione esta linha se você usa TextMeshPro
-             // Se usar TextMesh normal, esta linha não é estritamente necessária, mas não atrapalha.
 
 public class Bomb : MonoBehaviour
 {
-    [Header("Configurações Base")]
     [SerializeField] private Sprite explosionSprite;
     [SerializeField] private float explosionDelay = 0.3f;
-    [SerializeField] private GameObject popupPrefab;
-    [SerializeField] private GameObject handAnimationPrefab;
-
-    // Componentes e Variáveis Internas
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rb;
+    private BoxCollider2D boxCollider;
     private bool hasExploded = false;
     private AudioManager audioManager;
-    private int pointsToAward = 10; // Valor padrão de pontos
-    private bool isRareItem = false; // Flag para saber se é raro
 
-    // --- MÉTODOS DA UNITY ---
+    public GameObject floatingPoints;
 
     private void Awake()
     {
@@ -33,9 +25,8 @@ public class Bomb : MonoBehaviour
 
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
+        boxCollider = GetComponent<BoxCollider2D>();
 
-        // Se for "House", define o sprite vindo do GameManager
-        // O material dourado será aplicado pelo GameManager se for raro.
         if (CompareTag("House") && spriteRenderer != null)
         {
             Sprite newSprite = GameManager.Instance.GetCurrentSprite();
@@ -47,129 +38,98 @@ public class Bomb : MonoBehaviour
     {
         if (hasExploded) return;
 
+        AdjustColliderSize();
+
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
             if (touch.phase == TouchPhase.Began)
             {
-                HandleInteraction(touch.position);
+                Vector2 touchPosition = Camera.main.ScreenToWorldPoint(touch.position);
+                RaycastHit2D hit = Physics2D.Raycast(touchPosition, Vector2.zero);
+
+
+                if (hit.collider != null && hit.transform == transform)
+                {
+                    if (CompareTag("Bomb"))
+                    {
+                        GameManager.Instance.bombTouchCount++;
+
+                        if (GameManager.Instance.bombTouchCount >= 3)
+                        {
+                            audioManager.PlaySFX(audioManager.warning);
+                            GameManager.Instance.bombTouchCount = 0;
+                            Explode(0);
+                        }
+                        else
+                        {
+                            audioManager.PlaySFX(audioManager.bombExplosion);
+                            Explode(0);
+                        }
+                    }
+                    else if (CompareTag("House"))
+                    {
+                        AudioClip spriteAudio = GameManager.Instance.GetCurrentSpriteAudio();
+                        if (spriteAudio != null) audioManager.PlaySFX(spriteAudio);
+
+                        GameManager.Instance.ImageTouch();
+
+                        GameObject points = Instantiate(floatingPoints, transform.position, Quaternion.identity);
+                        points.transform.GetChild(0).GetComponent<TextMesh>().text = "+10";
+                        Explode(10);
+                    }
+
+                }
             }
         }
-        if (Input.GetMouseButtonDown(0))
+    }
+
+    private void AdjustColliderSize()
+    {
+        if (rb != null || boxCollider == null) return;
+
+        float fallSpeed = rb.velocity.y;
+
+        if (fallSpeed < -2f)
         {
-             HandleInteraction(Input.mousePosition);
+            boxCollider.size = new Vector2(1f, 2f);
+            boxCollider.offset = new Vector2(0f, 0.5f);
         }
+        else
+        {
+            boxCollider.size = new Vector2(1f, 1f);
+            boxCollider.offset = new Vector2(0f, 0.16f);
+        }
+
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (hasExploded || !other.CompareTag("Ground")) return;
+        if (hasExploded) return;
 
-        hasExploded = true;
+        if (other.CompareTag("Ground"))
+        {
+            if (CompareTag("Bomb")) audioManager.PlaySFX(audioManager.bombExplosion);
 
-        if (CompareTag("Bomb"))
-        {
-            Debug.Log("Bomba atingiu o chão. Explodindo sem pontos.");
-            audioManager.PlaySFX(audioManager.bombExplosion);
-            Explode(0, false);
-        }
-        else if (CompareTag("House"))
-        {
-            Debug.Log("Casa atingiu o chão. Destruindo sem pontos.");
             audioManager.PlaySFX(audioManager.groundFall);
-            if (rb != null) rb.bodyType = RigidbodyType2D.Static;
-            if (spriteRenderer != null) spriteRenderer.enabled = false;
-            Destroy(gameObject, 0.2f);
+            Explode(0);
         }
     }
 
-    // --- MÉTODOS PERSONALIZADOS ---
-
-    public void SetAsRare(int rareScoreValue)
-    {
-        pointsToAward = rareScoreValue;
-        isRareItem = true;
-        Debug.Log("Item " + gameObject.name + " definido como Raro. Pontos: " + pointsToAward);
-    }
-
-    void HandleInteraction(Vector3 screenPosition)
-    {
-        Vector2 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
-        Collider2D hit = Physics2D.OverlapPoint(worldPosition);
-
-        if (hit != null && hit.transform == transform && !hasExploded)
-        {
-            if (CompareTag("Bomb"))
-            {
-                audioManager.PlaySFX(audioManager.touchImage);
-                GameManager.Instance.BombTouch();
-                Explode(0, false);
-            }
-            else if (CompareTag("House"))
-            {
-                audioManager.PlaySFX(audioManager.touchImage);
-                GameManager.Instance.ImageTouch();
-
-                // --- MODIFICAÇÃO PARA O TEXTO DO POPUP ---
-                // 1. Instancia o popup E guarda a referência
-                GameObject popupInstance = Instantiate(popupPrefab, transform.position, Quaternion.identity);
-
-                // 2. Tenta encontrar e configurar o texto (TMP ou TextMesh)
-                TextMeshProUGUI tmpText = popupInstance.GetComponentInChildren<TextMeshProUGUI>();
-                if (tmpText != null)
-                {
-                    tmpText.text = "+" + pointsToAward.ToString(); // Usa pointsToAward (10 ou 50)
-                }
-                else
-                {
-                    TextMesh tmText = popupInstance.GetComponentInChildren<TextMesh>();
-                    if (tmText != null)
-                    {
-                        tmText.text = "+" + pointsToAward.ToString(); // Usa pointsToAward (10 ou 50)
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Não foi possível encontrar TextMeshProUGUI ou TextMesh no popupPrefab!");
-                    }
-                }
-                // --- FIM DA MODIFICAÇÃO ---
-
-                // Instancia a animação da mão
-                if (handAnimationPrefab != null)
-                {
-                    Instantiate(handAnimationPrefab, transform.position, Quaternion.identity);
-                }
-
-                // Explode, passando os pontos corretos
-                Explode(pointsToAward, true);
-            }
-        }
-    }
-
-    private void Explode(int scoreChange, bool isHouse)
+    private void Explode(int scoreChange)
     {
         hasExploded = true;
 
         if (scoreChange != 0)
             GameManager.Instance.AddScore(scoreChange);
 
+        if (spriteRenderer != null && explosionSprite != null)
+            spriteRenderer.sprite = explosionSprite;
+
         if (rb != null)
         {
-            rb.velocity = Vector2.zero;
             rb.angularVelocity = 0f;
             rb.bodyType = RigidbodyType2D.Static;
-        }
-
-        if (spriteRenderer != null)
-        {
-            if (isHouse)
-            {
-                spriteRenderer.enabled = false;
-            }
-            else if (explosionSprite != null)
-            {
-                spriteRenderer.sprite = explosionSprite;
-            }
         }
 
         StartCoroutine(DestroyAfterDelay());
