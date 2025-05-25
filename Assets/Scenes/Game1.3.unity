@@ -536,7 +536,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1633909293}
-  - component: {fileID: 1633909292}
+  - component: {fileID: 1633909294}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -544,33 +544,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1633909292
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1633909291}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 527f5fb7bb820c243bddec537172130d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  wordImage: {fileID: 35073677}
-  feedbackText: {fileID: 1145639107}
-  words:
-  - word: casa
-    image: {fileID: 21300000, guid: 07d0d46801a798945afc26d8727f88ca, type: 3}
-  - word: vaso
-    image: {fileID: 21300000, guid: be15d6aac5a8bab4b965c61c9e7bea0e, type: 3}
-  - word: mapa
-    image: {fileID: 21300000, guid: e549977760e99ef458fc2518cd5b4cf5, type: 3}
-  - word: rato
-    image: {fileID: 21300000, guid: 1a05a309c5d25db41bfda436dd5778c3, type: 3}
-  - word: mala
-    image: {fileID: 21300000, guid: ac6cbab8649d83b4c9e08bdcf3487dc0, type: 3}
-  - word: dado
-    image: {fileID: 21300000, guid: 42a5ad8b88cf3d74a92917206b16fc36, type: 3}
 --- !u!4 &1633909293
 Transform:
   m_ObjectHideFlags: 0
@@ -586,6 +559,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1633909294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1633909291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 527f5fb7bb820c243bddec537172130d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wordImage: {fileID: 0}
+  feedbackText: {fileID: 0}
+  words:
+  - word: 
+    image: {fileID: 0}
 --- !u!1 &1876227422
 GameObject:
   m_ObjectHideFlags: 0
@@ -669,9 +659,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1633909292}
+      - m_Target: {fileID: 11500000, guid: 4336785438204a345a95da7add188f0a, type: 3}
         m_TargetAssemblyTypeName: VoiceGameManager, Assembly-CSharp
-        m_MethodName: StartListening
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
