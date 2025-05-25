@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Golden
-  m_Shader: {fileID: -6465566751694194690, guid: e8ca9d0360dc924479a2c9d6a3b64e7f, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 16c35d5b8a9b88942b417e8ea3088a11, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
