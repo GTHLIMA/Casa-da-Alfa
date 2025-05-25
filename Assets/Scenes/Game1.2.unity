@@ -744,31 +744,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprites:
-  - {fileID: 21300000, guid: 8fc025109e31569459ca7da117bda514, type: 3}
-  - {fileID: 21300000, guid: 837204f08b62dae4b8fe5eb87b9b41f5, type: 3}
-  - {fileID: 21300000, guid: c3d759cd655d76d458ef0195ed6a0ad2, type: 3}
-  - {fileID: 21300000, guid: 0fae8ee8226670e47b479658148a8a64, type: 3}
-  - {fileID: 21300000, guid: e479819d16df5dc41a5615387dd36354, type: 3}
-  - {fileID: 21300000, guid: 5653ac9893812ca49828bee065d3fbe7, type: 3}
-  - {fileID: 21300000, guid: db0c7a2c6b96be74f8cd399cc107ad38, type: 3}
-  - {fileID: 21300000, guid: e60dec6b839e91e4eaa6045fe16ecf28, type: 3}
-  - {fileID: 21300000, guid: 086ccf2c9b13a8f4e87a8f6c334b7fb9, type: 3}
-  - {fileID: 21300000, guid: 065e93c2048777644ad01d6b8809934d, type: 3}
-  - {fileID: 21300000, guid: 05baf4ab4b725a649a776485151aeec8, type: 3}
-  - {fileID: 21300000, guid: 3524852c2fbd45f4490a4d594e39651c, type: 3}
-  - {fileID: 21300000, guid: 44a649dceecd1c74aa1ca89e6aa24ff8, type: 3}
-  - {fileID: 21300000, guid: 1a270ef5d215a0f428cbf911b00678f0, type: 3}
-  - {fileID: 21300000, guid: 726cc61ba01d16741bce8145557c2ba9, type: 3}
-  - {fileID: 21300000, guid: d7e05a8837b98a3449b63dc1cb5cb1ba, type: 3}
-  - {fileID: 21300000, guid: a2e1bbbb8bcb52147ac516b1f5987db3, type: 3}
+  - {fileID: 21300000, guid: e630823da395193488033f1cce68cbe8, type: 3}
+  - {fileID: 21300000, guid: 48f4db9758b527a428ef0e3b5e796c24, type: 3}
+  - {fileID: 21300000, guid: e9b6d7e5f0c7df74f809bf086bee1f1a, type: 3}
+  - {fileID: 21300000, guid: 6c5cbd34b012337429b5de4f70f74f41, type: 3}
+  - {fileID: 21300000, guid: 5620984dad1205742a19abacca77c4ad, type: 3}
+  - {fileID: 21300000, guid: 579ead8c6c5455e43accb8a5a14e9919, type: 3}
+  - {fileID: 21300000, guid: dcefc9a832818ad4d8b42fdd6cf00623, type: 3}
+  - {fileID: 21300000, guid: 094d71be7c492054b991319915bed0d2, type: 3}
+  - {fileID: 21300000, guid: 5f7a589463e3200489d67fb145d9bdf9, type: 3}
+  - {fileID: 21300000, guid: 8b59a47ee0bd64d4ba24f0f5c469252a, type: 3}
+  - {fileID: 21300000, guid: d6177c5e31defb244842087bb5cf66ff, type: 3}
+  - {fileID: 21300000, guid: 017d0b16997139a4d9854c9922a98e15, type: 3}
+  - {fileID: 21300000, guid: d3a76d9bb503221418011d0f5e0dfd27, type: 3}
+  - {fileID: 21300000, guid: 0969841bb8447454ea7c8901ad7bcf12, type: 3}
+  - {fileID: 21300000, guid: 304d2656760bf9741b35fedece3fb365, type: 3}
+  - {fileID: 21300000, guid: f3f88d6b05297654ea4e6d43ed81ea36, type: 3}
+  - {fileID: 21300000, guid: d013bac577d17ae4a9c04e1693a75164, type: 3}
   spawnnablePrefabs:
   - {fileID: 6619959229620704995, guid: 24f5cdaf99f921a46be25ce25d743dbf, type: 3}
   - {fileID: 6619959229620704995, guid: 3e28e2ad0194ac448b1023dd2130469e, type: 3}
   spawnPoint: {fileID: 1020511657}
   horizontalSpawnPadding: 1
   spawnRate: 1.2
-  rareChance: 0.2
-  goldenMaterial: {fileID: 2100000, guid: b47b853dd96b9c343a5848e45d666a45, type: 2}
+  rareChance: 0.134
+  goldenMaterial: {fileID: 2100000, guid: cf652ad4d1d542c428139f36be977b16, type: 2}
   rareScore: 50
   bombTouchCount: 0
   numberCounter: {fileID: 1758255939}
