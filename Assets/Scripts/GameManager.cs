@@ -165,36 +165,49 @@ public class GameManager : MonoBehaviour
         InvokeRepeating("SpawnPrefab", 0.5f, spawnRate);
     }
 
-    private void SpawnPrefab()
+   private void SpawnPrefab()
     {
+        // Garante que temos prefabs para spawnar
         if (spawnnablePrefabs.Length == 0) return;
 
+        // Escolhe um prefab aleatório da lista (House ou Bomb)
         GameObject prefabtoSpawn = spawnnablePrefabs[UnityEngine.Random.Range(0, spawnnablePrefabs.Length)];
 
+        // Pega a posição base do spawnPoint
         Vector3 spawnPosition = spawnPoint.position;
+        // Sorteia uma posição X dentro dos limites da tela (com uma margem)
         spawnPosition.x = UnityEngine.Random.Range(-maxVisibleX + horizontalSpawnPadding, maxVisibleX - horizontalSpawnPadding);
+      
 
+        // Cria (instancia) o prefab na posição calculada
         GameObject instance = Instantiate(prefabtoSpawn, spawnPosition, Quaternion.identity);
 
+        // Sorteia se o item será raro
         bool isRare = UnityEngine.Random.value < rareChance;
+        // Pega o SpriteRenderer da instância
         SpriteRenderer sr = instance.GetComponent<SpriteRenderer>();
 
-         if (isRare && sr != null && goldenMaterial != null)
+        // Verifica se é raro E se temos o material dourado
+        if (isRare && sr != null && goldenMaterial != null)
         {
-            Debug.Log("SPAWNOU UM RARO! Pontos: " + rareScore);
-            sr.material = goldenMaterial;
-
-            ParticleSystem ps = instance.GetComponentInChildren<ParticleSystem>(true);
-            if (ps != null)
+            // Verifica se o item criado é "House"
+            if (instance.CompareTag("House"))
             {
-                ps.Play();
-            }
+                Debug.Log("SPAWNOU UM RARO (House)! Pontos: " + rareScore);
+                sr.material = goldenMaterial; 
 
-           
-            Bomb bombScript = instance.GetComponent<Bomb>();
-            if (bombScript != null)
-            {
-                bombScript.SetAsRare(rareScore); // apenas define o valor, nao adiciona score aq
+                // Tenta encontrar e tocar as partículas filhas
+                ParticleSystem ps = instance.GetComponentInChildren<ParticleSystem>(true);
+                if (ps != null)
+                {
+                    ps.Play();
+                }
+
+                Bomb bombScript = instance.GetComponent<Bomb>();
+                if (bombScript != null)
+                {
+                    bombScript.SetAsRare(rareScore);
+                }
             }
         }
 
