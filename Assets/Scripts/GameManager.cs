@@ -184,7 +184,7 @@ public class GameManager : MonoBehaviour
 
             if (isRare && sr != null && goldenMaterial != null)
             {
-                // Verifica se o item criado é "House"
+
                 if (instance.CompareTag("House"))
                 {
                     Debug.Log("SPAWNOU UM RARO (House)! Pontos: " + rareScore);
