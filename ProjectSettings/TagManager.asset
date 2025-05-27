@@ -12,6 +12,8 @@ TagManager:
   - Audio
   - Ballon
   - Slingshot
+  - IgnoreFontChange
+  - teste
   layers:
   - Default
   - TransparentFX
