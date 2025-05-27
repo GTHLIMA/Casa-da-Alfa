@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System.Collections.Generic;
+
 
 public class FontManager : MonoBehaviour
 {
@@ -9,6 +11,9 @@ public class FontManager : MonoBehaviour
     public TMP_FontAsset fontBastao;
     public TMP_FontAsset fontImprensa;
     public TMP_FontAsset fontCurva;
+
+    private Dictionary<TMP_Text, string> textosOriginais = new Dictionary<TMP_Text, string>();
+
 
     private TMP_FontAsset fonteAtual;
 
@@ -19,7 +24,9 @@ public class FontManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            
+
+            fonteAtual = fontBastao; // Define Bastão como padrão
+
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
@@ -27,6 +34,7 @@ public class FontManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
 
     void OnDestroy()
     {
@@ -63,20 +71,36 @@ public class FontManager : MonoBehaviour
         if (fonteAtual == null)
             return;
 
-        TextMeshProUGUI[] textosUGUI = FindObjectsOfType<TextMeshProUGUI>(true);
-        foreach (TextMeshProUGUI texto in textosUGUI)
+        TMP_Text[] textos = FindObjectsOfType<TMP_Text>(true);
+        
+        foreach (TMP_Text texto in textos)
         {
-            texto.font = fonteAtual;
-            texto.ForceMeshUpdate();
-        }
+            if (texto.CompareTag("IgnoreFontChange"))
+                continue;
 
-        TextMeshPro[] textos3D = FindObjectsOfType<TextMeshPro>(true);
-        foreach (TextMeshPro texto in textos3D)
-        {
+            // Salva o texto original se ainda não tiver salvo
+            if (!textosOriginais.ContainsKey(texto))
+                textosOriginais[texto] = texto.text;
+
+            // Aplica a fonte
             texto.font = fonteAtual;
+
+            // Aplica o tamanho conforme a fonte
+            if (fonteAtual == fontBastao)
+            {
+                texto.text = textosOriginais[texto].ToUpper();
+                texto.fontSize = 56f;
+            }
+            else
+            {
+                texto.text = textosOriginais[texto];
+                texto.fontSize = 100f;
+            }
+
             texto.ForceMeshUpdate();
         }
     }
+
 
     public TMP_FontAsset GetCurrentFont()
     {
