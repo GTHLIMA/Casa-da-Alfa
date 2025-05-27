@@ -166,52 +166,53 @@ public class GameManager : MonoBehaviour
     }
 
     private void SpawnPrefab()
-{
-    if (spawnnablePrefabs.Length == 0) return;
-
-    GameObject prefabtoSpawn = spawnnablePrefabs[UnityEngine.Random.Range(0, spawnnablePrefabs.Length)];
-
-    Vector3 spawnPosition = spawnPoint.position;
-    spawnPosition.x = UnityEngine.Random.Range(-maxVisibleX + horizontalSpawnPadding, maxVisibleX - horizontalSpawnPadding);
-
-    GameObject instance = Instantiate(prefabtoSpawn, spawnPosition, Quaternion.identity);
-
-    if (instance.CompareTag("House"))
     {
-        bool isRare = UnityEngine.Random.value < rareChance;
-        // Pega o SpriteRenderer da instância
-        SpriteRenderer sr = instance.GetComponent<SpriteRenderer>();
+        if (spawnnablePrefabs.Length == 0) return;
 
-        if (isRare && sr != null && goldenMaterial != null)
+        GameObject prefabtoSpawn = spawnnablePrefabs[UnityEngine.Random.Range(0, spawnnablePrefabs.Length)];
+
+        Vector3 spawnPosition = spawnPoint.position;
+        spawnPosition.x = UnityEngine.Random.Range(-maxVisibleX + horizontalSpawnPadding, maxVisibleX - horizontalSpawnPadding);
+
+        GameObject instance = Instantiate(prefabtoSpawn, spawnPosition, Quaternion.identity);
+
+        if (instance.CompareTag("House"))
         {
-            // Verifica se o item criado é "House"
-            if (instance.CompareTag("House"))
-            {
-                Debug.Log("SPAWNOU UM RARO (House)! Pontos: " + rareScore);
-                sr.material = goldenMaterial; 
+            bool isRare = UnityEngine.Random.value < rareChance;
+            // Pega o SpriteRenderer da instância
+            SpriteRenderer sr = instance.GetComponent<SpriteRenderer>();
 
-            ParticleSystem ps = instance.GetComponentInChildren<ParticleSystem>(true);
-            if (ps != null)
+            if (isRare && sr != null && goldenMaterial != null)
             {
-                ps.Play();
+                // Verifica se o item criado é "House"
+                if (instance.CompareTag("House"))
+                {
+                    Debug.Log("SPAWNOU UM RARO (House)! Pontos: " + rareScore);
+                    sr.material = goldenMaterial;
+
+                    ParticleSystem ps = instance.GetComponentInChildren<ParticleSystem>(true);
+                    if (ps != null)
+                    {
+                        ps.Play();
+                    }
+
+                    Bomb bombScript = instance.GetComponent<Bomb>();
+                    if (bombScript != null)
+                    {
+                        bombScript.SetAsRare(rareScore);
+                    }
+                }
             }
 
-            Bomb bombScript = instance.GetComponent<Bomb>();
-            if (bombScript != null)
+            Rigidbody2D rb = instance.GetComponent<Rigidbody2D>();
+            if (rb != null)
             {
-                bombScript.SetAsRare(rareScore);
+                float gravityToApply = speedLevel == 1 ? normalGravityScale :
+                                     speedLevel == 2 ? mediumGravityScale : fastUpGravityScale;
+                rb.gravityScale = gravityToApply;
             }
         }
     }
-
-    Rigidbody2D rb = instance.GetComponent<Rigidbody2D>();
-    if (rb != null)
-    {
-        float gravityToApply = speedLevel == 1 ? normalGravityScale :
-                             speedLevel == 2 ? mediumGravityScale : fastUpGravityScale;
-        rb.gravityScale = gravityToApply;
-    }
-}
 
     public void ToggleSpeedUp()
     {
