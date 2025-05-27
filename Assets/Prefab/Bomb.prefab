@@ -99,10 +99,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d74408f9fcfa337438cd61a8d6158b86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionSprite: {fileID: 21300000, guid: 68862f7541c6a614290a7471503f84d3, type: 3}
+  explosionSprite: {fileID: 21300000, guid: 6c52672abed51be439bcb763bb8433fa, type: 3}
   explosionDelay: 0.2
   popupPrefab: {fileID: 0}
   handAnimationPrefab: {fileID: 0}
+  isRareItem: 0
 --- !u!50 &-6366005936414056439
 Rigidbody2D:
   serializedVersion: 4

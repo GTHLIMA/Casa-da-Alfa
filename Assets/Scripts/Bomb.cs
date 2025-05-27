@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
-using TMPro; // NOVO: Adicione esta linha se você usa TextMeshPro
-             // Se usar TextMesh normal, esta linha não é estritamente necessária, mas não atrapalha.
+using TMPro; 
 
 public class Bomb : MonoBehaviour
 {
@@ -11,15 +10,14 @@ public class Bomb : MonoBehaviour
     [SerializeField] private GameObject popupPrefab;
     [SerializeField] private GameObject handAnimationPrefab;
 
-    // Componentes e Variáveis Internas
+
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rb;
     private bool hasExploded = false;
     private AudioManager audioManager;
-    private int pointsToAward = 10; // Valor padrão de pontos
-    private bool isRareItem = false; // Flag para saber se é raro
+    private int pointsToAward = 10; 
+    public bool isRareItem = false; 
 
-    // --- MÉTODOS DA UNITY ---
 
     private void Awake()
     {
@@ -83,7 +81,6 @@ public class Bomb : MonoBehaviour
         }
     }
 
-    // --- MÉTODOS PERSONALIZADOS ---
 
     public void SetAsRare(int rareScoreValue)
     {
@@ -132,7 +129,6 @@ public class Bomb : MonoBehaviour
                         Debug.LogWarning("Não foi possível encontrar TextMeshProUGUI ou TextMesh no popupPrefab!");
                     }
                 }
-                // --- FIM DA MODIFICAÇÃO ---
 
                 // Instancia a animação da mão
                 if (handAnimationPrefab != null)
