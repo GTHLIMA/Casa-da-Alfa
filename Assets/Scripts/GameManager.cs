@@ -179,12 +179,16 @@ public class GameManager : MonoBehaviour
     if (instance.CompareTag("House"))
     {
         bool isRare = UnityEngine.Random.value < rareChance;
+        // Pega o SpriteRenderer da instância
         SpriteRenderer sr = instance.GetComponent<SpriteRenderer>();
 
         if (isRare && sr != null && goldenMaterial != null)
         {
-            Debug.Log("SPAWNOU UM RARO! Pontos: " + rareScore);
-            sr.material = goldenMaterial;
+            // Verifica se o item criado é "House"
+            if (instance.CompareTag("House"))
+            {
+                Debug.Log("SPAWNOU UM RARO (House)! Pontos: " + rareScore);
+                sr.material = goldenMaterial; 
 
             ParticleSystem ps = instance.GetComponentInChildren<ParticleSystem>(true);
             if (ps != null)
