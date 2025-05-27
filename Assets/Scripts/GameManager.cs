@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     private float maxVisibleX;
     public float spawnRate;
 
+
     [Header("rarity settings")]
     [Range(0f, 1f)] 
     public float rareChance = 0.2f; 
@@ -30,7 +31,7 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance;
     [SerializeField] private NumberCounter numberCounter;
-    private int score = 0;
+    private int score;
     
     private bool isSpeedUp = false;
     private int speedLevel = 1;
@@ -43,7 +44,7 @@ public class GameManager : MonoBehaviour
     public AudioClip[] spriteAudios;
     public static int CurrentDropIndex = 0;
     public GameObject PauseMenu;
-    private int currentScore;
+    // private int currentScore;
     public TMP_Text scorePause;
     public TMP_Text scoreEndPhase;
 
@@ -61,6 +62,13 @@ public class GameManager : MonoBehaviour
         maxVisibleX = Camera.main.orthographicSize * Camera.main.aspect;
     }
 
+    private void Start()
+    {
+        score = ScoreTransfer.Instance.Score;
+        numberCounter.Value = score;
+    }
+
+
     public void CheckEndPhase(int currentIndex, int totalDrops)
     {
         if (currentIndex >= totalDrops)
@@ -71,10 +79,11 @@ public class GameManager : MonoBehaviour
 
     public void OpenPauseMenuLvl1()
     {
-        if (scorePause != null) scorePause.text = "Score: " + currentScore.ToString();
+        if (scorePause != null) scorePause.text = "Score: " + score.ToString();
         PauseMenu.SetActive(true);
-        audioManager.PauseAudio(audioManager.background); 
-        Time.timeScale = 0;   
+        audioManager.PauseAudio(audioManager.background);
+        Time.timeScale = 0;  
+        ScoreTransfer.Instance.SetScore(score); 
     }
     
     public void ClosePauseMenuLvl1()
@@ -85,7 +94,7 @@ public class GameManager : MonoBehaviour
     }
     public void OpenPauseMenuLvl1_2()
     {
-        if (scorePause != null) scorePause.text = "Score: " + currentScore.ToString();
+        if (scorePause != null) scorePause.text = "Score: " + score.ToString();
         PauseMenu.SetActive(true);
         audioManager.PauseAudio(audioManager.background);
         Time.timeScale = 0;
@@ -100,22 +109,21 @@ public class GameManager : MonoBehaviour
 
     private void ShowEndPhasePanel()
     {
+        if (scoreEndPhase != null)
+            scoreEndPhase.text = "Score: " + score.ToString();
 
-        if (scoreEndPhase != null) scoreEndPhase.text = "Score: " + currentScore.ToString();
+        Time.timeScale = 0f; 
+        audioManager.PauseAudio(audioManager.background);
+        endPhasePanel.SetActive(true);
 
         GameObject slingshot = GameObject.FindGameObjectWithTag("Slingshot");
-        if (slingshot != null)
-        {
-            endPhasePanel.SetActive(true);
-            slingshot.SetActive(false);
-        }
-        else
-        {
-            Debug.LogError("Slingshot object not found!");
-        }
+        if (slingshot != null) slingshot.SetActive(false);
 
         spawnPoint.gameObject.SetActive(false);
+
+        ScoreTransfer.Instance.SetScore(score);
     }
+
 
 
     public Sprite GetCurrentSprite()
@@ -134,20 +142,28 @@ public class GameManager : MonoBehaviour
     public void ImageTouch()
     {
         currentSpriteIndex++;
-        if (currentSpriteIndex >= sprites.Length) currentSpriteIndex = 0;
+
+        if (currentSpriteIndex >= sprites.Length)
+        {
+            ShowEndPhasePanel();
+            currentSpriteIndex = 0;
+        }
     }
+
     public void BombTouch()
     {
-    Debug.Log("Bomba Tocou! Lógica de fim de jogo ou perda de vida vai aqui.");
-    bombTouchCount++; 
+        Debug.Log("Bomba Tocou! Lógica de fim de jogo ou perda de vida vai aqui.");
+        bombTouchCount++; 
     }
     public void AddScore(int amount)
     {
-        currentScore += amount;
         score += amount;
         if (score < 0) score = 0;
-        numberCounter.Value = score;
+
+        numberCounter.Value = score; // Atualiza visual
+        ScoreTransfer.Instance.SetScore(score); // Salva persistente
     }
+
 
     public int GetScore() => score;
 

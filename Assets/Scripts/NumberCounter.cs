@@ -13,26 +13,39 @@ public class NumberCounter : MonoBehaviour
     private int _value;
 
     public int Value
-{
-    get { return _value; }
-    set 
     {
-        int clampedValue = Mathf.Clamp(value, 0, 999); // 👈 limita entre 0 e 999
-        UpadteText(clampedValue);
-        _value = clampedValue;
-    } 
-}
+        get { return _value; }
+        set
+        {
+            int clampedValue = Mathf.Clamp(value, 0, 5000); // limita entre 0 e x
+            UpadateText(clampedValue);
+            _value = clampedValue;
+        }
+    }
 
-
+    public void UpdateFromGameManager(int value)
+    {
+        Value = value;
+    }
     private Coroutine CountingCoroutine;
 
     private void Awake()
     {
-        Text  = GetComponent<TextMeshProUGUI>();
+        Text = GetComponent<TextMeshProUGUI>();
+        Value = 0; // Inicializa o valor
         
     }
 
-    private void UpadteText(int newValue)
+    public void UpdateScoreFromTransfer()
+    {
+        if (ScoreTransfer.Instance != null)
+        {
+            Value = ScoreTransfer.Instance.Score;
+        }
+    }
+
+
+    private void UpadateText(int newValue)
     {
         if (CountingCoroutine != null)
         {

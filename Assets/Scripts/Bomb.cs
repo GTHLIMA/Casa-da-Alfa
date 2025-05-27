@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-using TMPro; 
+using TMPro;
 
 public class Bomb : MonoBehaviour
 {
@@ -10,13 +10,17 @@ public class Bomb : MonoBehaviour
     [SerializeField] private GameObject popupPrefab;
     [SerializeField] private GameObject handAnimationPrefab;
 
+    [Header("Configurações de Áudio")]
+    [SerializeField] private AudioClip[] houseTouchSounds;
+
+    private static int currentSoundIndex = 0; 
 
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rb;
     private bool hasExploded = false;
     private AudioManager audioManager;
-    private int pointsToAward = 10; 
-    public bool isRareItem = false; 
+    private int pointsToAward = 10;
+    public bool isRareItem = false;
 
 
     private void Awake()
@@ -32,8 +36,6 @@ public class Bomb : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
 
-        // Se for "House", define o sprite vindo do GameManager
-        // O material dourado será aplicado pelo GameManager se for raro.
         if (CompareTag("House") && spriteRenderer != null)
         {
             Sprite newSprite = GameManager.Instance.GetCurrentSprite();
@@ -55,7 +57,7 @@ public class Bomb : MonoBehaviour
         }
         if (Input.GetMouseButtonDown(0))
         {
-             HandleInteraction(Input.mousePosition);
+            HandleInteraction(Input.mousePosition);
         }
     }
 
@@ -81,7 +83,6 @@ public class Bomb : MonoBehaviour
         }
     }
 
-
     public void SetAsRare(int rareScoreValue)
     {
         pointsToAward = rareScoreValue;
@@ -98,45 +99,43 @@ public class Bomb : MonoBehaviour
         {
             if (CompareTag("Bomb"))
             {
-                audioManager.PlaySFX(audioManager.touchImage);
+                audioManager.PlaySFX(audioManager.bombExplosion);
                 GameManager.Instance.BombTouch();
                 Explode(0, false);
             }
             else if (CompareTag("House"))
             {
-                audioManager.PlaySFX(audioManager.touchImage);
+                if (houseTouchSounds.Length > 0 && currentSoundIndex < houseTouchSounds.Length)
+                {
+                    AudioClip clip = houseTouchSounds[currentSoundIndex];
+                    audioManager.PlaySFX(clip);
+                    currentSoundIndex++;
+                }
+
                 GameManager.Instance.ImageTouch();
 
-                // --- MODIFICAÇÃO PARA O TEXTO DO POPUP ---
-                // 1. Instancia o popup E guarda a referência
+                // Popup
                 GameObject popupInstance = Instantiate(popupPrefab, transform.position, Quaternion.identity);
-
-                // 2. Tenta encontrar e configurar o texto (TMP ou TextMesh)
                 TextMeshProUGUI tmpText = popupInstance.GetComponentInChildren<TextMeshProUGUI>();
                 if (tmpText != null)
                 {
-                    tmpText.text = "+" + pointsToAward.ToString(); // Usa pointsToAward (10 ou 50)
+                    tmpText.text = "+" + pointsToAward.ToString();
                 }
                 else
                 {
                     TextMesh tmText = popupInstance.GetComponentInChildren<TextMesh>();
                     if (tmText != null)
                     {
-                        tmText.text = "+" + pointsToAward.ToString(); // Usa pointsToAward (10 ou 50)
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Não foi possível encontrar TextMeshProUGUI ou TextMesh no popupPrefab!");
+                        tmText.text = "+" + pointsToAward.ToString();
                     }
                 }
 
-                // Instancia a animação da mão
+                // Animação da mão
                 if (handAnimationPrefab != null)
                 {
                     Instantiate(handAnimationPrefab, transform.position, Quaternion.identity);
                 }
 
-                // Explode, passando os pontos corretos
                 Explode(pointsToAward, true);
             }
         }
