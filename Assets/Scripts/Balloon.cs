@@ -20,7 +20,7 @@ public class Balloon : MonoBehaviour
 
     void Update()
     {
-        // Controle por toque (para mobile)
+
         if (!GameManager.GameStarted && Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
@@ -70,6 +70,7 @@ public class Balloon : MonoBehaviour
 
             GameManager.Instance.AddScore(10);
             audioManager.PlaySFX(audioManager.ballonPop);
+            Destroy(gameObject);
 
             Projectile projectile = other.GetComponent<Projectile>();
             if (projectile != null)

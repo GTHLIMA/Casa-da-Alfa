@@ -767,7 +767,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 1020511657}
   horizontalSpawnPadding: 1
   spawnRate: 1.2
-  rareChance: 0.134
+  rareChance: 0.106
   goldenMaterial: {fileID: 2100000, guid: cf652ad4d1d542c428139f36be977b16, type: 2}
   rareScore: 50
   bombTouchCount: 0

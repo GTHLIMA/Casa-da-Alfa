@@ -166,20 +166,22 @@ public class GameManager : MonoBehaviour
     }
 
     private void SpawnPrefab()
+{
+    if (spawnnablePrefabs.Length == 0) return;
+
+    GameObject prefabtoSpawn = spawnnablePrefabs[UnityEngine.Random.Range(0, spawnnablePrefabs.Length)];
+
+    Vector3 spawnPosition = spawnPoint.position;
+    spawnPosition.x = UnityEngine.Random.Range(-maxVisibleX + horizontalSpawnPadding, maxVisibleX - horizontalSpawnPadding);
+
+    GameObject instance = Instantiate(prefabtoSpawn, spawnPosition, Quaternion.identity);
+
+    if (instance.CompareTag("House"))
     {
-        if (spawnnablePrefabs.Length == 0) return;
-
-        GameObject prefabtoSpawn = spawnnablePrefabs[UnityEngine.Random.Range(0, spawnnablePrefabs.Length)];
-
-        Vector3 spawnPosition = spawnPoint.position;
-        spawnPosition.x = UnityEngine.Random.Range(-maxVisibleX + horizontalSpawnPadding, maxVisibleX - horizontalSpawnPadding);
-
-        GameObject instance = Instantiate(prefabtoSpawn, spawnPosition, Quaternion.identity);
-
         bool isRare = UnityEngine.Random.value < rareChance;
         SpriteRenderer sr = instance.GetComponent<SpriteRenderer>();
 
-         if (isRare && sr != null && goldenMaterial != null)
+        if (isRare && sr != null && goldenMaterial != null)
         {
             Debug.Log("SPAWNOU UM RARO! Pontos: " + rareScore);
             sr.material = goldenMaterial;
@@ -190,24 +192,22 @@ public class GameManager : MonoBehaviour
                 ps.Play();
             }
 
-           
             Bomb bombScript = instance.GetComponent<Bomb>();
             if (bombScript != null)
             {
-                bombScript.SetAsRare(rareScore); // apenas define o valor, nao adiciona score aq
+                bombScript.SetAsRare(rareScore);
             }
         }
-
-        Rigidbody2D rb = instance.GetComponent<Rigidbody2D>();
-
-        if (rb != null)
-        {
-            float gravityToApply = speedLevel == 1 ? normalGravityScale :
-                                 speedLevel == 2 ? mediumGravityScale : fastUpGravityScale;
-
-            rb.gravityScale = gravityToApply;
-        }
     }
+
+    Rigidbody2D rb = instance.GetComponent<Rigidbody2D>();
+    if (rb != null)
+    {
+        float gravityToApply = speedLevel == 1 ? normalGravityScale :
+                             speedLevel == 2 ? mediumGravityScale : fastUpGravityScale;
+        rb.gravityScale = gravityToApply;
+    }
+}
 
     public void ToggleSpeedUp()
     {
