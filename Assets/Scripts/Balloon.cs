@@ -18,22 +18,21 @@ public class Balloon : MonoBehaviour
         audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
     }
 
-    void Update()
+void Update()
     {
-
-        if (!GameManager.GameStarted && Input.touchCount > 0)
-        {
-            Touch touch = Input.GetTouch(0);
-            if (touch.phase == TouchPhase.Began)
-            {
-                GameManager.GameStarted = true; 
-            }
-        }
-
-
-        if (!GameManager.GameStarted && Input.GetMouseButtonDown(0))
+        if (!GameManager.GameStarted && (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began || Input.GetMouseButtonDown(0)))
         {
             GameManager.GameStarted = true;
+
+            // Melhorar depois!!!!!!!!!!!!!!!!!!!
+            // // Toca a música de fundo
+            // if (audioManager != null) 
+            //     audioManager.PlayAudio(audioManager.background);
+
+            // // Destroi o objeto com tag "teste"
+            // GameObject handDrag = GameObject.FindGameObjectWithTag("teste");
+            // if (handDrag != null) 
+            //     Destroy(handDrag);
         }
 
         if (transform.position.y > 7f)
@@ -41,6 +40,7 @@ public class Balloon : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
 
     private void FixedUpdate()
     {
@@ -55,7 +55,7 @@ public class Balloon : MonoBehaviour
 
         if (rb != null && rb.velocity.magnitude > 1f)
         {
-            // --- MODIFICADO: Adiciona checagem ---
+
             if (floatingPoints != null)
             {
                 GameObject points = Instantiate(floatingPoints, transform.position, Quaternion.identity);
@@ -63,10 +63,10 @@ public class Balloon : MonoBehaviour
             }
             else
             {
-                // Mostra um erro claro no console se não estiver atribuído
+
                 Debug.LogError("ERRO: A variável 'floatingPoints' não está atribuída no Inspector do Balão: " + gameObject.name);
             }
-            // --- FIM DA MODIFICAÇÃO ---
+
 
             GameManager.Instance.AddScore(10);
             audioManager.PlaySFX(audioManager.ballonPop);
@@ -109,24 +109,4 @@ public class Balloon : MonoBehaviour
         GameManager.CurrentDropIndex++; 
         GameManager.Instance.CheckEndPhase(GameManager.CurrentDropIndex, dropSprites.Length);
     }
-
-
-
-
-    // private void ResetPosition()
-    // {
-    //     float safeMargin = 0.5f; 
-    //     float screenHalfWidth = Camera.main.orthographicSize * Camera.main.aspect;
-    //     float randomX = Random.Range(-screenHalfWidth + safeMargin, screenHalfWidth - safeMargin);
-    //     float posY = -7f; 
-
-    //     if (gameObject.name.Contains("RedBallon")) posY = -7f;
-        
-    //     else if (gameObject.name.Contains("YellowBallon")) posY = -12f;
-        
-    //     else if (gameObject.name.Contains("PinkBallon")) posY = -17f;
-        
-
-    //     transform.position = new Vector2(randomX, posY);
-    // }
 } 

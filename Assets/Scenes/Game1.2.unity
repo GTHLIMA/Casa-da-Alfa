@@ -768,7 +768,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 1020511657}
   horizontalSpawnPadding: 1
   spawnRate: 1.2
-  rareChance: 0.106
+  rareChance: 0.15
   goldenMaterial: {fileID: 2100000, guid: cf652ad4d1d542c428139f36be977b16, type: 2}
   rareScore: 50
   bombTouchCount: 0
@@ -777,6 +777,7 @@ MonoBehaviour:
   mediumGravityScale: 2
   fastUpGravityScale: 3
   spriteAudios:
+  - {fileID: 8300000, guid: 49c50922760da3f40899a2e990a84f5e, type: 3}
   - {fileID: 8300000, guid: 49c50922760da3f40899a2e990a84f5e, type: 3}
   - {fileID: 8300000, guid: 244ec0e7d759d014d81b9b776f55eb66, type: 3}
   - {fileID: 8300000, guid: 7db016608aaf4634eaaed4c230b3bfe2, type: 3}
@@ -2114,6 +2115,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1043075118
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1043075120}
+  - component: {fileID: 1043075119}
+  m_Layer: 0
+  m_Name: ScoreTransfer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1043075119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1043075118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 211e355baa73db44faaaa6ebc23c9c34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1043075120
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1043075118}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.5371199, y: -0.16338821, z: 3834.9463}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1060237674
 GameObject:
   m_ObjectHideFlags: 0
@@ -2456,7 +2501,7 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 0
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -3816,7 +3861,7 @@ Transform:
   m_GameObject: {fileID: 1734384744}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2.64, z: 0}
+  m_LocalPosition: {x: 0, y: -2.75, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4723,3 +4768,4 @@ SceneRoots:
   - {fileID: 1969125385}
   - {fileID: 1774679821}
   - {fileID: 1809816753}
+  - {fileID: 1043075120}
