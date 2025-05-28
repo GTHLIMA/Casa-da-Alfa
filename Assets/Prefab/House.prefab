@@ -104,25 +104,6 @@ MonoBehaviour:
   explosionDelay: 0
   popupPrefab: {fileID: 4886261898834757915, guid: 780301c9cbfb31948a801c57a98b1596, type: 3}
   handAnimationPrefab: {fileID: 8898300694241658632, guid: b5ee6d50fb87f57439250e5dab766236, type: 3}
-  houseTouchSounds:
-  - {fileID: 8300000, guid: 49c50922760da3f40899a2e990a84f5e, type: 3}
-  - {fileID: 8300000, guid: 49c50922760da3f40899a2e990a84f5e, type: 3}
-  - {fileID: 8300000, guid: 244ec0e7d759d014d81b9b776f55eb66, type: 3}
-  - {fileID: 8300000, guid: 7db016608aaf4634eaaed4c230b3bfe2, type: 3}
-  - {fileID: 8300000, guid: 9ea799873f704ea48a8705f6f381f437, type: 3}
-  - {fileID: 8300000, guid: c0f08c0de90ade74798a4e3f9cce578e, type: 3}
-  - {fileID: 8300000, guid: 9bf5335fe2c2fb74bbaa5654be2f0260, type: 3}
-  - {fileID: 8300000, guid: 6007fc4b69ca26741adff9ee5699c5c8, type: 3}
-  - {fileID: 8300000, guid: 7211fe4fc141e1f4e87a7325f1a5019f, type: 3}
-  - {fileID: 8300000, guid: 091d771cb4f1c8348982de701f633ad7, type: 3}
-  - {fileID: 8300000, guid: d63d894cc12010248be7547bf8fbd6a9, type: 3}
-  - {fileID: 8300000, guid: 35c43b3f55b0edf45814b64385ffb950, type: 3}
-  - {fileID: 8300000, guid: dedd63e60ac8a22419fa4a47a12a8fdd, type: 3}
-  - {fileID: 8300000, guid: 43bfb1d330b47a747b3fff4bb565d56c, type: 3}
-  - {fileID: 8300000, guid: c4658fe7efbb7be45b8978f4f8c84318, type: 3}
-  - {fileID: 8300000, guid: 0d318a2ba40107b469f9caa3f8da4ab2, type: 3}
-  - {fileID: 8300000, guid: 2161babc62d593e47a04797cc1cfcad4, type: 3}
-  - {fileID: 8300000, guid: dfda4b12eaaff3b45a0e3401a12c14b3, type: 3}
   isRareItem: 0
 --- !u!50 &-6366005936414056439
 Rigidbody2D:
