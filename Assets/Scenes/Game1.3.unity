@@ -2924,9 +2924,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 141b09fe92672034e81814a73b8dfb74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wordImage: {fileID: 326633035}
-  feedbackText: {fileID: 600954398}
-  words:
+  wordList:
   - word: "bal\xE3o"
     image: {fileID: 21300000, guid: e630823da395193488033f1cce68cbe8, type: 3}
   - word: casa
@@ -2937,36 +2935,15 @@ MonoBehaviour:
     image: {fileID: 21300000, guid: 6c5cbd34b012337429b5de4f70f74f41, type: 3}
   - word: gato
     image: {fileID: 21300000, guid: 5620984dad1205742a19abacca77c4ad, type: 3}
-  - word: jaca
-    image: {fileID: 21300000, guid: 579ead8c6c5455e43accb8a5a14e9919, type: 3}
-  - word: lata
-    image: {fileID: 21300000, guid: dcefc9a832818ad4d8b42fdd6cf00623, type: 3}
-  - word: mapa
-    image: {fileID: 21300000, guid: 5f7a589463e3200489d67fb145d9bdf9, type: 3}
-  - word: navio
-    image: {fileID: 21300000, guid: 094d71be7c492054b991319915bed0d2, type: 3}
-  - word: pato
-    image: {fileID: 21300000, guid: 8b59a47ee0bd64d4ba24f0f5c469252a, type: 3}
-  - word: quadro
-    image: {fileID: 21300000, guid: d6177c5e31defb244842087bb5cf66ff, type: 3}
-  - word: rato
-    image: {fileID: 21300000, guid: 017d0b16997139a4d9854c9922a98e15, type: 3}
-  - word: sapo
-    image: {fileID: 21300000, guid: d3a76d9bb503221418011d0f5e0dfd27, type: 3}
-  - word: tatu
-    image: {fileID: 21300000, guid: 0969841bb8447454ea7c8901ad7bcf12, type: 3}
-  - word: vaca
-    image: {fileID: 21300000, guid: 304d2656760bf9741b35fedece3fb365, type: 3}
-  - word: xadrez
-    image: {fileID: 21300000, guid: f3f88d6b05297654ea4e6d43ed81ea36, type: 3}
-  - word: zaca
-    image: {fileID: 21300000, guid: d013bac577d17ae4a9c04e1693a75164, type: 3}
-  scorePause: {fileID: 846508828}
-  scoreEndPhase: {fileID: 1607863755}
-  scoreHUD: {fileID: 1743877870}
-  PauseMenu: {fileID: 1028751454}
-  endPhasePanel: {fileID: 156379506}
-  numberCounter: {fileID: 1743877869}
+  languageCode: pt-BR
+  displayImage: {fileID: 326633035}
+  feedbackText: {fileID: 600954398}
+  listenButton: {fileID: 1876227424}
+  correctMessage: 'Muito bem! '
+  tryAgainMessage: "Quase l\xE1! Tente de novo. "
+  listeningMessage: "Ouvindo... \uFFFD"
+  initialMessage: Pressione 'Ouvir' e diga o nome!
+  delayAfterCorrect: 1.5
 --- !u!1 &1706186865
 GameObject:
   m_ObjectHideFlags: 0
