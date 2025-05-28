@@ -89,12 +89,12 @@ public class FontManager : MonoBehaviour
             if (fonteAtual == fontBastao)
             {
                 texto.text = textosOriginais[texto].ToUpper();
-                texto.fontSize = 56f;
+                // texto.fontSize = 56f;
             }
             else
             {
                 texto.text = textosOriginais[texto];
-                texto.fontSize = 100f;
+                // texto.fontSize = 100f;
             }
 
             texto.ForceMeshUpdate();
