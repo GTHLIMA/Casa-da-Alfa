@@ -150,6 +150,7 @@ public class VoiceGameManager : MonoBehaviour, ISpeechToTextListener
         if (currentIndex >= words.Count)
         {
             feedbackText.text = "🎉 Parabéns! Você terminou!";
+            ShowEndPhasePanel();
         }
         else
         {
