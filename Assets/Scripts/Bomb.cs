@@ -9,12 +9,7 @@ public class Bomb : MonoBehaviour
     [SerializeField] private float explosionDelay = 0.3f;
     [SerializeField] private GameObject popupPrefab;
     [SerializeField] private GameObject handAnimationPrefab;
-
-    [Header("Configurações de Áudio")]
-    [SerializeField] private AudioClip[] houseTouchSounds;
-
-    private static int currentSoundIndex = 0; 
-
+    
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rb;
     private bool hasExploded = false;
@@ -22,6 +17,8 @@ public class Bomb : MonoBehaviour
     private int pointsToAward = 10;
     public bool isRareItem = false;
 
+    // 🔥 Novo contador estático para contar toques seguidos nas bombas
+    private static int bombTouchCount = 0;
 
     private void Awake()
     {
@@ -55,6 +52,7 @@ public class Bomb : MonoBehaviour
                 HandleInteraction(touch.position);
             }
         }
+
         if (Input.GetMouseButtonDown(0))
         {
             HandleInteraction(Input.mousePosition);
@@ -99,18 +97,31 @@ public class Bomb : MonoBehaviour
         {
             if (CompareTag("Bomb"))
             {
-                audioManager.PlaySFX(audioManager.bombExplosion);
+                bombTouchCount++; // 🔥 Incrementa o contador
+
+                if (bombTouchCount >= 3)
+                {
+                    // Toca o aviso e reseta
+                    if (audioManager != null)
+                        audioManager.PlaySFX(audioManager.warning); 
+
+                    bombTouchCount = 0;
+                }
+                else
+                {
+                    // Som normal de explosão
+                    if (audioManager != null)
+                        audioManager.PlaySFX(audioManager.bombExplosion);
+                }
+
                 GameManager.Instance.BombTouch();
                 Explode(0, false);
             }
             else if (CompareTag("House"))
             {
-                if (houseTouchSounds.Length > 0 && currentSoundIndex < houseTouchSounds.Length)
-                {
-                    AudioClip clip = houseTouchSounds[currentSoundIndex];
+                AudioClip clip = GameManager.Instance.GetCurrentSpriteAudio();
+                if (clip != null)
                     audioManager.PlaySFX(clip);
-                    currentSoundIndex++;
-                }
 
                 GameManager.Instance.ImageTouch();
 
