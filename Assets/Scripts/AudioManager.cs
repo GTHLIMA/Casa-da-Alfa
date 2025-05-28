@@ -28,6 +28,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip bag;
     public AudioClip ballonPop;
 
+    [Header("------------- Configurações -------------")]
     public float normalPitch = 1f;
     public float speedUpPitch = 1.5f;
 
@@ -37,6 +38,9 @@ public class AudioManager : MonoBehaviour
     {
         audioSource.pitch = normalPitch;
         audioSource.loop = true;
+
+
+        SetSFXVolume(0.2f);
     }
 
     public void PlaySFX(AudioClip clip)
@@ -50,22 +54,26 @@ public class AudioManager : MonoBehaviour
         audioSource.Play();
     }
 
-    public void SetPitch(float isSpeedUp)
+    public void SetPitch(float pitch)
     {
-        audioSource.pitch = isSpeedUp;
+        audioSource.pitch = pitch;
     }
-    
+
     public void PauseAudio(AudioClip clip)
     {
-        savedTime = audioSource.time; // Para o audio
+        savedTime = audioSource.time;
         audioSource.Stop();
     }
 
     public void ResumeAudio(AudioClip clip)
     {
-        audioSource.time = savedTime; // Retoma de onde parou
+        audioSource.time = savedTime;
         audioSource.Play();
     }
 
 
+    public void SetSFXVolume(float volume)
+    {
+        SFXSource.volume = Mathf.Clamp01(volume);
+    }
 }
