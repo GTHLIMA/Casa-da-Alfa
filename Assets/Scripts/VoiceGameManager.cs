@@ -15,7 +15,7 @@ public class VoiceGameManager : MonoBehaviour, ISpeechToTextListener
 
     [Header("UI")]
     public Image wordImage;
-    public Text feedbackText;
+    public TMP_Text feedbackText;
 
     [Header("Word List")]
     public List<WordData> words;
@@ -35,45 +35,48 @@ public class VoiceGameManager : MonoBehaviour, ISpeechToTextListener
 
 
     void Start()
+{
+    // Verificação de campos obrigatórios
+    if (wordImage == null) Debug.LogError("❌ wordImage não está atribuído no Inspector.");
+    if (feedbackText == null) Debug.LogError("❌ feedbackText não está atribuído no Inspector.");
+    if (numberCounter == null) Debug.LogError("❌ numberCounter não está atribuído.");
+    if (ScoreTransfer.Instance == null) Debug.LogError("❌ ScoreTransfer.Instance está null.");
+
+    // Atualiza score na HUD
+    score = ScoreTransfer.Instance?.Score ?? 0;
+    if (numberCounter != null) numberCounter.Value = score;
+
+    if (scoreHUD != null) scoreHUD.text = score.ToString("000");
+    if (scorePause != null) scorePause.text = "Score: " + score.ToString("000");
+    if (scoreEndPhase != null) scoreEndPhase.text = "Score: " + score.ToString("000");
+
+    if (words == null || words.Count == 0)
     {
-        //Serve apenas para atualizar o visual do score
-        score = ScoreTransfer.Instance.Score;
-        numberCounter.Value = score;
-
-        if (scoreHUD != null) scoreHUD.text = score.ToString("000");
-        if (scorePause != null) scorePause.text = "Score: " + score.ToString("000");
-        if (scoreEndPhase != null) scoreEndPhase.text = "Score: " + score.ToString("000");
-
-        
-
-        if (words.Count == 0)
-        {
-            feedbackText.text = "Nenhuma palavra configurada!";
-            return;
-        }
-
-        SpeechToText.Initialize("pt-BR");
-
-        // Verifica permissão de microfone
-        if (!SpeechToText.CheckPermission())
-        {
-            SpeechToText.RequestPermissionAsync((permission) =>
-            {
-                if (permission == SpeechToText.Permission.Granted)
-                {
-                    ShowCurrentWord();
-                }
-                else
-                {
-                    feedbackText.text = "Permissão negada!";
-                }
-            });
-        }
-        else
-        {
-            ShowCurrentWord();
-        }
+        if (feedbackText != null) feedbackText.text = "Nenhuma palavra configurada!";
+        return;
     }
+
+    SpeechToText.Initialize("pt-BR");
+
+    if (!SpeechToText.CheckPermission())
+    {
+        SpeechToText.RequestPermissionAsync((permission) =>
+        {
+            if (permission == SpeechToText.Permission.Granted)
+            {
+                ShowCurrentWord();
+            }
+            else
+            {
+                if (feedbackText != null) feedbackText.text = "Permissão negada!";
+            }
+        });
+    }
+    else
+    {
+        ShowCurrentWord();
+    }
+}
 
     public void StartListening()
     {
@@ -134,7 +137,10 @@ public class VoiceGameManager : MonoBehaviour, ISpeechToTextListener
     private void ShowCurrentWord()
     {
         wordImage.sprite = words[currentIndex].image;
+        wordImage.color = Color.white; // garante que a imagem esteja visível
         feedbackText.text = "Diga o nome do que vê!";
+        Debug.Log("Mostrando imagem: " + words[currentIndex].image?.name);
+        
     }
 
     private void NextWord()
