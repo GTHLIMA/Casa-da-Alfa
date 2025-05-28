@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using TMPro;
 
 public class VoiceGameManager : MonoBehaviour, ISpeechToTextListener
 {
@@ -21,8 +22,30 @@ public class VoiceGameManager : MonoBehaviour, ISpeechToTextListener
 
     private int currentIndex = 0;
 
+    [Header("==========Pause Menu==========")]
+    private int score;
+    public TMP_Text scorePause;
+    public TMP_Text scoreEndPhase;
+    public TMP_Text scoreHUD;
+    public GameObject PauseMenu;
+    [SerializeField] private GameObject endPhasePanel;
+    [SerializeField] private NumberCounter numberCounter;
+
+    
+
+
     void Start()
     {
+        //Serve apenas para atualizar o visual do score
+        score = ScoreTransfer.Instance.Score;
+        numberCounter.Value = score;
+
+        if (scoreHUD != null) scoreHUD.text = score.ToString("000");
+        if (scorePause != null) scorePause.text = "Score: " + score.ToString("000");
+        if (scoreEndPhase != null) scoreEndPhase.text = "Score: " + score.ToString("000");
+
+        
+
         if (words.Count == 0)
         {
             feedbackText.text = "Nenhuma palavra configurada!";
@@ -80,6 +103,7 @@ public class VoiceGameManager : MonoBehaviour, ISpeechToTextListener
         {
             feedbackText.text += "\n✅ Acertou!";
             Invoke(nameof(NextWord), 2f);
+            AddScore(10); // Adiciona 10 pontos por palavra correta
         }
         else
         {
@@ -125,4 +149,44 @@ public class VoiceGameManager : MonoBehaviour, ISpeechToTextListener
             ShowCurrentWord();
         }
     }
+
+
+//Hud do score e pause menu
+    public void ClosePauseMenu()
+    {
+        PauseMenu.SetActive(false);
+    }
+
+    public void OpenPauseMenu()
+    {
+        if (scorePause != null) scorePause.text = "Score: " + score.ToString();
+        PauseMenu.SetActive(true);
+        ScoreTransfer.Instance.SetScore(score);
+    }
+
+    public void ShowEndPhasePanel()
+    {
+        if (scoreEndPhase != null)
+            scoreEndPhase.text = "Score: " + score.ToString();
+
+        endPhasePanel.SetActive(true);
+        ScoreTransfer.Instance.SetScore(score);
+    }
+    
+    public void AddScore(int amount)
+    {
+        score += amount;
+        if (score < 0) score = 0;
+
+        numberCounter.Value = score;
+        ScoreTransfer.Instance.SetScore(score);
+
+        if (scorePause != null) scorePause.text = "Score: " + score.ToString("000");
+        if (scoreEndPhase != null) scoreEndPhase.text = "Score: " + score.ToString("000");
+        if (scoreHUD != null) scoreHUD.text = score.ToString("000");
+    }
+
+
+
+
 }
