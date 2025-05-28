@@ -15,6 +15,11 @@ public class AudioManager : MonoBehaviour
     public AudioClip warning;
     public AudioClip touchImage;
     public AudioClip groundFall;
+    public AudioClip end1;
+    public AudioClip end2;
+    public AudioClip end3;
+    public AudioClip VoiceRecognition;
+
     [Header("------------- Level 1 sounds -------------")]
     public AudioClip house;
     public AudioClip map;

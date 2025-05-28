@@ -30,6 +30,7 @@ public class VoiceGameManager : MonoBehaviour, ISpeechToTextListener
     public GameObject PauseMenu;
     [SerializeField] private GameObject endPhasePanel;
     [SerializeField] private NumberCounter numberCounter;
+    private AudioManager audioManager;
 
     
 
@@ -177,6 +178,7 @@ public class VoiceGameManager : MonoBehaviour, ISpeechToTextListener
 
         endPhasePanel.SetActive(true);
         ScoreTransfer.Instance.SetScore(score);
+        audioManager.PlaySFX(audioManager.end3);
     }
     
     public void AddScore(int amount)
