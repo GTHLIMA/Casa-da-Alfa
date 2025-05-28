@@ -114,7 +114,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator ShowEndPhasePanelCoroutine()
     {
-        yield return new WaitForSeconds(2f); 
+        yield return new WaitForSeconds(2f);
 
         if (scoreEndPhase != null)
             scoreEndPhase.text = "Score: " + score.ToString();
@@ -129,6 +129,7 @@ public class GameManager : MonoBehaviour
         spawnPoint.gameObject.SetActive(false);
 
         ScoreTransfer.Instance.SetScore(score);
+        audioManager.PlaySFX(audioManager.end2);
     }
 
 

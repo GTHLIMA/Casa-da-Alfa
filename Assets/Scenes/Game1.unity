@@ -159,6 +159,10 @@ MonoBehaviour:
   warning: {fileID: 0}
   touchImage: {fileID: 8300000, guid: 1b6a7086e77ba2147b981e5654ec4e67, type: 3}
   groundFall: {fileID: 8300000, guid: 11df34dfcb20bf749a5f6bc2bd55a3cd, type: 3}
+  end1: {fileID: 0}
+  end2: {fileID: 8300000, guid: 46a0aa6132e636c49bee78eac91afebb, type: 3}
+  end3: {fileID: 0}
+  VoiceRecognition: {fileID: 0}
   house: {fileID: 8300000, guid: 244ec0e7d759d014d81b9b776f55eb66, type: 3}
   map: {fileID: 8300000, guid: 7211fe4fc141e1f4e87a7325f1a5019f, type: 3}
   dice: {fileID: 8300000, guid: 7db016608aaf4634eaaed4c230b3bfe2, type: 3}
