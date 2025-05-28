@@ -145,18 +145,19 @@ public class VoiceGameManager : MonoBehaviour, ISpeechToTextListener
     }
 
     private void NextWord()
+{
+    currentIndex++;
+
+    if (currentIndex >= words.Count)
     {
-        currentIndex++;
-        if (currentIndex >= words.Count)
-        {
-            feedbackText.text = "🎉 Parabéns! Você terminou!";
-            ShowEndPhasePanel();
-        }
-        else
-        {
-            ShowCurrentWord();
-        }
+        feedbackText.text = "🎉 Parabéns! Você terminou!";
+        wordImage.enabled = false; // opcional: esconde imagem final
+        return;
     }
+
+    Debug.Log("Próxima palavra: " + words[currentIndex].word);
+    ShowCurrentWord();
+}
 
 
 //Hud do score e pause menu
