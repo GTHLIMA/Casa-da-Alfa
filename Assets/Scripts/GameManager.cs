@@ -107,12 +107,19 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;     
     }
 
-    private void ShowEndPhasePanel()
+    public void ShowEndPhasePanel()
     {
+        StartCoroutine(ShowEndPhasePanelCoroutine());
+    }
+
+    private IEnumerator ShowEndPhasePanelCoroutine()
+    {
+        yield return new WaitForSeconds(2f); 
+
         if (scoreEndPhase != null)
             scoreEndPhase.text = "Score: " + score.ToString();
 
-        Time.timeScale = 0f; 
+        Time.timeScale = 0f;
         audioManager.PauseAudio(audioManager.background);
         endPhasePanel.SetActive(true);
 
@@ -123,7 +130,6 @@ public class GameManager : MonoBehaviour
 
         ScoreTransfer.Instance.SetScore(score);
     }
-
 
 
     public Sprite GetCurrentSprite()
