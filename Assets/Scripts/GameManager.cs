@@ -1,76 +1,106 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
 using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("Sprite Manager")]
-    public Sprite[] sprites;
-    private int currentSpriteIndex = 0; 
-    public GameObject[] spawnnablePrefabs;
+    #region Balloon Prefabs
+
+    [Header("======= Ballon Prefabs =======")]
+    public GameObject[] spawnnablePrefabs; // Array de prefabs que podem ser spawnados
+    public float horizontalSpawnPadding = 1f; // Margem horizontal para spawn para não nascer nas bordas
+    public static int CurrentDropIndex = 0; 
+    public static GameManager Instance; // Instância singleton do GameManager
     public Transform spawnPoint; 
-    public float horizontalSpawnPadding = 1f;
-    private float maxVisibleX;
+    private float maxVisibleX; 
     public float spawnRate;
 
-
-    [Header("rarity settings")]
-    [Range(0f, 1f)] 
-    public float rareChance = 0.2f; 
-    public Material goldenMaterial;
-    public int rareScore = 50;
+    #endregion
 
 
-    public int bombTouchCount = 0;
-    bool gameStarted = false;
-    public static bool GameStarted = false;
 
-    public static GameManager Instance;
-    [SerializeField] private NumberCounter numberCounter;
-    private int score;
-    
-    private bool isSpeedUp = false;
-    private int speedLevel = 1;
-    public float normalGravityScale = 1f;
-    public float mediumGravityScale = 2f;
-    public float fastUpGravityScale = 3f;
-    private AudioManager audioManager;
+    #region Score Settings
 
-    [Header("------------- Level1 -------------")]
-    public AudioClip[] spriteAudios;
-    public static int CurrentDropIndex = 0;
+    [Header("======= Score Settings =======")]
+    [SerializeField] private NumberCounter numberCounter; // Referência para o contador de números
+    private int score; // Pontuação atual do jogador
+    public TMP_Text scorePause; // Texto para mostrar a pontuação no menu de pausa
+    public TMP_Text scoreEndPhase; // Texto para mostrar a pontuação no fim da fase
+
+    #endregion
+
+
+    #region Game Settings
+
+    [Header("======= Game Settings =======")]
+    [SerializeField] private GameObject endPhasePanel; 
+    public static bool GameStarted = false; 
+    private bool gameStarted = false; 
     public GameObject PauseMenu;
-    // private int currentScore;
-    public TMP_Text scorePause;
-    public TMP_Text scoreEndPhase;
+    private AudioManager audioManager; // Referência para o gerenciador de áudio
 
-    [SerializeField] private GameObject endPhasePanel;
+    #endregion
 
-  
 
     private void Awake()
     {
-        Time.timeScale = 1f;
+        Time.timeScale = 1f; 
+        
+        // Configura o padrão singleton
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
+
         audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+        
+        // Calcula o limite máximo visível no eixo X baseado na câmera
         maxVisibleX = Camera.main.orthographicSize * Camera.main.aspect;
     }
 
     private void Start()
     {
+        // Inicializa a pontuação com o valor transferido de outra cena
         score = ScoreTransfer.Instance.Score;
         numberCounter.Value = score;
     }
 
+    private void Update()
+    {
+        // Verifica se o jogador clicou na tela para começar o jogo
+        if (Input.GetMouseButtonDown(0) && !gameStarted)
+        {
+            StartSpawning();
+            gameStarted = true;
+        }
+    }
+
+
+    private void StartSpawning()
+    {
+        // Velocidade do spawn dos prefabs
+        InvokeRepeating(nameof(SpawnPrefab), 0.5f, spawnRate);
+    }
+
+    private void SpawnPrefab()
+    {
+        // Sai do método se não houver prefabs configurados
+        if (spawnnablePrefabs.Length == 0) return;
+
+        // Escolhe um prefab aleatório do array
+        GameObject prefabToSpawn = spawnnablePrefabs[UnityEngine.Random.Range(0, spawnnablePrefabs.Length)];
+
+        // Calcula uma posição de spawn aleatória dentro dos limites da tela
+        Vector3 spawnPosition = spawnPoint.position;
+        spawnPosition.x = UnityEngine.Random.Range(-maxVisibleX + horizontalSpawnPadding, maxVisibleX - horizontalSpawnPadding);
+
+        // Instancia o prefab na posição calculada
+        GameObject instance = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
+    }
 
     public void CheckEndPhase(int currentIndex, int totalDrops)
     {
+        // Se o índice atual for maior ou igual ao total, mostra o painel de fim de fase
         if (currentIndex >= totalDrops)
         {
             ShowEndPhasePanel();
@@ -79,32 +109,20 @@ public class GameManager : MonoBehaviour
 
     public void OpenPauseMenuLvl1()
     {
+        // Atualiza o texto da pontuação no menu de pausa
         if (scorePause != null) scorePause.text = "Score: " + score.ToString();
-        PauseMenu.SetActive(true);
-        audioManager.PauseAudio(audioManager.background);
-        Time.timeScale = 0;  
-        ScoreTransfer.Instance.SetScore(score); 
+        
+        PauseMenu.SetActive(true); 
+        audioManager.PauseAudio(audioManager.background); 
+        Time.timeScale = 0; 
+        ScoreTransfer.Instance.SetScore(score); // Salva a pontuação atual
     }
-    
+
     public void ClosePauseMenuLvl1()
     {
         Time.timeScale = 1f; 
         PauseMenu.SetActive(false); 
-        audioManager.ResumeAudio(audioManager.background);       
-    }
-    public void OpenPauseMenuLvl1_2()
-    {
-        if (scorePause != null) scorePause.text = "Score: " + score.ToString();
-        PauseMenu.SetActive(true);
-        audioManager.PauseAudio(audioManager.background);
-        Time.timeScale = 0;
-    }
-
-    public void ClosePauseMenuLvl1_2()
-    {
-        PauseMenu.SetActive(false); 
-        audioManager.ResumeAudio(audioManager.background);
-        Time.timeScale = 1f;     
+        audioManager.ResumeAudio(audioManager.background); 
     }
 
     public void ShowEndPhasePanel()
@@ -114,160 +132,31 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator ShowEndPhasePanelCoroutine()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f); 
 
+        // Atualiza o texto da pontuação no painel de fim de fase
         if (scoreEndPhase != null)
             scoreEndPhase.text = "Score: " + score.ToString();
 
-        Time.timeScale = 0f;
-        audioManager.PauseAudio(audioManager.background);
-        endPhasePanel.SetActive(true);
+        Time.timeScale = 0f; 
+        audioManager.PauseAudio(audioManager.background); 
+        endPhasePanel.SetActive(true); 
 
-        GameObject slingshot = GameObject.FindGameObjectWithTag("Slingshot");
-        if (slingshot != null) slingshot.SetActive(false);
+        spawnPoint.gameObject.SetActive(false); // Desativa o ponto de spawn
 
-        spawnPoint.gameObject.SetActive(false);
-
-        ScoreTransfer.Instance.SetScore(score);
-        audioManager.PlaySFX(audioManager.end2);
+        ScoreTransfer.Instance.SetScore(score); // Salva a pontuação
+        audioManager.PlaySFX(audioManager.end2); 
     }
 
-
-    public Sprite GetCurrentSprite()
-    {
-        if (sprites.Length == 0) return null;
-        return sprites[currentSpriteIndex];
-    }
-
-    public AudioClip GetCurrentSpriteAudio()
-    {
-        if (spriteAudios != null && currentSpriteIndex < spriteAudios.Length)
-            return spriteAudios[currentSpriteIndex];
-        return null;
-    }
-
-    public void ImageTouch()
-    {
-        currentSpriteIndex++;
-
-        if (currentSpriteIndex >= sprites.Length)
-        {
-            ShowEndPhasePanel();
-            currentSpriteIndex = 0;
-        }
-    }
-
-    public void BombTouch()
-    {
-        Debug.Log("Bomba Tocou! Lógica de fim de jogo ou perda de vida vai aqui.");
-        bombTouchCount++; 
-    }
     public void AddScore(int amount)
     {
         score += amount;
-        if (score < 0) score = 0;
+        if (score < 0) score = 0; // Garante que a pontuação não fique negativa
 
-        numberCounter.Value = score; // Atualiza visual
-        ScoreTransfer.Instance.SetScore(score); // Salva persistente
+        numberCounter.Value = score; // Atualiza o contador visual
+        ScoreTransfer.Instance.SetScore(score); // Salva a pontuação
     }
-
-
+    
+    // Retorna a pontuação atual
     public int GetScore() => score;
-
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(0) && !gameStarted)
-        {
-            StartSpawning();
-            gameStarted = true;
-        }
-    }
-
-    private void StartSpawning()
-    {
-        InvokeRepeating("SpawnPrefab", 0.5f, spawnRate);
-    }
-
-    private void SpawnPrefab()
-    {
-        if (spawnnablePrefabs.Length == 0) return;
-
-        GameObject prefabtoSpawn = spawnnablePrefabs[UnityEngine.Random.Range(0, spawnnablePrefabs.Length)];
-
-        Vector3 spawnPosition = spawnPoint.position;
-        spawnPosition.x = UnityEngine.Random.Range(-maxVisibleX + horizontalSpawnPadding, maxVisibleX - horizontalSpawnPadding);
-
-        GameObject instance = Instantiate(prefabtoSpawn, spawnPosition, Quaternion.identity);
-
-        if (instance.CompareTag("House"))
-        {
-            bool isRare = UnityEngine.Random.value < rareChance;
-            // Pega o SpriteRenderer da instância
-            SpriteRenderer sr = instance.GetComponent<SpriteRenderer>();
-
-            if (isRare && sr != null && goldenMaterial != null)
-            {
-
-                if (instance.CompareTag("House"))
-                {
-                    Debug.Log("SPAWNOU UM RARO (House)! Pontos: " + rareScore);
-                    sr.material = goldenMaterial;
-
-                    ParticleSystem ps = instance.GetComponentInChildren<ParticleSystem>(true);
-                    if (ps != null)
-                    {
-                        ps.Play();
-                    }
-
-                    Bomb bombScript = instance.GetComponent<Bomb>();
-                    if (bombScript != null)
-                    {
-                        bombScript.SetAsRare(rareScore);
-                    }
-                }
-            }
-
-            Rigidbody2D rb = instance.GetComponent<Rigidbody2D>();
-            if (rb != null)
-            {
-                float gravityToApply = speedLevel == 1 ? normalGravityScale :
-                                     speedLevel == 2 ? mediumGravityScale : fastUpGravityScale;
-                rb.gravityScale = gravityToApply;
-            }
-        }
-    }
-
-    public void ToggleSpeedUp()
-    {
-        isSpeedUp = !isSpeedUp;
-        speedLevel++;
-
-        if (speedLevel > 3) speedLevel = 1;
-
-        float newGravityScale = normalGravityScale;
-        float newPitch = audioManager.normalPitch;
-
-        switch (speedLevel)
-        {
-            case 1:
-                newGravityScale = normalGravityScale;
-                newPitch = audioManager.normalPitch;
-                break;
-            case 2:
-                newGravityScale = mediumGravityScale;
-                newPitch = Mathf.Lerp(audioManager.normalPitch, audioManager.speedUpPitch, 0.5f);
-                break;
-            case 3:
-                newGravityScale = fastUpGravityScale;
-                newPitch = audioManager.speedUpPitch;
-                break;
-        }
-
-        if (audioManager != null) audioManager.SetPitch(newPitch);
-
-        foreach (var rb in FindObjectsOfType<Rigidbody2D>())
-        {
-            rb.gravityScale = newGravityScale;
-        }
-    }
 }
