@@ -2944,6 +2944,12 @@ MonoBehaviour:
   listeningMessage: "Ouvindo... \uFFFD"
   initialMessage: Pressione 'Ouvir' e diga o nome!
   delayAfterCorrect: 1.5
+  scorePause: {fileID: 846508828}
+  scoreEndPhase: {fileID: 1607863755}
+  scoreHUD: {fileID: 1743877870}
+  PauseMenu: {fileID: 1028751454}
+  endPhasePanel: {fileID: 156379506}
+  numberCounter: {fileID: 1743877869}
 --- !u!1 &1706186865
 GameObject:
   m_ObjectHideFlags: 0
