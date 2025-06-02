@@ -36,26 +36,46 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     private bool isListening = false;
     private bool isProcessing = false; // Flag para evitar processamento múltiplo
 
-    // Referência para o AudioManager (se você quiser usar sons)
-    // private AudioManager audioManager;
+
+
+    
+
+    [Header("==========Pause Menu==========")]
+    private int score;
+    public TMP_Text scorePause;
+    public TMP_Text scoreEndPhase;
+    public TMP_Text scoreHUD;
+    public GameObject PauseMenu;
+    [SerializeField] private GameObject endPhasePanel;
+    [SerializeField] private NumberCounter numberCounter;
+    private AudioManager audioManager;
+
+
+
+
 
     void Start()
     {
-        // Pega o AudioManager se existir
-        // audioManager = FindObjectOfType<AudioManager>();
+        // Atualiza score na HUD
+        score = ScoreTransfer.Instance?.Score ?? 0;
+        if (numberCounter != null) numberCounter.Value = score;
+
+        if (scoreHUD != null) scoreHUD.text = score.ToString("000");
+        if (scorePause != null) scorePause.text = "Score: " + score.ToString("000");
+        if (scoreEndPhase != null) scoreEndPhase.text = "Score: " + score.ToString("000");
 
         if (wordList == null || wordList.Count == 0)
         {
             feedbackText.text = "ERRO: Nenhuma palavra configurada!";
             Debug.LogError("A lista 'wordList' está vazia!");
-            if(listenButton != null) listenButton.interactable = false;
+            if (listenButton != null) listenButton.interactable = false;
             return;
         }
 
         if (displayImage == null || feedbackText == null)
         {
             Debug.LogError("ERRO: Referências de UI não configuradas no Inspector!");
-            if(listenButton != null) listenButton.interactable = false;
+            if (listenButton != null) listenButton.interactable = false;
             return;
         }
 
@@ -87,19 +107,19 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
                 if (permission == SpeechToText.Permission.Granted)
                 {
                     feedbackText.text = initialMessage;
-                     Debug.Log("Permissão concedida!");
+                    Debug.Log("Permissão concedida!");
                 }
                 else
                 {
                     feedbackText.text = "Permissão negada! Habilite nas configurações.";
                     Debug.LogError("Permissão de microfone negada!");
-                    if(listenButton != null) listenButton.interactable = false;
+                    if (listenButton != null) listenButton.interactable = false;
                 }
             });
         }
         else
         {
-             Debug.Log("Permissão já concedida.");
+            Debug.Log("Permissão já concedida.");
         }
     }
 
@@ -115,7 +135,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 
         feedbackText.text = listeningMessage;
         isListening = true;
-        if(listenButton != null) listenButton.interactable = false; // Desativa o botão enquanto ouve
+        if (listenButton != null) listenButton.interactable = false; // Desativa o botão enquanto ouve
 
         // Inicia a escuta. O 'false' no segundo parâmetro (useFreeFormLanguageModel)
         // pode ser 'true' dependendo do que for melhor.
@@ -127,7 +147,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
             feedbackText.text = "Erro ao iniciar a escuta.";
             Debug.LogError("SpeechToText.Start falhou.");
             isListening = false;
-            if(listenButton != null) listenButton.interactable = true;
+            if (listenButton != null) listenButton.interactable = true;
         }
         else
         {
@@ -162,7 +182,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         {
             feedbackText.text = "🎉 Parabéns! Você completou todas as imagens! 🎉";
             displayImage.enabled = false;
-            if(listenButton != null) listenButton.interactable = false;
+            if (listenButton != null) listenButton.interactable = false;
             Debug.Log("Fim da lista de palavras.");
             // Aqui você pode chamar o painel de fim de fase, etc.
         }
@@ -170,7 +190,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         {
             ShowImage(currentIndex);
             feedbackText.text = initialMessage;
-            if(listenButton != null) listenButton.interactable = true; // Reativa o botão
+            if (listenButton != null) listenButton.interactable = true; // Reativa o botão
         }
     }
 
@@ -205,8 +225,8 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         // Se já estamos processando, ou se não há texto e nem erro, saia.
         if (isProcessing || (string.IsNullOrEmpty(recognizedText) && !errorCode.HasValue))
         {
-             if(listenButton != null) listenButton.interactable = true;
-             return;
+            if (listenButton != null) listenButton.interactable = true;
+            return;
         }
 
         // Verifica se houve erro
@@ -214,7 +234,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         {
             Debug.LogError($"STT Erro: Código {errorCode.Value}");
             feedbackText.text = $"Erro {errorCode.Value}. Tente novamente.";
-            if(listenButton != null) listenButton.interactable = true;
+            if (listenButton != null) listenButton.interactable = true;
             return;
         }
 
@@ -241,7 +261,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
             feedbackText.text = tryAgainMessage + $"\n(Você disse: {recognizedText})";
             Debug.Log($"ERROU! Esperado: '{expected}', Recebido: '{received}'");
             isProcessing = false; // Libera para tentar de novo
-            if(listenButton != null) listenButton.interactable = true;
+            if (listenButton != null) listenButton.interactable = true;
         }
     }
 
@@ -262,9 +282,56 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
             listenButton.onClick.RemoveListener(OnListenButtonPressed);
         }
         // Tenta cancelar qualquer escuta pendente
-        if(SpeechToText.IsBusy())
+        if (SpeechToText.IsBusy())
         {
             SpeechToText.Cancel();
         }
     }
+
+
+
+
+
+
+
+
+
+
+    #region Pause Menu and Score Management
+    public void ClosePauseMenu()
+    {
+        PauseMenu.SetActive(false);
+    }
+
+    public void OpenPauseMenu()
+    {
+        if (scorePause != null) scorePause.text = "Score: " + score.ToString();
+        PauseMenu.SetActive(true);
+        ScoreTransfer.Instance.SetScore(score);
+    }
+
+    public void ShowEndPhasePanel()
+    {
+        if (scoreEndPhase != null)
+            scoreEndPhase.text = "Score: " + score.ToString();
+
+        endPhasePanel.SetActive(true);
+        ScoreTransfer.Instance.SetScore(score);
+        audioManager.PlaySFX(audioManager.end3);
+    }
+
+    public void AddScore(int amount)
+    {
+        score += amount;
+        if (score < 0) score = 0;
+
+        numberCounter.Value = score;
+        ScoreTransfer.Instance.SetScore(score);
+
+        if (scorePause != null) scorePause.text = "Score: " + score.ToString("000");
+        if (scoreEndPhase != null) scoreEndPhase.text = "Score: " + score.ToString("000");
+        if (scoreHUD != null) scoreHUD.text = score.ToString("000");
+    }
+    #endregion
+    
 }
