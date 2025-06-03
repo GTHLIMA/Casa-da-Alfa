@@ -70,10 +70,22 @@ public class GameManager : MonoBehaviour
         // Verifica se o jogador clicou na tela para começar o jogo
         if (Input.GetMouseButtonDown(0) && !gameStarted)
         {
-            StartSpawning();
-            gameStarted = true;
+            StartGame();
         }
     }
+
+    public void StartGame()
+    {
+        if (gameStarted) return;
+
+        StartSpawning();
+        gameStarted = true;
+        GameStarted = true;
+
+        FindObjectOfType<AudioManager>().SetBackgroundVolume(0.05f);
+        Array.ForEach(GameObject.FindGameObjectsWithTag("teste"), Destroy);
+    }
+
 
 
     private void StartSpawning()
@@ -132,7 +144,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator ShowEndPhasePanelCoroutine()
     {
-        yield return new WaitForSeconds(1f); 
+        yield return new WaitForSeconds(0.5f); 
 
         // Atualiza o texto da pontuação no painel de fim de fase
         if (scoreEndPhase != null)
