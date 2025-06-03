@@ -13,11 +13,11 @@ public class Balloon : MonoBehaviour
     [SerializeField] private AudioClip[] dropAudioClips; // Array de clipes de áudio para drop
     public GameObject floatingPoints;
 
-    // --- NOVAS VARIÁVEIS ---
-    [Header("Configurações Específicas do Balão")]
+
+    [Header("===== Configurações Específicas do Balão =====")]
     public bool isGolden = false; // Marque no Inspector para o GoldenBalloonPrefab
     public int scoreValue = 10;   // Valor padrão de pontos (será 10 para balões normais)
-    // --- FIM DAS NOVAS VARIÁVEIS ---
+
 
     void Awake()
     {
@@ -26,11 +26,6 @@ public class Balloon : MonoBehaviour
 
     void Update()
     {
-        // Verifica se o jogo começou | Se o player tocou na tela
-        if (!GameManager.GameStarted && (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began || Input.GetMouseButtonDown(0)))
-        {
-            GameManager.GameStarted = true;
-        }
 
         // Verifica toques na tela para explodir o balão
         // MODIFICADO: Movi Input.mousePosition para dentro do if para melhor performance
@@ -84,15 +79,15 @@ public class Balloon : MonoBehaviour
 
         // Adiciona pontos e toca som de estouro
         // MODIFICADO: Usa a variável scoreValue para adicionar os pontos
-        GameManager.Instance.AddScore(scoreValue); //
+        GameManager.Instance.AddScore(scoreValue); 
         if (audioManager != null && audioManager.ballonPop != null) // Adicionada checagem para audioManager
         {
-            audioManager.PlaySFX(audioManager.ballonPop); //
+            audioManager.PlaySFX(audioManager.ballonPop); 
         }
         
         // Dropa o próximo sprite e destrói o balão
-        DropNextSprite(); //
-        Destroy(gameObject); //
+        DropNextSprite(); 
+        Destroy(gameObject); 
     }
 
     private void DropNextSprite()

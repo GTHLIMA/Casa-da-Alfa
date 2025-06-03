@@ -58,4 +58,13 @@ public class AudioManager : MonoBehaviour
     {
         SFXSource.volume = Mathf.Clamp01(volume);
     }
+
+    public void SetBackgroundVolume(float volume)
+    {
+        audioSource.volume = Mathf.Clamp01(volume); // Garante que o volume fique entre 0 e 1
+    }
+
+
+
+
 }
