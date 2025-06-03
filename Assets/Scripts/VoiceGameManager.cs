@@ -182,6 +182,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         {
             feedbackText.text = "🎉 Parabéns! Você completou todas as imagens! 🎉";
             displayImage.enabled = false;
+            ShowEndPhasePanel();
             if (listenButton != null) listenButton.interactable = false;
             Debug.Log("Fim da lista de palavras.");
             // Aqui você pode chamar o painel de fim de fase, etc.
@@ -252,8 +253,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         {
             feedbackText.text = correctMessage;
             Debug.Log("ACERTOU!");
-            // Adicionar pontos aqui se necessário
-            // ScoreManager.Instance.AddScore(10);
+            AddScore(10);
             StartCoroutine(WaitAndAdvance());
         }
         else
@@ -312,8 +312,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 
     public void ShowEndPhasePanel()
     {
-        if (scoreEndPhase != null)
-            scoreEndPhase.text = "Score: " + score.ToString();
+        if (scoreEndPhase != null) scoreEndPhase.text = "Score: " + score.ToString();
 
         endPhasePanel.SetActive(true);
         ScoreTransfer.Instance.SetScore(score);
