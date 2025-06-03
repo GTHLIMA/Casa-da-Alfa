@@ -89,6 +89,13 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         feedbackText.text = initialMessage;
 
         CheckAndRequestPermission();
+    }       
+
+    void Awake()
+    {
+        Time.timeScale = 1f;
+        Debug.Log("ImageVoiceMatcher: Start() -> Time.timeScale definido para 1f.");
+
     }
 
     // DEBUG: Simular acerto com a tecla 'C' para testar no editor
@@ -215,11 +222,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 
    private IEnumerator WaitAndAdvance()
 {
-    // --- APENAS PARA TESTE ---
-    Time.timeScale = 1f;
-    Debug.LogWarning("Time.timeScale FORÇADO PARA 1 DENTRO DA CORROTINA (APENAS TESTE!)");
-    // --- FIM DO TESTE ---
-
+    
     Debug.Log("CORROTINA WaitAndAdvance INICIADA. Time.timeScale: " + Time.timeScale);
     yield return new WaitForSeconds(delayAfterCorrect);
     Debug.Log("CORROTINA WaitAndAdvance: Delay Concluído. Chamando GoToNextImage().");
@@ -251,56 +254,55 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 
     public void OnResultReceived(string recognizedText, int? errorCode)
 {
-    Debug.Log("ImageVoiceMatcher STT: OnResultReceived - Texto: '" + recognizedText + "', Código de Erro: " + (errorCode.HasValue ? errorCode.Value.ToString() : "Nenhum"));
+    Debug.Log("ImageVoiceMatcher STT: OnResultReceived - Texto: '" + recognizedText + "', Código de Erro: " + (errorCode.HasValue ? errorCode.Value.ToString() : "Nenhum") + " | Time.timeScale INÍCIO: " + Time.timeScale); // Log no início
     isListening = false;
 
     if (isProcessing)
     {
-        Debug.LogWarning("ImageVoiceMatcher STT: Resultado recebido, mas já estava processando um anterior (isProcessing=true). Ignorando este.");
-        if (listenButton != null && !SpeechToText.IsBusy()) listenButton.interactable = true;
+        // ... (código existente) ...
         return;
     }
 
     if (errorCode.HasValue)
     {
-       
-        string friendlyErrorMessage = GetFriendlyErrorMessage(errorCode.Value);
-        Debug.LogError($"ImageVoiceMatcher STT: Erro de reconhecimento - Código {errorCode.Value}. Mensagem: {friendlyErrorMessage}");
-        feedbackText.text = friendlyErrorMessage;
-    
-        if (listenButton != null) listenButton.interactable = true;
+        // ... (código de erro existente) ...
+        Debug.Log("ImageVoiceMatcher STT: Saindo de OnResultReceived após erro. Time.timeScale: " + Time.timeScale);
         return;
     }
-        if (string.IsNullOrEmpty(recognizedText))
-        {
-            Debug.LogWarning("ImageVoiceMatcher STT: OnResultReceived - Resultado vazio recebido (sem erro).");
-            feedbackText.text = tryAgainMessage + "\n(Não ouvi nada)";
-            if (listenButton != null) listenButton.interactable = true;
-            return;
-        }
-        
-        isProcessing = true; 
-
-        string expectedWord = wordList[currentIndex].word.ToLower().Trim();
-        string receivedWord = recognizedText.ToLower().Trim();
-
-        Debug.Log($"ImageVoiceMatcher: OnResultReceived - Comparando... Esperado: '{expectedWord}', Recebido: '{receivedWord}'");
-
-        if (receivedWord.Contains(expectedWord))
-        {
-            feedbackText.text = correctMessage;
-            Debug.Log("ImageVoiceMatcher: ACERTOU!");
-            AddScore(10);
-            StartCoroutine(WaitAndAdvance()); 
-        }
-        else
-        {
-            feedbackText.text = tryAgainMessage + $"\n(Você disse: {receivedWord})";
-            Debug.Log($"ImageVoiceMatcher: ERROU! Esperado: '{expectedWord}', Recebido: '{receivedWord}'");
-            isProcessing = false; 
-            if (listenButton != null) listenButton.interactable = true;
-        }
+    if (string.IsNullOrEmpty(recognizedText))
+    {
+        // ... (código de texto vazio existente) ...
+        Debug.Log("ImageVoiceMatcher STT: Saindo de OnResultReceived após texto vazio. Time.timeScale: " + Time.timeScale);
+        return;
     }
+
+    isProcessing = true;
+
+    string expectedWord = wordList[currentIndex].word.ToLower().Trim();
+    string receivedWord = recognizedText.ToLower().Trim();
+
+    Debug.Log($"ImageVoiceMatcher: OnResultReceived - Comparando... Esperado: '{expectedWord}', Recebido: '{receivedWord}' | Time.timeScale ANTES DO IF: " + Time.timeScale);
+
+    if (receivedWord.Contains(expectedWord))
+    {
+        Debug.Log("ImageVoiceMatcher: OnResultReceived - ACERTOU! Preparando para feedback. Time.timeScale: " + Time.timeScale);
+
+        feedbackText.text = correctMessage;
+        Debug.Log("ImageVoiceMatcher: OnResultReceived - Após feedbackText.text. Time.timeScale: " + Time.timeScale);
+
+        AddScore(10); // O AddScore já tem um Debug.Log dentro dele
+        Debug.Log("ImageVoiceMatcher: OnResultReceived - Após AddScore. Time.timeScale: " + Time.timeScale);
+
+        StartCoroutine(WaitAndAdvance());
+    }
+    else
+    {
+        // ... (código de erro existente) ...
+        isProcessing = false;
+        if (listenButton != null) listenButton.interactable = true;
+    }
+    Debug.Log("ImageVoiceMatcher STT: Saindo do final de OnResultReceived. Time.timeScale: " + Time.timeScale);
+}
         private string GetFriendlyErrorMessage(int errorCode)
         {
     Debug.Log("GetFriendlyErrorMessage chamado com código: " + errorCode);
@@ -354,6 +356,9 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 
     public void OpenPauseMenu()
     {
+
+        Debug.Log("OpenPauseMenu FOI CHAMADO AGORA!");
+
         if (scorePause != null) scorePause.text = "Score: " + score.ToString("000");
         PauseMenu.SetActive(true);
         Time.timeScale = 0f;
