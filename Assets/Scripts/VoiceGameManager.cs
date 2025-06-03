@@ -213,15 +213,12 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         }
     }
 
-    private IEnumerator WaitAndAdvance()
-    {
-
-        private IEnumerator WaitAndAdvance()
+   private IEnumerator WaitAndAdvance()
 {
-    --- APENAS PARA TESTE ---
+    // --- APENAS PARA TESTE ---
     Time.timeScale = 1f;
     Debug.LogWarning("Time.timeScale FORÇADO PARA 1 DENTRO DA CORROTINA (APENAS TESTE!)");
-    --- FIM DO TESTE ---
+    // --- FIM DO TESTE ---
 
     Debug.Log("CORROTINA WaitAndAdvance INICIADA. Time.timeScale: " + Time.timeScale);
     yield return new WaitForSeconds(delayAfterCorrect);
@@ -229,13 +226,6 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     GoToNextImage();
     isProcessing = false;
 }
-        Debug.Log("WaitAndAdvance: CORROTINA INICIADA. Time.timeScale: " + Time.timeScale + ", Delay: " + delayAfterCorrect + "s");
-        yield return new WaitForSeconds(delayAfterCorrect);
-        Debug.Log("WaitAndAdvance: DELAY CONCLUÍDO. Chamando GoToNextImage(). currentIndex atual: " + currentIndex);
-        GoToNextImage();
-        Debug.Log("WaitAndAdvance: GoToNextImage() CHAMADO. Resetando isProcessing para false.");
-        isProcessing = false;
-    }
 
     // --- Implementação da Interface ISpeechToTextListener ---
 
