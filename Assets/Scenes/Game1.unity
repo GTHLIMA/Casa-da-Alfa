@@ -835,10 +835,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnnablePrefabs:
   - {fileID: 5838160969091504949, guid: 902a0369cbadf464e996aec33a401c44, type: 3}
-  - {fileID: 5838160969091504949, guid: f6d0d74e89ecb3f4faa30b2100c24271, type: 3}
   - {fileID: 5838160969091504949, guid: 209196cc2b3012d4186d616691e7a4fd, type: 3}
   - {fileID: 5838160969091504949, guid: 16db79aeb86892642805514f1435e1c4, type: 3}
   - {fileID: 5838160969091504949, guid: d87357e4a53dbe64399d65b5ed016a1f, type: 3}
+  - {fileID: 5838160969091504949, guid: ddb9851a2804c724083500a5f68e528a, type: 3}
+  - {fileID: 5838160969091504949, guid: 16db79aeb86892642805514f1435e1c4, type: 3}
+  - {fileID: 5838160969091504949, guid: d87357e4a53dbe64399d65b5ed016a1f, type: 3}
+  - {fileID: 5838160969091504949, guid: 209196cc2b3012d4186d616691e7a4fd, type: 3}
+  - {fileID: 5838160969091504949, guid: 902a0369cbadf464e996aec33a401c44, type: 3}
   horizontalSpawnPadding: 0.3
   spawnPoint: {fileID: 1882356065}
   spawnRate: 1
