@@ -205,7 +205,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1633909294}
-        m_TargetAssemblyTypeName: VoiceGameManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: ImageVoiceMatcher, Assembly-CSharp
         m_MethodName: OpenPauseMenu
         m_Mode: 1
         m_Arguments:
