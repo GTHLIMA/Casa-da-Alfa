@@ -6,12 +6,18 @@ public class Balloon : MonoBehaviour
 {
     public float upSpeed; // Velocidade de subida do balão
     private AudioManager audioManager; // Referência para o gerenciador de áudio
-    private GameManager gameManager; // Referência para o gerenciador do jogo
+    // private GameManager gameManager; // Referência para o gerenciador do jogo - REMOVIDA SE NÃO USADA DIRETAMENTE AQUI
 
     [SerializeField] private GameObject spriteDropPrefab; // Prefab do sprite que será dropado
-    [SerializeField] private Sprite[] dropSprites; // Array de sprites  para drop
+    [SerializeField] private Sprite[] dropSprites; // Array de sprites para drop
     [SerializeField] private AudioClip[] dropAudioClips; // Array de clipes de áudio para drop
-    public GameObject floatingPoints; 
+    public GameObject floatingPoints;
+
+    // --- NOVAS VARIÁVEIS ---
+    [Header("Configurações Específicas do Balão")]
+    public bool isGolden = false; // Marque no Inspector para o GoldenBalloonPrefab
+    public int scoreValue = 10;   // Valor padrão de pontos (será 10 para balões normais)
+    // --- FIM DAS NOVAS VARIÁVEIS ---
 
     void Awake()
     {
@@ -20,29 +26,39 @@ public class Balloon : MonoBehaviour
 
     void Update()
     {
-        // Verifica se o jogo começou | Se o player tocou na tela 
+        // Verifica se o jogo começou | Se o player tocou na tela
         if (!GameManager.GameStarted && (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began || Input.GetMouseButtonDown(0)))
         {
             GameManager.GameStarted = true;
         }
 
         // Verifica toques na tela para explodir o balão
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began || Input.GetMouseButtonDown(0))
+        // MODIFICADO: Movi Input.mousePosition para dentro do if para melhor performance
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
-            // Converte a posição do toque para coordenadas do mundo
-            Vector2 touchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            
-            // Verifica se o toque colidiu com este balão
-            if (GetComponent<Collider2D>().OverlapPoint(touchPos))
-            {
-                PopBalloon();
-            }
+            HandleTouch(Input.GetTouch(0).position);
+        }
+        else if (Input.GetMouseButtonDown(0)) // Para testes no editor
+        {
+            HandleTouch(Input.mousePosition);
         }
 
-        // Destroi o balão se chegar na posição 10 do eixo Y. Melhorar << Talvez, se for necessário
+        // Destroi o balão se chegar na posição 10 do eixo Y.
         if (transform.position.y > 10f)
         {
             Destroy(gameObject);
+        }
+    }
+
+    // NOVO: Método para centralizar a lógica de toque/clique
+    void HandleTouch(Vector2 screenPosition)
+    {
+        Vector2 touchPos = Camera.main.ScreenToWorldPoint(screenPosition);
+        Collider2D collider = GetComponent<Collider2D>(); // Pega o collider uma vez
+
+        if (collider != null && collider.OverlapPoint(touchPos))
+        {
+            PopBalloon();
         }
     }
 
@@ -58,7 +74,8 @@ public class Balloon : MonoBehaviour
         if (floatingPoints != null)
         {
             GameObject points = Instantiate(floatingPoints, transform.position, Quaternion.identity);
-            points.transform.GetChild(0).GetComponent<TextMesh>().text = "+10";
+            // MODIFICADO: Usa a variável scoreValue para o texto do popup
+            points.transform.GetChild(0).GetComponent<TextMesh>().text = "+" + scoreValue.ToString();
         }
         else
         {
@@ -66,45 +83,52 @@ public class Balloon : MonoBehaviour
         }
 
         // Adiciona pontos e toca som de estouro
-        GameManager.Instance.AddScore(10);
-        audioManager.PlaySFX(audioManager.ballonPop);
+        // MODIFICADO: Usa a variável scoreValue para adicionar os pontos
+        GameManager.Instance.AddScore(scoreValue); //
+        if (audioManager != null && audioManager.ballonPop != null) // Adicionada checagem para audioManager
+        {
+            audioManager.PlaySFX(audioManager.ballonPop); //
+        }
         
         // Dropa o próximo sprite e destrói o balão
-        DropNextSprite();
-        Destroy(gameObject);
+        DropNextSprite(); //
+        Destroy(gameObject); //
     }
 
     private void DropNextSprite()
     {
-        if (dropSprites.Length == 0 || spriteDropPrefab == null) return;
+        if (dropSprites.Length == 0 || spriteDropPrefab == null) return; //
 
         // Reseta o índice se necessário
-        if (GameManager.CurrentDropIndex >= dropSprites.Length)
+        if (GameManager.CurrentDropIndex >= dropSprites.Length) //
         {
-            GameManager.CurrentDropIndex = 0;
+            GameManager.CurrentDropIndex = 0; //
         }
 
         // Instancia o sprite dropado
-        GameObject dropInstance = Instantiate(spriteDropPrefab, transform.position, Quaternion.identity);
+        GameObject dropInstance = Instantiate(spriteDropPrefab, transform.position, Quaternion.identity); //
 
         // Configura o sprite
         SpriteRenderer sr = dropInstance.GetComponent<SpriteRenderer>();
         if (sr != null)
         {
-            sr.sprite = dropSprites[GameManager.CurrentDropIndex];
+            sr.sprite = dropSprites[GameManager.CurrentDropIndex]; //
         }
 
-        // Toca o áudio correspondente 
-        if (GameManager.CurrentDropIndex < dropAudioClips.Length && dropAudioClips[GameManager.CurrentDropIndex] != null)
+        // Toca o áudio correspondente
+        if (GameManager.CurrentDropIndex < dropAudioClips.Length && dropAudioClips[GameManager.CurrentDropIndex] != null) //
         {
-            audioManager.PlaySFX(dropAudioClips[GameManager.CurrentDropIndex]);
+            if (audioManager != null) // Adicionada checagem para audioManager
+            {
+                audioManager.PlaySFX(dropAudioClips[GameManager.CurrentDropIndex]); //
+            }
         }
         
         // Destrói o sprite após 4 segundos
-        Destroy(dropInstance, 4f);
+        Destroy(dropInstance, 4f); //
 
         // Atualiza o índice e verifica se a fase terminou
-        GameManager.CurrentDropIndex++; 
-        GameManager.Instance.CheckEndPhase(GameManager.CurrentDropIndex, dropSprites.Length);
+        GameManager.CurrentDropIndex++;  //
+        GameManager.Instance.CheckEndPhase(GameManager.CurrentDropIndex, dropSprites.Length); //
     }
 }
