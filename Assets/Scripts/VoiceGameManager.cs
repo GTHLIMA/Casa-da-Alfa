@@ -1,11 +1,9 @@
 using UnityEngine;
-using UnityEngine.UI; // Necessário para Image
-using TMPro;        // Necessário para TextMeshProUGUI
+using UnityEngine.UI;
+using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 
-// Certifique-se de que a interface ISpeechToTextListener e a classe SpeechToText
-// fazem parte do plugin que você está usando.
 public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 {
     [System.Serializable]
@@ -13,8 +11,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     {
         public string word;
         public Sprite image;
-        // Opcional: Adicionar um clipe de áudio para a palavra
-        // public AudioClip wordAudio;
+        // public AudioClip wordAudio; // Opcional
     }
 
     [Header("Configuração da Atividade")]
@@ -26,16 +23,25 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     public TMP_Text feedbackText;
     public Button listenButton;
 
-    [Header("Feedback Messages")]
+    [Header("Mensagens de Feedback")]
     public string correctMessage = "Muito bem! ✅";
     public string tryAgainMessage = "Quase lá! Tente de novo. ❌";
     public string listeningMessage = "Ouvindo... 🎤";
     public string initialMessage = "Pressione 'Ouvir' e diga o nome!";
-    public float delayAfterCorrect = 1.5f;
+    public string explanationInProgressMessage = "Escute a explicação...";
+    public string permissionNeededMessage = "Precisamos da sua permissão para usar o microfone!";
+    public string permissionDeniedMessage = "Permissão negada! Habilite o microfone para este app nas configurações do seu celular.";
+    public float delayAfterCorrect = 1.0f;
+
+    [Header("Áudios da Atividade")]
+    public AudioClip explanationAudio;
+    public AudioClip congratulatoryAudio;
+    public AudioClip tryAgainAudio;
 
     private int currentIndex = 0;
     private bool isListening = false;
     private bool isProcessing = false;
+    private bool explanationFinished = false; // Nova flag
 
     [Header("========== Pause Menu & Score ==========")]
     private int score;
@@ -45,26 +51,27 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     public GameObject PauseMenu;
     [SerializeField] private GameObject endPhasePanel;
     [SerializeField] private NumberCounter numberCounter;
-    private AudioManager audioManager; // Inicialize em Awake ou Start se for usar
+    private AudioManager audioManager;
+
+    void Awake()
+    {
+        Time.timeScale = 1f;
+        Debug.Log("ImageVoiceMatcher: Awake() -> Time.timeScale definido para 1f.");
+
+        GameObject amObject = GameObject.FindGameObjectWithTag("Audio");
+        if (amObject != null) audioManager = amObject.GetComponent<AudioManager>();
+        else Debug.LogError("ImageVoiceMatcher: AudioManager não encontrado! Verifique a tag 'Audio'.");
+    }
 
     void Start()
     {
-        // Pega referência do AudioManager
-        // Se você não tiver um AudioManager na cena com a tag "Audio", isso pode dar erro.
-        // audioManager = GameObject.FindGameObjectWithTag("Audio")?.GetComponent<AudioManager>();
-        // É mais seguro atribuir via Inspector se possível, ou garantir que ele exista.
-        GameObject amObject = GameObject.FindGameObjectWithTag("Audio");
-        if (amObject != null) audioManager = amObject.GetComponent<AudioManager>();
-
-
         score = ScoreTransfer.Instance?.Score ?? 0;
         if (numberCounter != null) numberCounter.Value = score;
-
-        UpdateAllScoreDisplays(); // Atualiza todos os textos de score
+        UpdateAllScoreDisplays();
 
         if (wordList == null || wordList.Count == 0)
         {
-            feedbackText.text = "ERRO: Nenhuma palavra configurada!";
+            if (feedbackText != null) feedbackText.text = "ERRO: Nenhuma palavra configurada!";
             Debug.LogError("ImageVoiceMatcher: A lista 'wordList' está vazia ou nula!");
             if (listenButton != null) listenButton.interactable = false;
             return;
@@ -83,60 +90,63 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         if (listenButton != null)
         {
             listenButton.onClick.AddListener(OnListenButtonPressed);
+            listenButton.interactable = false;
         }
 
         ShowImage(currentIndex);
-        feedbackText.text = initialMessage;
+        if (feedbackText != null) feedbackText.text = explanationInProgressMessage;
 
-        CheckAndRequestPermission();
-    }       
-
-    void Awake()
-    {
-        Time.timeScale = 1f;
-        Debug.Log("ImageVoiceMatcher: Start() -> Time.timeScale definido para 1f.");
-
+        StartCoroutine(PlayExplanationAndEnableGame());
+        CheckAndRequestPermission(); // Pede permissão enquanto a explicação pode estar tocando
     }
 
-    // DEBUG: Simular acerto com a tecla 'C' para testar no editor
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.C)) // DEBUG para simular acerto
         {
-            if (isListening || isProcessing)
-            {
-                Debug.LogWarning("DEBUG: Tecla C pressionada, mas está ouvindo/processando. Simulação ignorada.");
-                return;
-            }
-            if (wordList == null || wordList.Count == 0 || currentIndex >= wordList.Count)
-            {
-                 Debug.LogWarning("DEBUG: Tecla C pressionada, mas wordList está inválida ou fim da lista. Simulação ignorada.");
-                return;
-            }
-
+            if (isListening || isProcessing) return;
+            if (wordList == null || wordList.Count == 0 || currentIndex >= wordList.Count) return;
             Debug.Log("DEBUG: Tecla C pressionada, simulando acerto para: '" + wordList[currentIndex].word + "'");
-            // Simula um resultado correto do SpeechToText
             OnResultReceived(wordList[currentIndex].word, null);
         }
+    }
+
+    private IEnumerator PlayExplanationAndEnableGame()
+    {
+        if (listenButton != null) listenButton.interactable = false;
+
+        if (audioManager != null && explanationAudio != null)
+        {
+            Debug.Log("ImageVoiceMatcher: Tocando áudio de explicação...");
+            audioManager.PlaySFX(explanationAudio);
+            yield return new WaitForSeconds(explanationAudio.length);
+            Debug.Log("ImageVoiceMatcher: Áudio de explicação terminado.");
+        }
+        else
+        {
+            Debug.LogWarning("ImageVoiceMatcher: Áudio de explicação ou AudioManager não configurado.");
+            yield return new WaitForSeconds(0.5f);
+        }
+        explanationFinished = true;
+        TryEnableListenButton(); // Tenta habilitar o botão
     }
 
     void CheckAndRequestPermission()
     {
         if (!SpeechToText.CheckPermission())
         {
-            feedbackText.text = "Pedindo permissão de microfone...";
+            if (feedbackText != null) feedbackText.text = permissionNeededMessage;
             Debug.Log("ImageVoiceMatcher: Pedindo permissão de microfone...");
             SpeechToText.RequestPermissionAsync((permission) =>
             {
                 if (permission == SpeechToText.Permission.Granted)
                 {
-                    feedbackText.text = initialMessage;
                     Debug.Log("ImageVoiceMatcher: Permissão de microfone concedida!");
-                    if (listenButton != null) listenButton.interactable = true;
+                    TryEnableListenButton(); // Tenta habilitar o botão
                 }
                 else
                 {
-                    feedbackText.text = "Permissão negada! Habilite o microfone para este app nas configurações do seu celular.";
+                    if (feedbackText != null) feedbackText.text = permissionDeniedMessage;
                     Debug.LogError("ImageVoiceMatcher: Permissão de microfone negada!");
                     if (listenButton != null) listenButton.interactable = false;
                 }
@@ -145,37 +155,59 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         else
         {
             Debug.Log("ImageVoiceMatcher: Permissão de microfone já concedida.");
-            if (listenButton != null) listenButton.interactable = true;
+            TryEnableListenButton(); // Tenta habilitar o botão
         }
     }
 
+    // Novo método auxiliar para habilitar o botão de ouvir
+    void TryEnableListenButton()
+    {
+        // Só habilita se a explicação terminou E tem permissão
+        if (listenButton != null && explanationFinished && SpeechToText.CheckPermission())
+        {
+            listenButton.interactable = true;
+            if (feedbackText != null && (feedbackText.text == explanationInProgressMessage || feedbackText.text == permissionNeededMessage))
+            {
+                feedbackText.text = initialMessage; // Define a mensagem inicial após tudo estar pronto
+            }
+            Debug.Log("ImageVoiceMatcher: Botão de ouvir HABILITADO.");
+        }
+        else if(listenButton != null)
+        {
+            Debug.Log("ImageVoiceMatcher: Botão de ouvir NÃO habilitado ainda. Explicação Finalizada: " + explanationFinished + ", Permissão: " + SpeechToText.CheckPermission());
+        }
+    }
+
+
     void OnListenButtonPressed()
     {
-        if (isListening || isProcessing)
-        {
-            Debug.LogWarning("ImageVoiceMatcher: OnListenButtonPressed - Tentativa de iniciar escuta enquanto isListening=" + isListening + " ou isProcessing=" + isProcessing);
-            return;
-        }
-
         if (!SpeechToText.CheckPermission())
         {
-            Debug.LogWarning("ImageVoiceMatcher: OnListenButtonPressed - Sem permissão de microfone. Tentando pedir novamente.");
+            Debug.LogWarning("ImageVoiceMatcher: OnListenButtonPressed - Sem permissão. Pedindo novamente.");
             CheckAndRequestPermission();
             return;
         }
 
-        feedbackText.text = listeningMessage;
+        if (isListening || isProcessing)
+        {
+            Debug.LogWarning("ImageVoiceMatcher: OnListenButtonPressed - Bloqueado (isListening=" + isListening + " ou isProcessing=" + isProcessing + ")");
+            return;
+        }
+
+        if (feedbackText != null) feedbackText.text = listeningMessage;
         isListening = true;
         if (listenButton != null) listenButton.interactable = false;
 
+        Debug.Log("OnListenButtonPressed: Chamando SpeechToText.Start. Time.timeScale: " + Time.timeScale);
         bool started = SpeechToText.Start(this, true, false);
 
         if (!started)
         {
-            feedbackText.text = "Erro ao iniciar a escuta.";
+            if (feedbackText != null) feedbackText.text = "Erro ao iniciar a escuta.";
             Debug.LogError("ImageVoiceMatcher: SpeechToText.Start falhou em iniciar.");
             isListening = false;
-            if (listenButton != null) listenButton.interactable = true;
+            isProcessing = false;
+            TryEnableListenButton(); // Tenta reabilitar
         }
         else
         {
@@ -187,149 +219,190 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     {
         if (index < 0 || index >= wordList.Count)
         {
-            Debug.LogError("ImageVoiceMatcher: ShowImage - Índice inválido: " + index + ". Tamanho da lista: " + wordList.Count);
+            Debug.LogError("ImageVoiceMatcher: ShowImage - Índice inválido: " + index);
             return;
         }
-
+        if (displayImage == null)
+        {
+            Debug.LogError("ImageVoiceMatcher: displayImage não está atribuído!");
+            return;
+        }
         displayImage.sprite = wordList[index].image;
         displayImage.color = Color.white;
         displayImage.preserveAspect = true;
-        Debug.Log("ImageVoiceMatcher: ShowImage - Mostrando imagem para a palavra: '" + wordList[index].word + "' (Índice: " + index + ")");
+        Debug.Log("ImageVoiceMatcher: ShowImage - Mostrando imagem: '" + wordList[index].word + "' (Índice: " + index + ")");
     }
 
     void GoToNextImage()
     {
-        Debug.Log("GoToNextImage: CHAMADO. currentIndex ANTES: " + currentIndex + " | Time.timeScale: " + Time.timeScale);
+        Debug.Log("GoToNextImage: CHAMADO. currentIndex ANTES: " + currentIndex);
         currentIndex++;
-        Debug.Log("GoToNextImage: currentIndex DEPOIS: " + currentIndex + " | Total na Lista: " + wordList.Count);
+        Debug.Log("GoToNextImage: currentIndex DEPOIS: " + currentIndex + " | Total: " + wordList.Count);
 
         if (currentIndex >= wordList.Count)
         {
-            Debug.Log("GoToNextImage: FIM DA LISTA ALCANÇADO.");
-            feedbackText.text = "🎉 Parabéns! Você completou todas as imagens! 🎉";
-            if (displayImage != null) displayImage.enabled = false;
+            Debug.Log("GoToNextImage: FIM DA LISTA.");
+            if (feedbackText != null) feedbackText.text = "🎉 Parabéns! Você completou todas as imagens! 🎉";
+            if (displayImage != null) displayImage.enabled = false; // Esconde a imagem
             ShowEndPhasePanel();
             if (listenButton != null) listenButton.interactable = false;
         }
         else
         {
-            Debug.Log("GoToNextImage: MOSTRANDO PRÓXIMA IMAGEM (Índice: " + currentIndex + ").");
+            Debug.Log("GoToNextImage: MOSTRANDO PRÓXIMA IMAGEM.");
             ShowImage(currentIndex);
-            feedbackText.text = initialMessage;
-            if (listenButton != null) listenButton.interactable = true;
+            if (feedbackText != null) feedbackText.text = initialMessage;
+            TryEnableListenButton(); // Habilita o botão para a próxima palavra
         }
     }
 
-   private IEnumerator WaitAndAdvance()
-{
-    
-    Debug.Log("CORROTINA WaitAndAdvance INICIADA. Time.timeScale: " + Time.timeScale);
-    yield return new WaitForSeconds(delayAfterCorrect);
-    Debug.Log("CORROTINA WaitAndAdvance: Delay Concluído. Chamando GoToNextImage().");
-    GoToNextImage();
-    isProcessing = false;
-}
+    private IEnumerator HandleCorrectAnswerFlow()
+    {
+        // isProcessing já é true
+        Debug.Log("HandleCorrectAnswerFlow: Iniciado. Time.timeScale: " + Time.timeScale);
 
-    // --- Implementação da Interface ISpeechToTextListener ---
+        if (audioManager != null && congratulatoryAudio != null)
+        {
+            audioManager.PlaySFX(congratulatoryAudio);
+            yield return new WaitForSeconds(congratulatoryAudio.length);
+        }
+        yield return new WaitForSeconds(delayAfterCorrect);
+        GoToNextImage();
+        isProcessing = false; // Libera após tudo
+        Debug.Log("ImageVoiceMatcher: Fluxo de acerto concluído, isProcessing = false.");
+    }
 
+    private IEnumerator HandleWrongAnswerOrErrorFlow()
+    {
+        isListening = false; // Garante que não está mais ouvindo
+        isProcessing = true; // Marca que está processando o feedback de erro
+        if (listenButton != null) listenButton.interactable = false;
+        Debug.Log("HandleWrongAnswerOrErrorFlow: Iniciado. Botão desabilitado.");
+
+        if (audioManager != null && tryAgainAudio != null)
+        {
+            audioManager.PlaySFX(tryAgainAudio);
+            yield return new WaitForSeconds(tryAgainAudio.length);
+        } else {
+            yield return new WaitForSeconds(1.5f); // Delay padrão
+        }
+
+        isProcessing = false; // Libera processamento
+        TryEnableListenButton(); // Tenta reabilitar o botão
+        Debug.Log("ImageVoiceMatcher: Fluxo de erro/tentativa concluído, isProcessing = false.");
+    }
+
+    // --- MÉTODOS DA INTERFACE ISpeechToTextListener ---
     public void OnReadyForSpeech()
     {
-        Debug.Log("ImageVoiceMatcher STT: OnReadyForSpeech - Pronto para ouvir.");
+        Debug.Log("ImageVoiceMatcher STT: OnReadyForSpeech - Pronto para ouvir. Time.timeScale: " + Time.timeScale);
     }
 
     public void OnBeginningOfSpeech()
     {
-        Debug.Log("ImageVoiceMatcher STT: OnBeginningOfSpeech - Usuário começou a falar.");
-    }
-
-    public void OnPartialResultReceived(string partialText)
-    {
-        // Debug.Log("ImageVoiceMatcher STT: OnPartialResultReceived - Resultado Parcial: " + partialText);
+        Debug.Log("ImageVoiceMatcher STT: OnBeginningOfSpeech - Usuário começou a falar. Time.timeScale: " + Time.timeScale);
     }
 
     public void OnVoiceLevelChanged(float level)
     {
-        // Para feedback visual do volume da voz
+        // Exemplo: Debug.Log("ImageVoiceMatcher STT: Nível da voz: " + level);
+    }
+
+    public void OnPartialResultReceived(string partialText)
+    {
+        // Exemplo: Debug.Log("ImageVoiceMatcher STT: Resultado parcial: " + partialText);
     }
 
     public void OnResultReceived(string recognizedText, int? errorCode)
-{
-    Debug.Log("ImageVoiceMatcher STT: OnResultReceived - Texto: '" + recognizedText + "', Código de Erro: " + (errorCode.HasValue ? errorCode.Value.ToString() : "Nenhum") + " | Time.timeScale INÍCIO: " + Time.timeScale); // Log no início
-    isListening = false;
-
-    if (isProcessing)
     {
-        // ... (código existente) ...
-        return;
-    }
+        Debug.Log("ImageVoiceMatcher STT: OnResultReceived - Texto: '" + recognizedText + "', Código de Erro: " + (errorCode.HasValue ? errorCode.Value.ToString() : "Nenhum") + " | Time.timeScale INÍCIO: " + Time.timeScale);
+        isListening = false;
 
-    if (errorCode.HasValue)
-    {
-        // ... (código de erro existente) ...
-        Debug.Log("ImageVoiceMatcher STT: Saindo de OnResultReceived após erro. Time.timeScale: " + Time.timeScale);
-        return;
-    }
-    if (string.IsNullOrEmpty(recognizedText))
-    {
-        // ... (código de texto vazio existente) ...
-        Debug.Log("ImageVoiceMatcher STT: Saindo de OnResultReceived após texto vazio. Time.timeScale: " + Time.timeScale);
-        return;
-    }
-
-    isProcessing = true;
-
-    string expectedWord = wordList[currentIndex].word.ToLower().Trim();
-    string receivedWord = recognizedText.ToLower().Trim();
-
-    Debug.Log($"ImageVoiceMatcher: OnResultReceived - Comparando... Esperado: '{expectedWord}', Recebido: '{receivedWord}' | Time.timeScale ANTES DO IF: " + Time.timeScale);
-
-    if (receivedWord.Contains(expectedWord))
-    {
-        Debug.Log("ImageVoiceMatcher: OnResultReceived - ACERTOU! Preparando para feedback. Time.timeScale: " + Time.timeScale);
-
-        feedbackText.text = correctMessage;
-        Debug.Log("ImageVoiceMatcher: OnResultReceived - Após feedbackText.text. Time.timeScale: " + Time.timeScale);
-
-        AddScore(10); // O AddScore já tem um Debug.Log dentro dele
-        Debug.Log("ImageVoiceMatcher: OnResultReceived - Após AddScore. Time.timeScale: " + Time.timeScale);
-
-        StartCoroutine(WaitAndAdvance());
-    }
-    else
-    {
-        // ... (código de erro existente) ...
-        isProcessing = false;
-        if (listenButton != null) listenButton.interactable = true;
-    }
-    Debug.Log("ImageVoiceMatcher STT: Saindo do final de OnResultReceived. Time.timeScale: " + Time.timeScale);
-}
-        private string GetFriendlyErrorMessage(int errorCode)
+        if (isProcessing)
         {
-    Debug.Log("GetFriendlyErrorMessage chamado com código: " + errorCode);
-    switch (errorCode)
+            Debug.LogWarning("ImageVoiceMatcher STT: Resultado recebido, mas já estava processando (isProcessing=true). Ignorando este.");
+            return;
+        }
+
+        if (errorCode.HasValue)
         {
-        case 0: // Aparentemente, o plugin usa 0 para SpeechToText.Cancel()
-            return "Escuta cancelada.";
-        case 1: // SpeechRecognizer.ERROR_NETWORK_TIMEOUT
-            return "Problema de rede. Verifique sua conexão e tente de novo.";
-        case 2: // SpeechRecognizer.ERROR_NETWORK
-            return "Erro de conexão. Tente novamente.";
-        case 3: // SpeechRecognizer.ERROR_AUDIO
-            return "Erro de áudio. Verifique seu microfone.";
-        case 4: // SpeechRecognizer.ERROR_SERVER
-            return "Erro no servidor de reconhecimento. Tente mais tarde.";
-        case 5: // SpeechRecognizer.ERROR_CLIENT
-            return "Ocorreu um problema. Tente de novo.";
-        case 6: // SpeechRecognizer.ERROR_SPEECH_TIMEOUT (O plugin também mapeia o erro 7 para 6)
-            return "Não ouvi nada ou não entendi. Fale mais alto e claro, por favor.";
-        // case 7 (ERROR_NO_MATCH) é tratado como 6 pelo plugin, então a mensagem acima cobre isso.
-        case 8: // SpeechRecognizer.ERROR_RECOGNIZER_BUSY
-            return "O serviço de voz está ocupado. Tente em alguns segundos.";
-        case 9: // SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS
-            // O plugin tem SpeechToText.OpenGoogleAppSettings() para este caso
-            return "O app Google precisa de permissão para usar o microfone. Verifique as configurações do app Google.";
-        default:
-            return $"Não entendi. Tente de novo. (Erro {errorCode})";
+            string friendlyErrorMessage = GetFriendlyErrorMessage(errorCode.Value);
+            Debug.LogError($"ImageVoiceMatcher STT: Erro de reconhecimento - Código {errorCode.Value}. Mensagem: {friendlyErrorMessage}");
+            if (feedbackText != null) feedbackText.text = friendlyErrorMessage;
+            StartCoroutine(HandleWrongAnswerOrErrorFlow());
+            return;
+        }
+
+        if (string.IsNullOrEmpty(recognizedText) && !errorCode.HasValue) // Adicionado !errorCode.HasValue para ter certeza
+        {
+            Debug.LogWarning("ImageVoiceMatcher STT: OnResultReceived - Resultado vazio recebido (sem erro de plugin).");
+            if (feedbackText != null) feedbackText.text = tryAgainMessage + "\n(Não ouvi nada)";
+            StartCoroutine(HandleWrongAnswerOrErrorFlow());
+            return;
+        }
+        
+        isProcessing = true;
+
+        string expectedWord = wordList[currentIndex].word.ToLower().Trim();
+        string receivedWord = recognizedText.ToLower().Trim();
+
+        Debug.Log($"ImageVoiceMatcher: OnResultReceived - Comparando... Esperado: '{expectedWord}', Recebido: '{receivedWord}'");
+
+        bool matched = false;
+        if (expectedWord == "zaca")
+        {
+            if (receivedWord.Contains("zaca") || receivedWord.Contains("saca") || receivedWord.Contains("zacka") ||
+                receivedWord.Contains("za ca") || receivedWord.Contains("sa ca") ||
+                receivedWord.Contains("chaca") || receivedWord.Contains("caca"))
+            {
+                Debug.Log("ImageVoiceMatcher: Match especial para 'ZACA' bem-sucedido com '" + receivedWord + "'");
+                matched = true;
+            }
+        }
+        else
+        {
+            if (receivedWord.Contains(expectedWord))
+            {
+                matched = true;
+            }
+        }
+
+        if (matched)
+        {
+            if (feedbackText != null) feedbackText.text = correctMessage;
+            Debug.Log("ImageVoiceMatcher: ACERTOU!");
+            AddScore(10);
+            StartCoroutine(HandleCorrectAnswerFlow());
+        }
+        else 
+        {
+            if (feedbackText != null)
+            {
+                
+                feedbackText.text = tryAgainMessage + $"\n(Você disse: {receivedWord})";
+            }
+            Debug.Log($"ImageVoiceMatcher: ERROU! Esperado: '{expectedWord}', Recebido: '{receivedWord}'");
+            StartCoroutine(HandleWrongAnswerOrErrorFlow());
+        }
+    }
+    private string GetFriendlyErrorMessage(int errorCode)
+    {
+        // ... (seu código GetFriendlyErrorMessage) ...
+        Debug.Log("GetFriendlyErrorMessage chamado com código: " + errorCode);
+        switch (errorCode)
+        {
+            case 0: return "Escuta cancelada."; // Pode acontecer se SpeechToText.Cancel() for chamado
+            case 1: return "Problema de rede. Verifique sua conexão e tente de novo.";
+            case 2: return "Erro de conexão. Tente novamente.";
+            case 3: return "Erro de áudio. Verifique seu microfone.";
+            case 4: return "Erro no servidor de reconhecimento. Tente mais tarde.";
+            case 5: return "Ocorreu um problema. Tente de novo.";
+            case 6: // SpeechRecognizer.ERROR_SPEECH_TIMEOUT ou ERROR_NO_MATCH
+            case 7: // SpeechRecognizer.ERROR_NO_MATCH (alguns plugins podem retornar 7)
+                return "Não ouvi nada ou não entendi. Fale mais alto e claro, por favor.";
+            case 8: return "O serviço de voz está ocupado. Tente em alguns segundos.";
+            case 9: return "O app Google precisa de permissão para usar o microfone. Verifique as configurações.";
+            default: return $"Não entendi. Tente de novo. (Erro {errorCode})";
         }
     }
 
@@ -351,43 +424,38 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     {
         PauseMenu.SetActive(false);
         Time.timeScale = 1f;
-        Debug.Log("ClosePauseMenu: Time.timeScale = " + Time.timeScale);
+        Debug.Log("ImageVoiceMatcher ClosePauseMenu: Time.timeScale = " + Time.timeScale);
     }
 
     public void OpenPauseMenu()
     {
-
-        Debug.Log("OpenPauseMenu FOI CHAMADO AGORA!");
-
+        Debug.Log("ImageVoiceMatcher OpenPauseMenu FOI CHAMADO!");
         if (scorePause != null) scorePause.text = "Score: " + score.ToString("000");
         PauseMenu.SetActive(true);
         Time.timeScale = 0f;
         ScoreTransfer.Instance?.SetScore(score);
-        Debug.Log("OpenPauseMenu: Time.timeScale = " + Time.timeScale);
+        Debug.Log("ImageVoiceMatcher OpenPauseMenu: Time.timeScale = " + Time.timeScale);
     }
 
     public void ShowEndPhasePanel()
     {
-        Debug.Log("ShowEndPhasePanel: CHAMADO. Score: " + score + " | Time.timeScale atual: " + Time.timeScale);
+        Debug.Log("ImageVoiceMatcher ShowEndPhasePanel: CHAMADO. Score: " + score);
         if (scoreEndPhase != null) scoreEndPhase.text = "Score: " + score.ToString("000");
-
-        if(endPhasePanel != null) endPhasePanel.SetActive(true);
-        // Time.timeScale = 0f; // Você pode querer pausar aqui também
+        if (endPhasePanel != null) endPhasePanel.SetActive(true);
         ScoreTransfer.Instance?.SetScore(score);
-        // Verifique se audioManager e end3 existem
-        if(audioManager != null && audioManager.end3 != null) audioManager.PlaySFX(audioManager.end3);
+        if (audioManager != null && audioManager.end3 != null) audioManager.PlaySFX(audioManager.end3);
+        // Considerar pausar o jogo aqui se desejar que nada mais aconteça
+        // Time.timeScale = 0f;
     }
 
     public void AddScore(int amount)
     {
         score += amount;
         if (score < 0) score = 0;
-
         if (numberCounter != null) numberCounter.Value = score;
         ScoreTransfer.Instance?.SetScore(score);
-
         UpdateAllScoreDisplays();
-        Debug.Log("AddScore: Pontuação atualizada para: " + score);
+        Debug.Log("ImageVoiceMatcher AddScore: Pontuação atualizada para: " + score);
     }
 
     void UpdateAllScoreDisplays()
