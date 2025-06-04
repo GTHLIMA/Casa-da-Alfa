@@ -2955,7 +2955,14 @@ MonoBehaviour:
   tryAgainMessage: "Quase l\xE1! Tente de novo. "
   listeningMessage: "Ouvindo... \uFFFD"
   initialMessage: Pressione 'Ouvir' e diga o nome!
+  explanationInProgressMessage: "Escute a explica\xE7\xE3o..."
+  permissionNeededMessage: "Precisamos da sua permiss\xE3o para usar o microfone!"
+  permissionDeniedMessage: "Permiss\xE3o negada! Habilite o microfone para este app
+    nas configura\xE7\xF5es do seu celular."
   delayAfterCorrect: 1.5
+  explanationAudio: {fileID: 8300000, guid: ee54236d71dc0d545b07becf8b0ad7c6, type: 3}
+  congratulatoryAudio: {fileID: 8300000, guid: 4da8f7da6c8552a499e186e1d9bed1c1, type: 3}
+  tryAgainAudio: {fileID: 8300000, guid: faac107ee9833c4419c8b227006e1f86, type: 3}
   scorePause: {fileID: 846508828}
   scoreEndPhase: {fileID: 1607863755}
   scoreHUD: {fileID: 1743877870}
