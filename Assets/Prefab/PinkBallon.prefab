@@ -148,7 +148,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.39
+  m_Radius: 0.6
 --- !u!114 &1586154973216339248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,3 +202,10 @@ MonoBehaviour:
   floatingPoints: {fileID: 4886261898834757915, guid: 780301c9cbfb31948a801c57a98b1596, type: 3}
   isGolden: 0
   scoreValue: 10
+  popAnimation:
+  - {fileID: 21300000, guid: 7518f42d9d888c74880d4331c1efefc5, type: 3}
+  - {fileID: 21300000, guid: 9a7969bef3d0a68439e38afd8f1a29cb, type: 3}
+  - {fileID: 21300000, guid: 7027d1e5ac46c2a42a4c3ace0e609f71, type: 3}
+  - {fileID: 21300000, guid: a64e13eea1b1c4948a8fd0bb472c4ca4, type: 3}
+  - {fileID: 21300000, guid: d2376b3ff730c7c458d73937451811fd, type: 3}
+  frameRate: 0.05
