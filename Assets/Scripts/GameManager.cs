@@ -8,66 +8,56 @@ public class GameManager : MonoBehaviour
     #region Balloon Prefabs
 
     [Header("======= Ballon Prefabs =======")]
-    public GameObject[] spawnnablePrefabs; // Array de prefabs que podem ser spawnados
-    public float horizontalSpawnPadding = 1f; // Margem horizontal para spawn para não nascer nas bordas
-    public static int CurrentDropIndex = 0; 
-    public static GameManager Instance; // Instância singleton do GameManager
-    public Transform spawnPoint; 
-    private float maxVisibleX; 
+    public GameObject[] spawnnablePrefabs;
+    public float horizontalSpawnPadding = 1f;
+    public static int CurrentDropIndex = 0;
+    public static GameManager Instance;
+    public Transform spawnPoint;
+    private float maxVisibleX;
     public float spawnRate;
 
     #endregion
 
-
-
     #region Score Settings
 
     [Header("======= Score Settings =======")]
-    [SerializeField] private NumberCounter numberCounter; // Referência para o contador de números
-    private int score; // Pontuação atual do jogador
-    public TMP_Text scorePause; // Texto para mostrar a pontuação no menu de pausa
-    public TMP_Text scoreEndPhase; // Texto para mostrar a pontuação no fim da fase
+    [SerializeField] private NumberCounter numberCounter;
+    private int score;
+    public TMP_Text scorePause;
+    public TMP_Text scoreEndPhase;
 
     #endregion
-
 
     #region Game Settings
 
     [Header("======= Game Settings =======")]
-    [SerializeField] private GameObject endPhasePanel; 
-    public static bool GameStarted = false; 
-    private bool gameStarted = false; 
+    [SerializeField] private GameObject endPhasePanel;
+    public ParticleSystem confettiEffect; // A referência para o efeito visual de confete
+    public static bool GameStarted = false;
+    private bool gameStarted = false;
     public GameObject PauseMenu;
-    private AudioManager audioManager; // Referência para o gerenciador de áudio
+    private AudioManager audioManager;
 
     #endregion
 
-
     private void Awake()
     {
-        Time.timeScale = 1f; 
-        
-        // Configura o padrão singleton
+        Time.timeScale = 1f;
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
-
         audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
-        
-        // Calcula o limite máximo visível no eixo X baseado na câmera
         maxVisibleX = Camera.main.orthographicSize * Camera.main.aspect;
     }
 
     private void Start()
     {
-        // Inicializa a pontuação com o valor transferido de outra cena
-        score = ScoreTransfer.Instance.Score;
-        numberCounter.Value = score;
+        if (ScoreTransfer.Instance != null) score = ScoreTransfer.Instance.Score;
+        if (numberCounter != null) numberCounter.Value = score;
     }
 
     private void Update()
     {
-        // Verifica se o jogador clicou na tela para começar o jogo
         if (Input.GetMouseButtonDown(0) && !gameStarted)
         {
             StartGame();
@@ -77,42 +67,30 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         if (gameStarted) return;
-
         StartSpawning();
         gameStarted = true;
         GameStarted = true;
-
-        FindObjectOfType<AudioManager>().SetBackgroundVolume(0.05f);
+        if (FindObjectOfType<AudioManager>() != null)
+            FindObjectOfType<AudioManager>().SetBackgroundVolume(0.05f);
         Array.ForEach(GameObject.FindGameObjectsWithTag("teste"), Destroy);
     }
 
-
-
     private void StartSpawning()
     {
-        // Velocidade do spawn dos prefabs
         InvokeRepeating(nameof(SpawnPrefab), 0.5f, spawnRate);
     }
 
     private void SpawnPrefab()
     {
-        // Sai do método se não houver prefabs configurados
         if (spawnnablePrefabs.Length == 0) return;
-
-        // Escolhe um prefab aleatório do array
         GameObject prefabToSpawn = spawnnablePrefabs[UnityEngine.Random.Range(0, spawnnablePrefabs.Length)];
-
-        // Calcula uma posição de spawn aleatória dentro dos limites da tela
         Vector3 spawnPosition = spawnPoint.position;
         spawnPosition.x = UnityEngine.Random.Range(-maxVisibleX + horizontalSpawnPadding, maxVisibleX - horizontalSpawnPadding);
-
-        // Instancia o prefab na posição calculada
         GameObject instance = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
     }
 
     public void CheckEndPhase(int currentIndex, int totalDrops)
     {
-        // Se o índice atual for maior ou igual ao total, mostra o painel de fim de fase
         if (currentIndex >= totalDrops)
         {
             ShowEndPhasePanel();
@@ -121,20 +99,20 @@ public class GameManager : MonoBehaviour
 
     public void OpenPauseMenuLvl1()
     {
-        // Atualiza o texto da pontuação no menu de pausa
         if (scorePause != null) scorePause.text = "Score: " + score.ToString();
-        
-        PauseMenu.SetActive(true); 
-        audioManager.PauseAudio(audioManager.background); 
-        Time.timeScale = 0; 
-        ScoreTransfer.Instance.SetScore(score); // Salva a pontuação atual
+        PauseMenu.SetActive(true);
+        // CORRIGIDO: Passa o parâmetro que seu AudioManager espera
+        if (audioManager != null) audioManager.PauseAudio(audioManager.background);
+        Time.timeScale = 0;
+        if (ScoreTransfer.Instance != null) ScoreTransfer.Instance.SetScore(score);
     }
 
     public void ClosePauseMenuLvl1()
     {
-        Time.timeScale = 1f; 
-        PauseMenu.SetActive(false); 
-        audioManager.ResumeAudio(audioManager.background); 
+        Time.timeScale = 1f;
+        PauseMenu.SetActive(false);
+        // CORRIGIDO: Passa o parâmetro que seu AudioManager espera
+        if (audioManager != null) audioManager.ResumeAudio(audioManager.background);
     }
 
     public void ShowEndPhasePanel()
@@ -144,31 +122,40 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator ShowEndPhasePanelCoroutine()
     {
-        yield return new WaitForSeconds(0.5f); 
+        yield return new WaitForSeconds(0.5f);
 
-        // Atualiza o texto da pontuação no painel de fim de fase
         if (scoreEndPhase != null)
             scoreEndPhase.text = "Score: " + score.ToString();
 
-        Time.timeScale = 0f; 
-        audioManager.PauseAudio(audioManager.background); 
-        endPhasePanel.SetActive(true); 
+        if (endPhasePanel != null) endPhasePanel.SetActive(true);
+        if (spawnPoint != null) spawnPoint.gameObject.SetActive(false);
+        if (confettiEffect != null)
+        {
+            confettiEffect.Play();
+            Debug.Log("Efeito de confete ativado!");
+        }
 
-        spawnPoint.gameObject.SetActive(false); // Desativa o ponto de spawn
+        CancelInvoke(nameof(SpawnPrefab));
+        Debug.Log("Spawner de balões parado via CancelInvoke.");
 
-        ScoreTransfer.Instance.SetScore(score); // Salva a pontuação
-        audioManager.PlaySFX(audioManager.end2); 
+        if (audioManager != null)
+        {
+            // CORRIGIDO: Passa o parâmetro que seu AudioManager espera
+            audioManager.PauseAudio(audioManager.background);
+            // Toca o som de fim de fase já existente
+            audioManager.PlaySFX(audioManager.end2);
+        }
+
+        if (ScoreTransfer.Instance != null) ScoreTransfer.Instance.SetScore(score);
     }
 
     public void AddScore(int amount)
     {
         score += amount;
-        if (score < 0) score = 0; // Garante que a pontuação não fique negativa
-
-        numberCounter.Value = score; // Atualiza o contador visual
-        ScoreTransfer.Instance.SetScore(score); // Salva a pontuação
+        if (score < 0) score = 0;
+        if (numberCounter != null) numberCounter.Value = score;
+        if (ScoreTransfer.Instance != null) ScoreTransfer.Instance.SetScore(score);
     }
-    
-    // Retorna a pontuação atual
+
     public int GetScore() => score;
 }
