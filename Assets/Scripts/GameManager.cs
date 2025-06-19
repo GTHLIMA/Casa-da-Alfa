@@ -67,6 +67,9 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         if (gameStarted) return;
+
+        CurrentDropIndex = 0; // Reseta o índice de drops no inicio do jogo
+
         StartSpawning();
         gameStarted = true;
         GameStarted = true;
