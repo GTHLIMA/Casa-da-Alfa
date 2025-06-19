@@ -834,12 +834,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnnablePrefabs:
-  - {fileID: 5838160969091504949, guid: f6d0d74e89ecb3f4faa30b2100c24271, type: 3}
   - {fileID: 5838160969091504949, guid: ddb9851a2804c724083500a5f68e528a, type: 3}
-  - {fileID: 5838160969091504949, guid: bc6e245769a21564f99c14b7bda190a4, type: 3}
-  - {fileID: 5838160969091504949, guid: 9d9225f0fced87346be510c685cb0029, type: 3}
   - {fileID: 5838160969091504949, guid: 11bdac266da92034f9ed571ffd368779, type: 3}
   - {fileID: 5838160969091504949, guid: 8a93b11f3969103499b3d618a7604bcc, type: 3}
+  - {fileID: 5838160969091504949, guid: bc6e245769a21564f99c14b7bda190a4, type: 3}
+  - {fileID: 5838160969091504949, guid: 9d9225f0fced87346be510c685cb0029, type: 3}
+  - {fileID: 5838160969091504949, guid: f6d0d74e89ecb3f4faa30b2100c24271, type: 3}
   horizontalSpawnPadding: 0.4
   spawnPoint: {fileID: 1882356065}
   spawnRate: 1
@@ -2414,7 +2414,7 @@ GameObject:
   - component: {fileID: 1253097849}
   - component: {fileID: 1253097848}
   m_Layer: 0
-  m_Name: 1
+  m_Name: Ballon
   m_TagString: teste
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2887,7 +2887,7 @@ GameObject:
   - component: {fileID: 1545858663}
   - component: {fileID: 1545858662}
   m_Layer: 0
-  m_Name: Mao
+  m_Name: Hand
   m_TagString: teste
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4032,6 +4032,6 @@ SceneRoots:
   - {fileID: 1669652412}
   - {fileID: 1882356065}
   - {fileID: 1501442352}
-  - {fileID: 1125635933}
   - {fileID: 1545858664}
   - {fileID: 1253097849}
+  - {fileID: 1125635933}
