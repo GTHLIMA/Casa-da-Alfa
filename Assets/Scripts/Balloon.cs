@@ -6,21 +6,29 @@ public class Balloon : MonoBehaviour
 {
     public float upSpeed; // Velocidade de subida do balão
     private AudioManager audioManager; // Referência para o gerenciador de áudio
-    // private GameManager gameManager; // Referência para o gerenciador do jogo - REMOVIDA SE NÃO USADA DIRETAMENTE AQUI
+    
 
     [SerializeField] private GameObject spriteDropPrefab; // Prefab do sprite que será dropado
     [SerializeField] private Sprite[] dropSprites; // Array de sprites para drop
     [SerializeField] private AudioClip[] dropAudioClips; // Array de clipes de áudio para drop
-    public GameObject floatingPoints;
+    public GameObject floatingPoints; 
 
 
     [Header("===== Configurações Específicas do Balão =====")]
     public bool isGolden = false; // Marque no Inspector para o GoldenBalloonPrefab
     public int scoreValue = 10;   // Valor padrão de pontos (será 10 para balões normais)
 
+    [Header("===== Pop Animation =====")]
+    [SerializeField] private Sprite[] popAnimation; 
+    [SerializeField] private float frameRate = 0.05f; 
+    private SpriteRenderer spriteRenderer; // Referência ao SpriteRenderer do balão
+    private bool isPopping = false; // Flag para verificar se o balão está estourando
+
+
 
     void Awake()
     {
+        spriteRenderer = GetComponent<SpriteRenderer>(); // Pega o SpriteRenderer do balão
         audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
     }
 
@@ -65,33 +73,55 @@ public class Balloon : MonoBehaviour
 
     private void PopBalloon()
     {
-        // Mostra o efeito de pontos voando lá
+        if (isPopping) return; 
+
+        PopBalloonAnimation(); 
+    }
+    
+    private void PopBalloonAnimation()
+    {
+        if (isPopping) return;
+        isPopping = true;
+
+        // Mostra pontos flutuantes
         if (floatingPoints != null)
         {
             GameObject points = Instantiate(floatingPoints, transform.position, Quaternion.identity);
-            // MODIFICADO: Usa a variável scoreValue para o texto do popup
             points.transform.GetChild(0).GetComponent<TextMesh>().text = "+" + scoreValue.ToString();
         }
-        else
-        {
-            Debug.LogError("ERRO: A variável 'floatingPoints' não está atribuída no Inspector do Balão: " + gameObject.name);
-        }
 
-        // Adiciona pontos e toca som de estouro
-        // MODIFICADO: Usa a variável scoreValue para adicionar os pontos
-        GameManager.Instance.AddScore(scoreValue); 
-        if (audioManager != null && audioManager.ballonPop != null) // Adicionada checagem para audioManager
-        {
-            audioManager.PlaySFX(audioManager.ballonPop); 
-        }
-        
-        // Dropa o próximo sprite e destrói o balão
-        DropNextSprite(); 
-        Destroy(gameObject); 
+        GameManager.Instance.AddScore(scoreValue);
+        if (audioManager != null && audioManager.ballonPop != null)
+            audioManager.PlaySFX(audioManager.ballonPop);
+
+        // Inicia a animação de estouro
+        StartCoroutine(PlayPopAnimation());
+
+        // Inicia o drop do sprite com delay (2 segundos)
+        StartCoroutine(DelayedDrop(0.2f));
     }
+
+    private IEnumerator DelayedDrop(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        DropNextSprite();
+        Destroy(gameObject); // Destrói o balão APÓS dropar o sprite
+    }
+
+    private IEnumerator PlayPopAnimation()
+    {
+        foreach (var frame in popAnimation)
+        {
+            spriteRenderer.sprite = frame;
+            yield return new WaitForSeconds(frameRate);
+        }
+        // Removido o Destroy(gameObject) daqui para evitar conflito
+    }
+
 
     private void DropNextSprite()
     {
+
         if (dropSprites.Length == 0 || spriteDropPrefab == null) return; //
 
         // Reseta o índice se necessário
@@ -118,7 +148,7 @@ public class Balloon : MonoBehaviour
                 audioManager.PlaySFX(dropAudioClips[GameManager.CurrentDropIndex]); //
             }
         }
-        
+
         // Destrói o sprite após 4 segundos
         Destroy(dropInstance, 4f); //
 
