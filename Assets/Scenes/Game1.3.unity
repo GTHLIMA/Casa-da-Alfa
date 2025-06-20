@@ -3043,7 +3043,7 @@ MonoBehaviour:
     - word: navio
       image: {fileID: 21300000, guid: 094d71be7c492054b991319915bed0d2, type: 3}
       hintAudio: {fileID: 8300000, guid: 546b0730c32b3f84195ef8b8412635aa, type: 3}
-    - word: pata
+    - word: pato
       image: {fileID: 21300000, guid: 8b59a47ee0bd64d4ba24f0f5c469252a, type: 3}
       hintAudio: {fileID: 8300000, guid: 29493ea09a5403246b6751ef59c7b728, type: 3}
     - word: quadro
