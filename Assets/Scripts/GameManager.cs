@@ -143,7 +143,7 @@ public class GameManager : MonoBehaviour
 
         if (audioManager != null)
         {
-            // CORRIGIDO: Passa o parâmetro que seu AudioManager espera
+            
             audioManager.PauseAudio(audioManager.background);
             // Toca o som de fim de fase já existente
             audioManager.PlaySFX(audioManager.end2);

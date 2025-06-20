@@ -847,7 +847,7 @@ MonoBehaviour:
   scorePause: {fileID: 2019836792}
   scoreEndPhase: {fileID: 864717725}
   endPhasePanel: {fileID: 985280570}
-  confettiEffect: {fileID: 9119119621151358673, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
+  confettiEffect: {fileID: 1950047155}
   PauseMenu: {fileID: 477691021}
 --- !u!4 &273077911
 Transform:
@@ -3173,13 +3173,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Confete (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 2730006628571099094, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3387917037352678404, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 39
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3387917037352678404, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1872
+      value: -1029
       objectReference: {fileID: 0}
     - target: {fileID: 3387917037352678404, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3743,6 +3747,11 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!198 &1950047155 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 9119119621151358673, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
+  m_PrefabInstance: {fileID: 1806051676}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2019836790
 GameObject:
   m_ObjectHideFlags: 0
