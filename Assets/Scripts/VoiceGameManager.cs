@@ -3,20 +3,15 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
+using System.Globalization;
+using System;
 
 public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 {
     // --- ESTRUTURA DE DADOS ---
     [System.Serializable]
-    public class SyllableData
-    {
-        public string word;
-        public Sprite image;
-        public AudioClip hintBasicAudio;    // Dica para o 2º erro
-        public AudioClip hintMediumAudio;   // Dica para o 3º erro
-        public AudioClip hintFinalAudio;    // Dica para o 4º erro (diz a resposta)
-    }
-
+    public class SyllableData { public string word; public Sprite image; public AudioClip hintBasicAudio; public AudioClip hintMediumAudio; public AudioClip hintFinalAudio; }
     [System.Serializable]
     public class VowelDataGroup { public string groupName; public List<SyllableData> syllables; }
 
@@ -24,11 +19,14 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     public int vowelIndexToPlay = 0;
     public List<VowelDataGroup> allVowelData;
     public string languageCode = "pt-BR";
+    [Tooltip("Quão similar a palavra falada deve ser da esperada? (0.75 = 75%)")]
+    [Range(0f, 1f)]
+    public float similarityThreshold = 0.75f;
 
     [Header("Referências da Interface (UI)")]
     public Image displayImage;
     public Image micIndicatorImage;
-    public Animator listenButtonAnimator;
+    public Animator micIndicatorAnimator;
 
     [Header("Cores do Indicador de Microfone")]
     public Color promptingColor = Color.red;
@@ -36,10 +34,10 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     public Color staticColor = Color.white;
 
     [Header("Áudios de Feedback")]
-    public AudioClip initialPromptAudio;    // "Que desenho é esse?"
+    public AudioClip standardPrompt;
     public List<AudioClip> variablePrompts;
     public AudioClip congratulatoryAudio;
-    public List<AudioClip> supportAudios; // "Tente novamente", "Você quase acertou!"
+    public List<AudioClip> supportAudios;
 
     [Header("Efeitos Visuais")]
     public ParticleSystem endOfLevelConfetti;
@@ -49,8 +47,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     public float delayAfterCorrect = 1.0f;
     public float delayAfterHint = 1.5f;
     public float fadeDuration = 0.5f;
-
-    // --- Variáveis Internas ---
+    
     private List<SyllableData> currentSyllableList;
     private int currentIndex = 0;
     private int mistakeCount = 0;
@@ -61,12 +58,10 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     private bool isListening = false;
     private bool gameReady = false;
     private AudioManager audioManager;
-
+    
     [Header("========== Pause Menu & Score ==========")]
     private int score;
-    public TMP_Text scorePause;
-    public TMP_Text scoreEndPhase;
-    public TMP_Text scoreHUD;
+    public TMP_Text scorePause, scoreEndPhase, scoreHUD;
     public GameObject PauseMenu;
     [SerializeField] private GameObject endPhasePanel;
     [SerializeField] private NumberCounter numberCounter;
@@ -79,65 +74,17 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 
     void Start()
     {
-        // Setup do Score
         score = ScoreTransfer.Instance?.Score ?? 0;
         if (numberCounter != null) numberCounter.Value = score;
         UpdateAllScoreDisplays();
-        
-        // Validação da atividade
         if (allVowelData == null || allVowelData.Count <= vowelIndexToPlay || allVowelData[vowelIndexToPlay].syllables.Count == 0) { Debug.LogError("ERRO: Configuração da lista de palavras ('All Vowel Data') inválida!"); return; }
         currentSyllableList = allVowelData[vowelIndexToPlay].syllables;
-        if (displayImage == null || micIndicatorImage == null) { Debug.LogError("ERRO: Referências de UI (Display Image ou Mic Indicator Image) não atribuídas!"); return; }
-
+        if (displayImage == null || micIndicatorImage == null) { Debug.LogError("ERRO: Referências de UI não atribuídas!"); return; }
         SpeechToText.Initialize(languageCode);
-        SetMicIndicator(staticColor, false);
+        SetMicIndicator(staticColor);
         StartCoroutine(GameStartSequence());
     }
 
-    void Update()
-    {
-        // Se já estiver processando um acerto ou erro, não permite novas ações de debug.
-        if (isProcessing) return;
-
-        // Se estiver no estado de "escuta", permite forçar um resultado
-        if (isListening)
-        {
-            // Pressionar 'C' simula um ACERTO
-            if (Input.GetKeyDown(KeyCode.C))
-            {
-                Debug.LogWarning("--- DEBUG: Tecla C Pressionada -> Forçando Acerto ---");
-                SpeechToText.Cancel(); // Para a escuta atual
-                OnResultReceived(currentSyllableList[currentIndex].word, null);
-            }
-
-            // Pressionar 'X' simula um ERRO
-            if (Input.GetKeyDown(KeyCode.X))
-            {
-                Debug.LogWarning("--- DEBUG: Tecla X Pressionada -> Forçando Erro ---");
-                SpeechToText.Cancel(); // Para a escuta atual
-                OnResultReceived("palavra_errada_para_teste", null);
-            }
-        }
-        
-        // --- NOVO: Tecla 'N' para PULAR para a próxima imagem a qualquer momento ---
-        // Funciona mesmo que não esteja no modo de escuta, contanto que não esteja processando.
-        if (Input.GetKeyDown(KeyCode.N))
-        {
-            Debug.LogWarning("--- DEBUG: Tecla N Pressionada -> Forçando avanço para a próxima imagem ---");
-
-            // Se estiver ouvindo, cancela primeiro.
-            if (isListening)
-            {
-                SpeechToText.Cancel();
-                isListening = false;
-            }
-
-            // Inicia o fluxo de acerto, que levará à próxima imagem.
-            StartCoroutine(HandleCorrectAnswerFlow());
-        }
-    }
-
-   
     private IEnumerator GameStartSequence()
     {
         yield return new WaitForSeconds(initialDelay);
@@ -145,36 +92,45 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         StartCoroutine(PlayTurnRoutine());
     }
 
-   private IEnumerator PlayTurnRoutine()
+    private IEnumerator PlayTurnRoutine()
     {
+        Debug.Log("== [PlayTurnRoutine] - INICIANDO NOVO TURNO para imagem #" + currentIndex + " ==");
         isProcessing = true;
         yield return StartCoroutine(FadeImage(true));
-        
         while (true)
         {
-            SetMicIndicator(promptingColor, false);
-            // MODIFICADO: Usa o novo método para pegar a pergunta certa
-            AudioClip promptClip = GetCurrentQuestionAudio(); 
+            Debug.Log("[PlayTurnRoutine] - FASE DA PERGUNTA/DICA (Microfone Vermelho)");
+            SetMicIndicator(promptingColor);
+            AudioClip promptClip = GetCurrentPromptAudio();
             if (audioManager != null && promptClip != null)
             {
                 audioManager.PlaySFX(promptClip);
                 yield return new WaitForSeconds(promptClip.length);
-            }
-            else { yield return new WaitForSeconds(delayAfterHint); }
+            } else { yield return new WaitForSeconds(delayAfterHint); }
 
             if (!SpeechToText.CheckPermission()) { isProcessing = false; yield break; }
             
+            Debug.Log("[PlayTurnRoutine] - FASE DE ESCUTA (Microfone Verde)");
             SetMicIndicator(listeningColor, true);
             receivedResult = false;
             isListening = true;
             SpeechToText.Start(this, true, false);
 
+            Debug.Log("[PlayTurnRoutine] - ...Aguardando resultado da voz...");
             yield return new WaitUntil(() => receivedResult);
             isListening = false;
-            SetMicIndicator(staticColor, false);
+            SetMicIndicator(staticColor);
+            Debug.Log("[PlayTurnRoutine] - RESULTADO DA VOZ RECEBIDO! PROCESSANDO...");
 
-            if (lastErrorCode.HasValue || string.IsNullOrEmpty(lastRecognizedText))
+            if (lastErrorCode.HasValue)
             {
+                Debug.LogError("[PlayTurnRoutine] - Plugin de voz retornou um CÓDIGO DE ERRO: " + lastErrorCode.Value);
+                mistakeCount++;
+                continue;
+            }
+            if (string.IsNullOrEmpty(lastRecognizedText))
+            {
+                Debug.LogWarning("[PlayTurnRoutine] - Plugin de voz não reconheceu texto (resultado vazio).");
                 mistakeCount++;
                 continue;
             }
@@ -182,6 +138,8 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
             string expectedWord = currentSyllableList[currentIndex].word.ToLower().Trim();
             string receivedWord = lastRecognizedText.ToLower().Trim();
             bool matched = CheckMatch(expectedWord, receivedWord);
+
+            Debug.Log($"[PlayTurnRoutine] - Verificação do Match retornou: {matched}");
 
             if (matched)
             {
@@ -191,122 +149,50 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
             else
             {
                 mistakeCount++;
+                Debug.Log("[PlayTurnRoutine] - Erro. mistakeCount agora é: " + mistakeCount + ". Reiniciando loop de tentativa.");
             }
         }
         
+        Debug.Log("[PlayTurnRoutine] - Fim do turno. Preparando para a próxima imagem.");
         yield return StartCoroutine(FadeImage(false));
         isProcessing = false;
         GoToNextImage();
     }
-
-    // --- NOVO MÉTODO PARA DECIDIR QUAL PERGUNTA TOCAR ---
-    private AudioClip GetCurrentQuestionAudio()
-    {
-        // Se for uma das 3 primeiras figuras (índice 0, 1, 2)
-        if (currentIndex < 3)
-        {
-            Debug.Log("Usando pergunta padrão para a imagem #" + currentIndex);
-            return initialPromptAudio;
-        }
-        else // A partir da 4ª figura
-        {
-            if (variablePrompts != null && variablePrompts.Count > 0)
-            {
-                // Sorteia uma pergunta da lista de perguntas variadas
-                int randomIndex = Random.Range(0, variablePrompts.Count);
-                Debug.Log("Usando pergunta variada #" + randomIndex + " para a imagem #" + currentIndex);
-                return variablePrompts[randomIndex];
-            }
-            else
-            {
-                // Se a lista estiver vazia, usa a padrão como segurança
-                Debug.LogWarning("Lista de perguntas variadas está vazia! Usando a pergunta padrão.");
-                return initialPromptAudio;
-            }
-        }
-    }
-
-    // --- MÉTODO COM A LÓGICA DE DICAS ATUALIZADA ---
-    private AudioClip GetCurrentPromptAudio()
-    {
-        SyllableData currentSyllable = currentSyllableList[currentIndex];
-        switch (mistakeCount)
-        {
-            case 0: // 1ª Tentativa (sem erro)
-                return initialPromptAudio; // "Que desenho é esse?"
-            case 1: // 2ª Tentativa (após 1º erro) - silencioso, apenas repete a pergunta
-                return initialPromptAudio;
-            case 2: // 3ª Tentativa (após 2º erro)
-                return currentSyllable.hintBasicAudio;
-            case 3: // 4ª Tentativa (após 3º erro)
-                return currentSyllable.hintMediumAudio;
-            case 4: // 5ª Tentativa (após 4º erro)
-                return currentSyllable.hintFinalAudio;
-            default: // A partir da 6ª tentativa...
-                // ...alterna entre o áudio motivacional e a dica final.
-                if (mistakeCount % 2 != 0) // Em erros ímpares (5º, 7º, ...)
-                {
-                    if (supportAudios != null && supportAudios.Count > 0)
-                        return supportAudios[Random.Range(0, supportAudios.Count)];
-                    else 
-                        return currentSyllable.hintFinalAudio; // Segurança
-                }
-                else // Em erros pares (6º, 8º, ...)
-                {
-                    return currentSyllable.hintFinalAudio;
-                }
-        }
-    }
-
-    void GoToNextImage()
-    {
-        mistakeCount = 0;
-        currentIndex++;
-        if (currentIndex >= currentSyllableList.Count)
-        {
-            ShowEndPhasePanel();
-        }
-        else
-        {
-            StartCoroutine(PlayTurnRoutine());
-        }
-    }
-
+    
+    private AudioClip GetCurrentPromptAudio() { /* ...código sem alterações... */ SyllableData currentSyllable = currentSyllableList[currentIndex]; switch (mistakeCount) { case 0: if (currentIndex < 3) { return standardPrompt; } else { if (variablePrompts != null && variablePrompts.Count > 0) return variablePrompts[UnityEngine.Random.Range(0, variablePrompts.Count)]; else return standardPrompt; } case 1: return standardPrompt; case 2: return currentSyllable.hintBasicAudio; case 3: return currentSyllable.hintMediumAudio; case 4: return currentSyllable.hintFinalAudio; default: if (mistakeCount % 2 != 0) { if (supportAudios != null && supportAudios.Count > 0) return supportAudios[UnityEngine.Random.Range(0, supportAudios.Count)]; else return currentSyllable.hintFinalAudio; } else { return currentSyllable.hintFinalAudio; } } }
+    void GoToNextImage() { mistakeCount = 0; currentIndex++; if (currentIndex >= currentSyllableList.Count) { ShowEndPhasePanel(); } else { StartCoroutine(PlayTurnRoutine()); } }
+    
     private IEnumerator HandleCorrectAnswerFlow()
     {
-        SetMicIndicator(staticColor, false);
+        Debug.Log("== [HandleCorrectAnswerFlow] - Fluxo de ACERTO iniciado. ==");
+        SetMicIndicator(staticColor);
         AddScore(10);
-        if (audioManager != null && congratulatoryAudio != null)
-        {
-            audioManager.PlaySFX(congratulatoryAudio);
-            yield return new WaitForSeconds(congratulatoryAudio.length);
-        }
+        if (audioManager != null && congratulatoryAudio != null) { audioManager.PlaySFX(congratulatoryAudio); yield return new WaitForSeconds(congratulatoryAudio.length); }
         yield return new WaitForSeconds(delayAfterCorrect);
     }
     
-    // Este método de erro agora só é usado pela tecla de debug 'X'
-    private IEnumerator HandleWrongAnswerOrErrorFlow()
+    void SetMicIndicator(Color color, bool shouldPulse = false) { if (micIndicatorImage != null) micIndicatorImage.color = color; if (micIndicatorAnimator != null) micIndicatorAnimator.SetBool("DevePulsar", shouldPulse); }
+
+    // --- A FUNÇÃO MAIS IMPORTANTE PARA O DEBUG ---
+    public void OnResultReceived(string recognizedText, int? errorCode)
     {
-        SetMicIndicator(staticColor, false);
-        Debug.LogWarning("Fluxo de erro forçado pela tecla 'X'.");
-        mistakeCount++;
-        // Na lógica principal, o loop do PlayTurnRoutine cuidará do resto.
-        // Para o debug, apenas esperamos e liberamos.
-        isProcessing = true;
-        yield return new WaitForSeconds(1.5f);
-        isProcessing = false;
-        // Não reabilitamos o botão, pois o loop principal não está rodando no debug.
+        // Este log é o PRIMEIRO a ser chamado quando o plugin retorna um resultado.
+        Debug.Log($"<<<<< [OnResultReceived] - PLUGIN RETORNOU! Texto: '{recognizedText}', Código de Erro: {(errorCode.HasValue ? errorCode.Value.ToString() : "Nenhum")} >>>>>");
+        
+        isListening = false;
+        lastRecognizedText = recognizedText;
+        lastErrorCode = errorCode;
+        receivedResult = true;
     }
-    
-    void SetMicIndicator(Color color, bool shouldPulse) { if (micIndicatorImage != null) micIndicatorImage.color = color; if (listenButtonAnimator != null) listenButtonAnimator.SetBool("DevePulsar", shouldPulse); }
-    public void OnResultReceived(string recognizedText, int? errorCode) { isListening = false; if (isProcessing) { receivedResult = true; return; } lastRecognizedText = recognizedText; lastErrorCode = errorCode; receivedResult = true; }
-    
-    #region Métodos de Interface e Auxiliares
-    public void OnReadyForSpeech() {}
-    public void OnBeginningOfSpeech() {}
+
+    #region Outros Métodos (com logs adicionados)
+    public void OnReadyForSpeech() { Debug.Log("[STT] - Status: Pronto para ouvir."); }
+    public void OnBeginningOfSpeech() { Debug.Log("[STT] - Status: Usuário começou a falar."); }
     public void OnVoiceLevelChanged(float level) {}
     public void OnPartialResultReceived(string partialText) {}
-    private bool CheckMatch(string expected, string received) { if (expected == "zaca") return received.Contains("zaca") || received.Contains("saca"); else return received.Contains(expected); }
+    private bool CheckMatch(string expected, string received) { string normalizedExpected = RemoveAccents(expected); string normalizedReceived = RemoveAccents(received); Debug.Log($"--- COMPARANDO (SEM ACENTOS)! Esperado: '{normalizedExpected}' | Recebido: '{normalizedReceived}' ---"); float similarity = 1.0f - ((float)LevenshteinDistance(normalizedExpected, normalizedReceived) / Mathf.Max(normalizedExpected.Length, received.Length)); Debug.Log($"--- Similaridade: {similarity:P2} ---"); return similarity >= similarityThreshold || normalizedReceived.Contains(normalizedExpected); }
+    public int LevenshteinDistance(string s, string t) { int n = s.Length; int m = t.Length; int[,] d = new int[n + 1, m + 1]; if (n == 0) return m; if (m == 0) return n; for (int i = 0; i <= n; d[i, 0] = i++); for (int j = 0; j <= m; d[0, j] = j++); for (int i = 1; i <= n; i++) { for (int j = 1; j <= m; j++) { int cost = (t[j - 1] == s[i - 1]) ? 0 : 1; d[i, j] = Mathf.Min(Mathf.Min(d[i - 1, j] + 1, d[i, j - 1] + 1), d[i - 1, j - 1] + cost); } } return d[n, m]; }
+    private string RemoveAccents(string text) { if (string.IsNullOrEmpty(text)) return text; text = text.Normalize(NormalizationForm.FormD); StringBuilder stringBuilder = new StringBuilder(); foreach (var c in text) { var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c); if (unicodeCategory != UnicodeCategory.NonSpacingMark) { stringBuilder.Append(c); } } return stringBuilder.ToString().Normalize(NormalizationForm.FormC); }
     void CheckForMicrophonePermission() { if (!SpeechToText.CheckPermission()) SpeechToText.RequestPermissionAsync(); }
     void OnDestroy() { if (SpeechToText.IsBusy()) SpeechToText.Cancel(); }
     private IEnumerator FadeImage(bool fadeIn) { float targetAlpha = fadeIn ? 1f : 0f; float startAlpha = displayImage.color.a; if (fadeIn) ShowImage(currentIndex); float elapsedTime = 0f; while (elapsedTime < fadeDuration) { elapsedTime += Time.deltaTime; float newAlpha = Mathf.Lerp(startAlpha, targetAlpha, elapsedTime / fadeDuration); displayImage.color = new Color(1, 1, 1, newAlpha); yield return null; } displayImage.color = new Color(1, 1, 1, targetAlpha); }
