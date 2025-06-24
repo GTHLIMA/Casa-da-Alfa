@@ -12,46 +12,53 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     {
         public string word;
         public Sprite image;
-        public AudioClip hintAudio;
+        public AudioClip hintBasicAudio;    // Dica para o 2º erro
+        public AudioClip hintMediumAudio;   // Dica para o 3º erro
+        public AudioClip hintFinalAudio;    // Dica para o 4º erro (diz a resposta)
     }
 
     [System.Serializable]
-    public class VowelDataGroup
-    {
-        public string groupName;
-        public List<SyllableData> syllables;
-    }
+    public class VowelDataGroup { public string groupName; public List<SyllableData> syllables; }
 
     [Header("== Configuração Central da Atividade ==")]
-    [Tooltip("Qual grupo de vogal usar da lista abaixo? (0 para o primeiro, 1 para o segundo, etc.)")]
     public int vowelIndexToPlay = 0;
     public List<VowelDataGroup> allVowelData;
     public string languageCode = "pt-BR";
 
     [Header("Referências da Interface (UI)")]
     public Image displayImage;
-    public Button listenButton;
+    public Image micIndicatorImage;
     public Animator listenButtonAnimator;
 
-    [Header("Áudios de Feedback e Dicas")]
-    public AudioClip explanationAudio;
+    [Header("Cores do Indicador de Microfone")]
+    public Color promptingColor = Color.red;
+    public Color listeningColor = Color.green;
+    public Color staticColor = Color.white;
+
+    [Header("Áudios de Feedback")]
+    public AudioClip initialPromptAudio;    // "Que desenho é esse?"
+    public List<AudioClip> variablePrompts;
     public AudioClip congratulatoryAudio;
-    public List<AudioClip> tryAgainAudios;
-    public AudioClip inactivityPromptAudio;
+    public List<AudioClip> supportAudios; // "Tente novamente", "Você quase acertou!"
+
+    [Header("Efeitos Visuais")]
+    public ParticleSystem endOfLevelConfetti;
 
     [Header("Controles de Tempo")]
     public float initialDelay = 2.0f;
     public float delayAfterCorrect = 1.0f;
-    public float inactivityTimeout = 10f;
+    public float delayAfterHint = 1.5f;
     public float fadeDuration = 0.5f;
 
     // --- Variáveis Internas ---
     private List<SyllableData> currentSyllableList;
     private int currentIndex = 0;
     private int mistakeCount = 0;
-    private float inactivityTimer = 0f;
-    private bool isListening = false;
+    private bool receivedResult = false;
+    private string lastRecognizedText = "";
+    private int? lastErrorCode = null;
     private bool isProcessing = false;
+    private bool isListening = false;
     private bool gameReady = false;
     private AudioManager audioManager;
 
@@ -61,7 +68,6 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     public TMP_Text scoreEndPhase;
     public TMP_Text scoreHUD;
     public GameObject PauseMenu;
-    public ParticleSystem confettiEffect;
     [SerializeField] private GameObject endPhasePanel;
     [SerializeField] private NumberCounter numberCounter;
 
@@ -73,88 +79,183 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 
     void Start()
     {
+        // Setup do Score
         score = ScoreTransfer.Instance?.Score ?? 0;
         if (numberCounter != null) numberCounter.Value = score;
         UpdateAllScoreDisplays();
-
-        if (allVowelData == null || allVowelData.Count <= vowelIndexToPlay) { Debug.LogError("ERRO: 'allVowelData' não configurado ou 'vowelIndexToPlay' é inválido!"); return; }
+        
+        // Validação da atividade
+        if (allVowelData == null || allVowelData.Count <= vowelIndexToPlay || allVowelData[vowelIndexToPlay].syllables.Count == 0) { Debug.LogError("ERRO: Configuração da lista de palavras ('All Vowel Data') inválida!"); return; }
         currentSyllableList = allVowelData[vowelIndexToPlay].syllables;
-        if (currentSyllableList.Count == 0) { Debug.LogError("ERRO: A lista de sílabas para a vogal selecionada está vazia!"); return; }
-        if (displayImage == null) { Debug.LogError("ERRO: 'displayImage' não foi atribuído no Inspector!"); return; }
+        if (displayImage == null || micIndicatorImage == null) { Debug.LogError("ERRO: Referências de UI (Display Image ou Mic Indicator Image) não atribuídas!"); return; }
 
         SpeechToText.Initialize(languageCode);
-        if (listenButton != null)
-        {
-            listenButton.onClick.AddListener(OnListenButtonPressed);
-            listenButton.interactable = false;
-        }
-        if (listenButtonAnimator != null) listenButtonAnimator.SetBool("DevePulsar", false);
-
-        ShowImage(currentIndex);
+        SetMicIndicator(staticColor, false);
         StartCoroutine(GameStartSequence());
-        CheckForMicrophonePermission();
     }
 
     void Update()
     {
-        if (!gameReady || isListening || isProcessing)
-        {
-            if (isListening || isProcessing) inactivityTimer = 0f;
-            return;
-        }
+        // Se já estiver processando um acerto ou erro, não permite novas ações de debug.
+        if (isProcessing) return;
 
-        if (listenButton != null && listenButton.interactable)
+        // Se estiver no estado de "escuta", permite forçar um resultado
+        if (isListening)
         {
-            inactivityTimer += Time.deltaTime;
-            if (inactivityTimer >= inactivityTimeout)
+            // Pressionar 'C' simula um ACERTO
+            if (Input.GetKeyDown(KeyCode.C))
             {
-                if (listenButtonAnimator != null && !listenButtonAnimator.GetBool("DevePulsar"))
-                {
-                    listenButtonAnimator.SetBool("DevePulsar", true);
-                    if (audioManager != null && inactivityPromptAudio != null) audioManager.PlaySFX(inactivityPromptAudio);
-                }
+                Debug.LogWarning("--- DEBUG: Tecla C Pressionada -> Forçando Acerto ---");
+                SpeechToText.Cancel(); // Para a escuta atual
+                OnResultReceived(currentSyllableList[currentIndex].word, null);
+            }
+
+            // Pressionar 'X' simula um ERRO
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                Debug.LogWarning("--- DEBUG: Tecla X Pressionada -> Forçando Erro ---");
+                SpeechToText.Cancel(); // Para a escuta atual
+                OnResultReceived("palavra_errada_para_teste", null);
             }
         }
-        if (Input.GetKeyDown(KeyCode.C)) { StartCoroutine(HandleCorrectAnswerFlow()); }
-        if (Input.GetKeyDown(KeyCode.X)) { StartCoroutine(HandleWrongAnswerOrErrorFlow()); }
+        
+        // --- NOVO: Tecla 'N' para PULAR para a próxima imagem a qualquer momento ---
+        // Funciona mesmo que não esteja no modo de escuta, contanto que não esteja processando.
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            Debug.LogWarning("--- DEBUG: Tecla N Pressionada -> Forçando avanço para a próxima imagem ---");
+
+            // Se estiver ouvindo, cancela primeiro.
+            if (isListening)
+            {
+                SpeechToText.Cancel();
+                isListening = false;
+            }
+
+            // Inicia o fluxo de acerto, que levará à próxima imagem.
+            StartCoroutine(HandleCorrectAnswerFlow());
+        }
     }
 
+   
     private IEnumerator GameStartSequence()
     {
         yield return new WaitForSeconds(initialDelay);
-        if (audioManager != null && explanationAudio != null) audioManager.PlaySFX(explanationAudio);
-        gameReady = true;
-        TryEnableListenButton();
+        CheckForMicrophonePermission();
+        StartCoroutine(PlayTurnRoutine());
     }
 
-    void TryEnableListenButton()
+   private IEnumerator PlayTurnRoutine()
     {
-        if (gameReady && listenButton != null && SpeechToText.CheckPermission())
+        isProcessing = true;
+        yield return StartCoroutine(FadeImage(true));
+        
+        while (true)
         {
-            listenButton.interactable = true;
-            if (listenButtonAnimator != null) listenButtonAnimator.SetBool("DevePulsar", false);
-            inactivityTimer = 0f;
+            SetMicIndicator(promptingColor, false);
+            // MODIFICADO: Usa o novo método para pegar a pergunta certa
+            AudioClip promptClip = GetCurrentQuestionAudio(); 
+            if (audioManager != null && promptClip != null)
+            {
+                audioManager.PlaySFX(promptClip);
+                yield return new WaitForSeconds(promptClip.length);
+            }
+            else { yield return new WaitForSeconds(delayAfterHint); }
+
+            if (!SpeechToText.CheckPermission()) { isProcessing = false; yield break; }
+            
+            SetMicIndicator(listeningColor, true);
+            receivedResult = false;
+            isListening = true;
+            SpeechToText.Start(this, true, false);
+
+            yield return new WaitUntil(() => receivedResult);
+            isListening = false;
+            SetMicIndicator(staticColor, false);
+
+            if (lastErrorCode.HasValue || string.IsNullOrEmpty(lastRecognizedText))
+            {
+                mistakeCount++;
+                continue;
+            }
+
+            string expectedWord = currentSyllableList[currentIndex].word.ToLower().Trim();
+            string receivedWord = lastRecognizedText.ToLower().Trim();
+            bool matched = CheckMatch(expectedWord, receivedWord);
+
+            if (matched)
+            {
+                yield return StartCoroutine(HandleCorrectAnswerFlow());
+                break;
+            }
+            else
+            {
+                mistakeCount++;
+            }
+        }
+        
+        yield return StartCoroutine(FadeImage(false));
+        isProcessing = false;
+        GoToNextImage();
+    }
+
+    // --- NOVO MÉTODO PARA DECIDIR QUAL PERGUNTA TOCAR ---
+    private AudioClip GetCurrentQuestionAudio()
+    {
+        // Se for uma das 3 primeiras figuras (índice 0, 1, 2)
+        if (currentIndex < 3)
+        {
+            Debug.Log("Usando pergunta padrão para a imagem #" + currentIndex);
+            return initialPromptAudio;
+        }
+        else // A partir da 4ª figura
+        {
+            if (variablePrompts != null && variablePrompts.Count > 0)
+            {
+                // Sorteia uma pergunta da lista de perguntas variadas
+                int randomIndex = Random.Range(0, variablePrompts.Count);
+                Debug.Log("Usando pergunta variada #" + randomIndex + " para a imagem #" + currentIndex);
+                return variablePrompts[randomIndex];
+            }
+            else
+            {
+                // Se a lista estiver vazia, usa a padrão como segurança
+                Debug.LogWarning("Lista de perguntas variadas está vazia! Usando a pergunta padrão.");
+                return initialPromptAudio;
+            }
         }
     }
 
-    void OnListenButtonPressed()
+    // --- MÉTODO COM A LÓGICA DE DICAS ATUALIZADA ---
+    private AudioClip GetCurrentPromptAudio()
     {
-        inactivityTimer = 0f;
-        if (!SpeechToText.CheckPermission()) { CheckForMicrophonePermission(); return; }
-        if (isListening || isProcessing) return;
-        if (listenButtonAnimator != null) listenButtonAnimator.SetBool("DevePulsar", false);
-        isListening = true;
-        if (listenButton != null) listenButton.interactable = false;
-        SpeechToText.Start(this, true, false);
-    }
-
-    // Apenas UMA versão deste método, que só troca o sprite
-    void ShowImage(int index)
-    {
-        if (index < 0 || index >= currentSyllableList.Count) return;
-        if (displayImage == null) return;
-        displayImage.sprite = currentSyllableList[index].image;
-        displayImage.preserveAspect = true;
+        SyllableData currentSyllable = currentSyllableList[currentIndex];
+        switch (mistakeCount)
+        {
+            case 0: // 1ª Tentativa (sem erro)
+                return initialPromptAudio; // "Que desenho é esse?"
+            case 1: // 2ª Tentativa (após 1º erro) - silencioso, apenas repete a pergunta
+                return initialPromptAudio;
+            case 2: // 3ª Tentativa (após 2º erro)
+                return currentSyllable.hintBasicAudio;
+            case 3: // 4ª Tentativa (após 3º erro)
+                return currentSyllable.hintMediumAudio;
+            case 4: // 5ª Tentativa (após 4º erro)
+                return currentSyllable.hintFinalAudio;
+            default: // A partir da 6ª tentativa...
+                // ...alterna entre o áudio motivacional e a dica final.
+                if (mistakeCount % 2 != 0) // Em erros ímpares (5º, 7º, ...)
+                {
+                    if (supportAudios != null && supportAudios.Count > 0)
+                        return supportAudios[Random.Range(0, supportAudios.Count)];
+                    else 
+                        return currentSyllable.hintFinalAudio; // Segurança
+                }
+                else // Em erros pares (6º, 8º, ...)
+                {
+                    return currentSyllable.hintFinalAudio;
+                }
+        }
     }
 
     void GoToNextImage()
@@ -163,51 +264,17 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         currentIndex++;
         if (currentIndex >= currentSyllableList.Count)
         {
-            Debug.Log("FIM DA LISTA DE SÍLABAS!");
-            if (listenButton != null) listenButton.interactable = false;
-            if (listenButtonAnimator != null) listenButtonAnimator.SetBool("DevePulsar", false);
             ShowEndPhasePanel();
         }
         else
         {
-            StartCoroutine(FadeTransitionToShowNextImage());
+            StartCoroutine(PlayTurnRoutine());
         }
-    }
-
-    private IEnumerator FadeTransitionToShowNextImage()
-    {
-        if (listenButton != null) listenButton.interactable = false;
-        isProcessing = true;
-        float elapsedTime = 0f;
-        Color originalColor = Color.white;
-
-        while (elapsedTime < fadeDuration)
-        {
-            elapsedTime += Time.deltaTime;
-            float newAlpha = Mathf.Lerp(1f, 0f, elapsedTime / fadeDuration);
-            displayImage.color = new Color(originalColor.r, originalColor.g, originalColor.b, newAlpha);
-            yield return null;
-        }
-        displayImage.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0f);
-        ShowImage(currentIndex);
-        elapsedTime = 0f;
-        while (elapsedTime < fadeDuration)
-        {
-            elapsedTime += Time.deltaTime;
-            float newAlpha = Mathf.Lerp(0f, 1f, elapsedTime / fadeDuration);
-            displayImage.color = new Color(originalColor.r, originalColor.g, originalColor.b, newAlpha);
-            yield return null;
-        }
-        displayImage.color = Color.white; // CORRIGIDO: Garante que a cor final é totalmente opaca
-        isProcessing = false;
-        TryEnableListenButton();
     }
 
     private IEnumerator HandleCorrectAnswerFlow()
     {
-        isProcessing = true;
-        if (listenButton != null) listenButton.interactable = false;
-        if (listenButtonAnimator != null) listenButtonAnimator.SetBool("DevePulsar", false);
+        SetMicIndicator(staticColor, false);
         AddScore(10);
         if (audioManager != null && congratulatoryAudio != null)
         {
@@ -215,128 +282,42 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
             yield return new WaitForSeconds(congratulatoryAudio.length);
         }
         yield return new WaitForSeconds(delayAfterCorrect);
-        GoToNextImage();
-        // 'isProcessing' é resetado ao fim da corrotina de fade
     }
-
+    
+    // Este método de erro agora só é usado pela tecla de debug 'X'
     private IEnumerator HandleWrongAnswerOrErrorFlow()
     {
-        isProcessing = true;
-        isListening = false;
-        if (listenButton != null) listenButton.interactable = false;
-        if (listenButtonAnimator != null) listenButtonAnimator.SetBool("DevePulsar", false);
+        SetMicIndicator(staticColor, false);
+        Debug.LogWarning("Fluxo de erro forçado pela tecla 'X'.");
         mistakeCount++;
-        if (mistakeCount == 1)
-        {
-            AudioClip hintClip = currentSyllableList[currentIndex].hintAudio;
-            if (audioManager != null && hintClip != null)
-            {
-                audioManager.PlaySFX(hintClip);
-                yield return new WaitForSeconds(hintClip.length);
-            }
-        }
-        else
-        {
-            if (audioManager != null && tryAgainAudios != null && tryAgainAudios.Count > 0)
-            {
-                AudioClip clipToPlay = tryAgainAudios[Random.Range(0, tryAgainAudios.Count)];
-                audioManager.PlaySFX(clipToPlay);
-                yield return new WaitForSeconds(clipToPlay.length);
-            }
-        }
-        yield return new WaitForSeconds(0.5f);
-        isProcessing = false;
-        TryEnableListenButton();
-    }
-    
-    // --- MÉTODOS DA INTERFACE ISpeechToTextListener ---
-    public void OnReadyForSpeech() { }
-    public void OnBeginningOfSpeech() { }
-    public void OnVoiceLevelChanged(float level) { }
-    public void OnPartialResultReceived(string partialText) { }
-
-    public void OnResultReceived(string recognizedText, int? errorCode)
-    {
-        isListening = false;
-        if (isProcessing) return;
-        if (errorCode.HasValue || string.IsNullOrEmpty(recognizedText)) { StartCoroutine(HandleWrongAnswerOrErrorFlow()); return; }
+        // Na lógica principal, o loop do PlayTurnRoutine cuidará do resto.
+        // Para o debug, apenas esperamos e liberamos.
         isProcessing = true;
-        string expectedWord = currentSyllableList[currentIndex].word.ToLower().Trim();
-        string receivedWord = recognizedText.ToLower().Trim();
-        bool matched = false;
-        if (expectedWord == "zaca") { if (receivedWord.Contains("zaca") || receivedWord.Contains("saca")) matched = true; }
-        else { if (receivedWord.Contains(expectedWord)) matched = true; }
-        if (matched) { StartCoroutine(HandleCorrectAnswerFlow()); }
-        else { StartCoroutine(HandleWrongAnswerOrErrorFlow()); }
-    }
-
-    void CheckForMicrophonePermission()
-    {
-        if (!SpeechToText.CheckPermission())
-        {
-            Debug.LogError("Permissão de microfone NÃO CONCEDIDA.");
-            if (listenButton != null) listenButton.interactable = false;
-        }
+        yield return new WaitForSeconds(1.5f);
+        isProcessing = false;
+        // Não reabilitamos o botão, pois o loop principal não está rodando no debug.
     }
     
-    void OnDestroy()
-    {
-        if (listenButton != null) listenButton.onClick.RemoveListener(OnListenButtonPressed);
-        if (SpeechToText.IsBusy()) SpeechToText.Cancel();
-    }
-
+    void SetMicIndicator(Color color, bool shouldPulse) { if (micIndicatorImage != null) micIndicatorImage.color = color; if (listenButtonAnimator != null) listenButtonAnimator.SetBool("DevePulsar", shouldPulse); }
+    public void OnResultReceived(string recognizedText, int? errorCode) { isListening = false; if (isProcessing) { receivedResult = true; return; } lastRecognizedText = recognizedText; lastErrorCode = errorCode; receivedResult = true; }
+    
+    #region Métodos de Interface e Auxiliares
+    public void OnReadyForSpeech() {}
+    public void OnBeginningOfSpeech() {}
+    public void OnVoiceLevelChanged(float level) {}
+    public void OnPartialResultReceived(string partialText) {}
+    private bool CheckMatch(string expected, string received) { if (expected == "zaca") return received.Contains("zaca") || received.Contains("saca"); else return received.Contains(expected); }
+    void CheckForMicrophonePermission() { if (!SpeechToText.CheckPermission()) SpeechToText.RequestPermissionAsync(); }
+    void OnDestroy() { if (SpeechToText.IsBusy()) SpeechToText.Cancel(); }
+    private IEnumerator FadeImage(bool fadeIn) { float targetAlpha = fadeIn ? 1f : 0f; float startAlpha = displayImage.color.a; if (fadeIn) ShowImage(currentIndex); float elapsedTime = 0f; while (elapsedTime < fadeDuration) { elapsedTime += Time.deltaTime; float newAlpha = Mathf.Lerp(startAlpha, targetAlpha, elapsedTime / fadeDuration); displayImage.color = new Color(1, 1, 1, newAlpha); yield return null; } displayImage.color = new Color(1, 1, 1, targetAlpha); }
+    void ShowImage(int index) { if (index < 0 || index >= currentSyllableList.Count) return; displayImage.sprite = currentSyllableList[index].image; }
+    #endregion
+    
     #region Pause Menu and Score Management
-    public void ClosePauseMenu()
-    {
-        PauseMenu.SetActive(false);
-        Time.timeScale = 1f;
-    }
-
-    public void OpenPauseMenu()
-    {
-        if (scorePause != null) scorePause.text = "Score: " + score.ToString();
-        PauseMenu.SetActive(true);
-        Time.timeScale = 0;
-        ScoreTransfer.Instance.SetScore(score);
-    }
-
-    public void ShowEndPhasePanel()
-    {
-    Debug.Log("ImageVoiceMatcher ShowEndPhasePanel: CHAMADO. Score: " + score);
-    if (scoreEndPhase != null) scoreEndPhase.text = "Score: " + score.ToString();
-    if (endPhasePanel != null) endPhasePanel.SetActive(true);
-
-    // Toca o som de fim de fase
-    if (audioManager != null && audioManager.end3 != null) audioManager.PlaySFX(audioManager.end3);
-
-    if (confettiEffect != null)
-    {
-        confettiEffect.Play(); // Dispara o sistema de partículas para tocar uma vez
-        Debug.Log("Efeito de confete ativado!");
-    }
-    else
-    {
-        Debug.LogWarning("O efeito de confete (Confetti Effect) não foi atribuído no Inspector!");
-    }
-
-    ScoreTransfer.Instance.SetScore(score);
-    // Time.timeScale = 0f; // Descomente esta linha se quiser que o jogo pause na tela final
-    }
-    public void AddScore(int amount)
-    {
-        score += amount;
-        if (score < 0) score = 0;
-        if (numberCounter != null) numberCounter.Value = score;
-        ScoreTransfer.Instance.SetScore(score);
-        UpdateAllScoreDisplays();
-    }
-
-    void UpdateAllScoreDisplays()
-    {
-        string formattedScore = score.ToString("000");
-        if (scoreHUD != null) scoreHUD.text = formattedScore;
-        if (scorePause != null) scorePause.text = "Score: " + formattedScore;
-        if (scoreEndPhase != null) scoreEndPhase.text = "Score: " + formattedScore;
-    }
+    public void ClosePauseMenu() { PauseMenu.SetActive(false); Time.timeScale = 1f; }
+    public void OpenPauseMenu() { if (scorePause != null) scorePause.text = "Score: " + score.ToString(); PauseMenu.SetActive(true); Time.timeScale = 0; ScoreTransfer.Instance?.SetScore(score); }
+    public void ShowEndPhasePanel() { if (endPhasePanel != null) endPhasePanel.SetActive(true); if (audioManager != null && audioManager.end3 != null) audioManager.PlaySFX(audioManager.end3); if (endOfLevelConfetti != null) endOfLevelConfetti.Play(); UpdateAllScoreDisplays(); }
+    public void AddScore(int amount) { score += amount; if (score < 0) score = 0; if (numberCounter != null) numberCounter.Value = score; ScoreTransfer.Instance?.SetScore(score); UpdateAllScoreDisplays(); }
+    void UpdateAllScoreDisplays() { string formattedScore = score.ToString("000"); if (scoreHUD != null) scoreHUD.text = formattedScore; if (scorePause != null) scorePause.text = "Score: " + formattedScore; if (scoreEndPhase != null) scoreEndPhase.text = "Score: " + formattedScore; }
     #endregion
 }
