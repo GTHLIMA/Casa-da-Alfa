@@ -11,7 +11,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 {
     // --- ESTRUTURA DE DADOS ---
     [System.Serializable]
-    public class SyllableData { public string word; public Sprite image; public AudioClip hintBasicAudio; public AudioClip hintMediumAudio; public AudioClip hintFinalAudio; }
+    public class SyllableData { public string word; public Sprite image; public AudioClip hintBasicAudio; public AudioClip hintFinalAudio; }
     [System.Serializable]
     public class VowelDataGroup { public string groupName; public List<SyllableData> syllables; }
 
@@ -44,7 +44,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 
     [Header("Controles de Tempo")]
     public float initialDelay = 2.0f;
-    public float delayAfterCorrect = 1.0f;
+    public float delayAfterCorrect = 0.5f;
     public float delayAfterHint = 1.5f;
     public float fadeDuration = 0.5f;
     
@@ -159,7 +159,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         GoToNextImage();
     }
     
-    private AudioClip GetCurrentPromptAudio() { /* ...código sem alterações... */ SyllableData currentSyllable = currentSyllableList[currentIndex]; switch (mistakeCount) { case 0: if (currentIndex < 3) { return standardPrompt; } else { if (variablePrompts != null && variablePrompts.Count > 0) return variablePrompts[UnityEngine.Random.Range(0, variablePrompts.Count)]; else return standardPrompt; } case 1: return standardPrompt; case 2: return currentSyllable.hintBasicAudio; case 3: return currentSyllable.hintMediumAudio; case 4: return currentSyllable.hintFinalAudio; default: if (mistakeCount % 2 != 0) { if (supportAudios != null && supportAudios.Count > 0) return supportAudios[UnityEngine.Random.Range(0, supportAudios.Count)]; else return currentSyllable.hintFinalAudio; } else { return currentSyllable.hintFinalAudio; } } }
+    private AudioClip GetCurrentPromptAudio() { /* ...código sem alterações... */ SyllableData currentSyllable = currentSyllableList[currentIndex]; switch (mistakeCount) { case 0: if (currentIndex < 3) { return standardPrompt; } else { if (variablePrompts != null && variablePrompts.Count > 0) return variablePrompts[UnityEngine.Random.Range(0, variablePrompts.Count)]; else return standardPrompt; } case 1: return standardPrompt; case 2: return currentSyllable.hintBasicAudio; case 3: return standardPrompt;; case 4: return currentSyllable.hintFinalAudio; default: if (mistakeCount % 2 != 0) { if (supportAudios != null && supportAudios.Count > 0) return supportAudios[UnityEngine.Random.Range(0, supportAudios.Count)]; else return currentSyllable.hintFinalAudio; } else { return currentSyllable.hintFinalAudio; } } }
     void GoToNextImage() { mistakeCount = 0; currentIndex++; if (currentIndex >= currentSyllableList.Count) { ShowEndPhasePanel(); } else { StartCoroutine(PlayTurnRoutine()); } }
     
     private IEnumerator HandleCorrectAnswerFlow()
@@ -167,16 +167,16 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         Debug.Log("== [HandleCorrectAnswerFlow] - Fluxo de ACERTO iniciado. ==");
         SetMicIndicator(staticColor);
         AddScore(10);
-        if (audioManager != null && congratulatoryAudio != null) { audioManager.PlaySFX(congratulatoryAudio); yield return new WaitForSeconds(congratulatoryAudio.length); }
+        if (audioManager != null && congratulatoryAudio != null) { audioManager.PlaySFX(congratulatoryAudio); }
         yield return new WaitForSeconds(delayAfterCorrect);
     }
     
     void SetMicIndicator(Color color, bool shouldPulse = false) { if (micIndicatorImage != null) micIndicatorImage.color = color; if (micIndicatorAnimator != null) micIndicatorAnimator.SetBool("DevePulsar", shouldPulse); }
 
-    // --- A FUNÇÃO MAIS IMPORTANTE PARA O DEBUG ---
+    
     public void OnResultReceived(string recognizedText, int? errorCode)
     {
-        // Este log é o PRIMEIRO a ser chamado quando o plugin retorna um resultado.
+      
         Debug.Log($"<<<<< [OnResultReceived] - PLUGIN RETORNOU! Texto: '{recognizedText}', Código de Erro: {(errorCode.HasValue ? errorCode.Value.ToString() : "Nenhum")} >>>>>");
         
         isListening = false;
