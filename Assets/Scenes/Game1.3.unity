@@ -477,36 +477,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9710c604a09dea74982085c8216db106, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 100
-    m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 0
-    m_MaxSize: 300
-    m_Alignment: 4
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: 
---- !u!222 &362575847
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 362575844}
-  m_CullTransparentMesh: 1
+  speed: 1
+  amplitude: 0.2
 --- !u!1 &376594877
 GameObject:
   m_ObjectHideFlags: 0
@@ -3293,73 +3265,90 @@ MonoBehaviour:
     - word: balao
       image: {fileID: 21300000, guid: e630823da395193488033f1cce68cbe8, type: 3}
       hintBasicAudio: {fileID: 8300000, guid: 47896a440eb2a2a4998fe710a0743cc8, type: 3}
+      hintMediumAudio: {fileID: 0}
       hintFinalAudio: {fileID: 8300000, guid: 9ea9de83d3b43f9418ef619ab2069af9, type: 3}
     - word: casa
       image: {fileID: 21300000, guid: 48f4db9758b527a428ef0e3b5e796c24, type: 3}
       hintBasicAudio: {fileID: 8300000, guid: 95eda41cf470402499841c83f3af5c41, type: 3}
+      hintMediumAudio: {fileID: 0}
       hintFinalAudio: {fileID: 8300000, guid: 91f9e8153ae336342893fd95db300bc6, type: 3}
     - word: dado
       image: {fileID: 21300000, guid: e9b6d7e5f0c7df74f809bf086bee1f1a, type: 3}
       hintBasicAudio: {fileID: 8300000, guid: e085172fb8bd7dc47be2e18e8e621778, type: 3}
+      hintMediumAudio: {fileID: 0}
       hintFinalAudio: {fileID: 8300000, guid: c6adef595f1255d49b8e40a72fba531a, type: 3}
     - word: faca
       image: {fileID: 21300000, guid: 6c5cbd34b012337429b5de4f70f74f41, type: 3}
       hintBasicAudio: {fileID: 8300000, guid: a6a16f4d4e484144ba704957f365fec0, type: 3}
+      hintMediumAudio: {fileID: 0}
       hintFinalAudio: {fileID: 8300000, guid: f2a7548be3ed9db4cbd483a6c4aa120b, type: 3}
     - word: gato
       image: {fileID: 21300000, guid: 5620984dad1205742a19abacca77c4ad, type: 3}
       hintBasicAudio: {fileID: 8300000, guid: 71eac4d154dd1654890ab5adc4880d4e, type: 3}
+      hintMediumAudio: {fileID: 0}
       hintFinalAudio: {fileID: 8300000, guid: 0e2def001c4290443b21b89877f9b83b, type: 3}
     - word: jaca
       image: {fileID: 21300000, guid: 579ead8c6c5455e43accb8a5a14e9919, type: 3}
       hintBasicAudio: {fileID: 8300000, guid: 6f1c069aad438df479eb31cda999c0b0, type: 3}
+      hintMediumAudio: {fileID: 0}
       hintFinalAudio: {fileID: 8300000, guid: 0e0b24080831cbe4a82398e4e98d744b, type: 3}
     - word: lata
       image: {fileID: 21300000, guid: dcefc9a832818ad4d8b42fdd6cf00623, type: 3}
       hintBasicAudio: {fileID: 8300000, guid: fe64c25fa270e7d42a9f07ddf954c530, type: 3}
+      hintMediumAudio: {fileID: 0}
       hintFinalAudio: {fileID: 8300000, guid: 09b2968e568b0e8419439a65883f4540, type: 3}
     - word: mala
       image: {fileID: 21300000, guid: a6c6c9f2360498a43901fd687c983b58, type: 3}
       hintBasicAudio: {fileID: 8300000, guid: 35bab1e370b5996479d589dec5aed9a5, type: 3}
+      hintMediumAudio: {fileID: 0}
       hintFinalAudio: {fileID: 8300000, guid: f369283101422a449b69e77855f86c9f, type: 3}
     - word: navio
       image: {fileID: 21300000, guid: 094d71be7c492054b991319915bed0d2, type: 3}
       hintBasicAudio: {fileID: 8300000, guid: 546b0730c32b3f84195ef8b8412635aa, type: 3}
+      hintMediumAudio: {fileID: 0}
       hintFinalAudio: {fileID: 8300000, guid: e8241a80f5417e747b542d0616a71bbc, type: 3}
     - word: pato
       image: {fileID: 21300000, guid: 8b59a47ee0bd64d4ba24f0f5c469252a, type: 3}
       hintBasicAudio: {fileID: 8300000, guid: 29493ea09a5403246b6751ef59c7b728, type: 3}
+      hintMediumAudio: {fileID: 0}
       hintFinalAudio: {fileID: 8300000, guid: 3e175cf35a214ed4093748da51a88940, type: 3}
     - word: quadro
       image: {fileID: 21300000, guid: d6177c5e31defb244842087bb5cf66ff, type: 3}
       hintBasicAudio: {fileID: 8300000, guid: f0558d00c8aa10b44b6391b694f74207, type: 3}
+      hintMediumAudio: {fileID: 0}
       hintFinalAudio: {fileID: 8300000, guid: d71e8583b33a9964caab1ef8e20d2f9a, type: 3}
     - word: rato
       image: {fileID: 21300000, guid: 017d0b16997139a4d9854c9922a98e15, type: 3}
       hintBasicAudio: {fileID: 8300000, guid: 5d1b22ba2b36b804a964fc9cce9ba1f7, type: 3}
+      hintMediumAudio: {fileID: 0}
       hintFinalAudio: {fileID: 8300000, guid: df7f895cca6f83b44a2c30b6db881a92, type: 3}
     - word: sapo
       image: {fileID: 21300000, guid: d3a76d9bb503221418011d0f5e0dfd27, type: 3}
       hintBasicAudio: {fileID: 8300000, guid: fd205c06690b64a4cb54b69b327bd827, type: 3}
+      hintMediumAudio: {fileID: 0}
       hintFinalAudio: {fileID: 8300000, guid: bf0a32733d9e94544aabcf6bf3e5b807, type: 3}
     - word: tatu
       image: {fileID: 21300000, guid: 0969841bb8447454ea7c8901ad7bcf12, type: 3}
       hintBasicAudio: {fileID: 8300000, guid: 41bbde20392c2e6498b2b9d2778e84a0, type: 3}
+      hintMediumAudio: {fileID: 0}
       hintFinalAudio: {fileID: 8300000, guid: 33dd144baabeea1488dd30fc1420aa42, type: 3}
     - word: vaca
       image: {fileID: 21300000, guid: 304d2656760bf9741b35fedece3fb365, type: 3}
       hintBasicAudio: {fileID: 8300000, guid: 0b11ed90804f45047b37dc6270577f9d, type: 3}
+      hintMediumAudio: {fileID: 0}
       hintFinalAudio: {fileID: 8300000, guid: 59b1dc71af839314b94d96f764210e52, type: 3}
     - word: xadrez
       image: {fileID: 21300000, guid: f3f88d6b05297654ea4e6d43ed81ea36, type: 3}
       hintBasicAudio: {fileID: 8300000, guid: bb1a6e4082df4204d96f0be4b3849111, type: 3}
+      hintMediumAudio: {fileID: 0}
       hintFinalAudio: {fileID: 8300000, guid: bfc7ffc71aa15d84183f612d64c1dad8, type: 3}
     - word: zaca
       image: {fileID: 21300000, guid: d013bac577d17ae4a9c04e1693a75164, type: 3}
       hintBasicAudio: {fileID: 8300000, guid: 2003c1baac4e15b41ad282a93cd17a33, type: 3}
+      hintMediumAudio: {fileID: 0}
       hintFinalAudio: {fileID: 8300000, guid: 20976104697ad7049956c836fde73930, type: 3}
   languageCode: pt-BR
-  similarityThreshold: 0.907
+  similarityThreshold: 0.7
   displayImage: {fileID: 326633035}
   micIndicatorImage: {fileID: 1876227425}
   micIndicatorAnimator: {fileID: 0}
@@ -3370,10 +3359,17 @@ MonoBehaviour:
   variablePrompts:
   - {fileID: 8300000, guid: 54ef3ec74d78bd74684c1d0fe65ec061, type: 3}
   - {fileID: 8300000, guid: cd96e57ecb3eae74b8fc2c986f536e7b, type: 3}
+  - {fileID: 8300000, guid: 507a2c103caf9bf46b4007d250a37b77, type: 3}
+  - {fileID: 8300000, guid: dd1655574972dea438b0dfded6907208, type: 3}
+  - {fileID: 8300000, guid: b2c0c7770a7ec7e4d81d7cf99a36c12a, type: 3}
+  - {fileID: 8300000, guid: 2124db0dff61e3f4580afa286e897e54, type: 3}
   congratulatoryAudio: {fileID: 8300000, guid: 53344f3c3bb73a24faa6c228890a4b4a, type: 3}
   supportAudios:
   - {fileID: 8300000, guid: 583f03c99aa3162419e5683879887c97, type: 3}
   - {fileID: 8300000, guid: c9a82847166b5c04a882d34f92b7a3dd, type: 3}
+  - {fileID: 8300000, guid: ac0794d3b2d9ce440bc8efdc5220c66f, type: 3}
+  - {fileID: 8300000, guid: 67a23b313603f77409484f5a80db3836, type: 3}
+  - {fileID: 8300000, guid: d022df88f85b2974fb304e318d798482, type: 3}
   endOfLevelConfetti: {fileID: 1470149249}
   initialDelay: 0.5
   delayAfterCorrect: 0.5
