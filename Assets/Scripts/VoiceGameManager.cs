@@ -184,20 +184,25 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         StartCoroutine(PlayTurnRoutine());
     }
 
-    /// <summary>
-    /// O CORAÇÃO DO JOGO: gerencia um turno completo para uma imagem, incluindo o loop de tentativa e erro.
-    /// </summary>
-    private IEnumerator PlayTurnRoutine()
-    {
-        Debug.Log($"== [PlayTurnRoutine] - INICIANDO NOVO TURNO para imagem #{currentIndex}: '{currentSyllableList[currentIndex].word}' ==");
-        isProcessing = true; // Bloqueia o Update e outras ações
-        yield return StartCoroutine(FadeImage(true)); // Mostra a nova imagem com fade
+  /// <summary>
+/// O CORAÇÃO DO JOGO: gerencia um turno completo para uma imagem, incluindo o loop de tentativa e erro.
+/// </summary>
+private IEnumerator PlayTurnRoutine()
+{
+    Debug.Log($"== [PlayTurnRoutine] - INICIANDO NOVO TURNO para imagem #{currentIndex}: '{currentSyllableList[currentIndex].word}' ==");
+    isProcessing = true; // Bloqueia o Update e outras ações
+    yield return StartCoroutine(FadeImage(true)); // Mostra a nova imagem com fade
 
-        // Loop de tentativa e erro. Só sai deste loop quando a criança acerta.
-        while (true)
+    // Variável de controle para pular o áudio de prompt em situações específicas.
+    bool pularPrompt = false;
+
+    // Loop de tentativa e erro. Só sai deste loop quando a criança acerta.
+    while (true)
+    {
+        // --- FASE 1: PERGUNTA/DICA (AGORA CONDICIONAL) ---
+        // Este bloco de áudio só será executado se a flag 'pularPrompt' for falsa.
+        if (!pularPrompt)
         {
-            // --- FASE 1: PERGUNTA/DICA ---
-            // O áudio que toca aqui depende do número de erros (`mistakeCount`).
             Debug.Log($"[PlayTurnRoutine] - Fase da Pergunta/Dica (Tentativa #{mistakeCount + 1}). Mic Vermelho.");
             SetMicIndicator(promptingColor);
             AudioClip promptClip = GetCurrentPromptAudio();
@@ -210,78 +215,76 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
             {
                 yield return new WaitForSeconds(delayAfterHint);
             }
+        }
 
-            // --- FASE 2: ESCUTA ---
-            // Ativa o microfone e aguarda o resultado do plugin de voz.
-            if (!SpeechToText.CheckPermission()) { isProcessing = false; yield break; }
-            Debug.Log("[PlayTurnRoutine] - Fase de Escuta. Mic Verde.");
-            SetMicIndicator(listeningColor, true);
-            receivedResult = false;
-            isListening = true;
-            SpeechToText.Start(this, true, false);
+        // Reseta a flag para garantir que na próxima iteração o prompt toque normalmente.
+        pularPrompt = false;
 
-            Debug.Log("[PlayTurnRoutine] - ...Aguardando resultado da voz...");
-            yield return new WaitUntil(() => receivedResult);
-            isListening = false;
-            SetMicIndicator(staticColor);
-            Debug.Log("[PlayTurnRoutine] - RESULTADO DA VOZ RECEBIDO! Processando...");
+        // --- FASE 2: ESCUTA ---
+        if (!SpeechToText.CheckPermission()) { isProcessing = false; yield break; }
+        Debug.Log("[PlayTurnRoutine] - Fase de Escuta. Mic Verde.");
+        SetMicIndicator(listeningColor, true);
+        receivedResult = false;
+        isListening = true;
+        SpeechToText.Start(this, true, false);
 
-            // --- FASE 3: PROCESSAMENTO DO RESULTADO ---
-            // Verifica se houve erro no plugin ou se a palavra reconhecida é válida.
-            if (lastErrorCode.HasValue)
+        Debug.Log("[PlayTurnRoutine] - ...Aguardando resultado da voz...");
+        yield return new WaitUntil(() => receivedResult);
+        isListening = false;
+        SetMicIndicator(staticColor);
+        Debug.Log("[PlayTurnRoutine] - RESULTADO DA VOZ RECEBIDO! Processando...");
+
+        // --- FASE 3: PROCESSAMENTO DO RESULTADO ---
+        if (lastErrorCode.HasValue)
+        {
+            // LÓGICA EXISTENTE E CORRETA PARA O ERRO 11
+            if (lastErrorCode.Value == 11)
             {
-                // Trata o erro 11 (Recognizer Busy) de forma especial: apenas tenta ouvir de novo.
-                if (lastErrorCode.Value == 11)
-                {
-                    Debug.Log("[PlayTurnRoutine] - Recebido Erro 11. Reiniciando a escuta sem contar como erro.");
-                    continue; // Volta para o início do loop `while` sem incrementar o erro.
-                }
-                // Qualquer outro código de erro é tratado como uma tentativa errada.
-                Debug.LogWarning($"[PlayTurnRoutine] - Erro do plugin (código: {lastErrorCode.Value}). Tratando como erro normal.");
+                Debug.Log("[PlayTurnRoutine] - Recebido Erro 11. Reiniciando a escuta sem contar como erro.");
+                // Define para pular o prompt e tentar ouvir de novo silenciosamente.
+                pularPrompt = true;
+                continue; // Volta ao topo do loop while
             }
-            else if (string.IsNullOrEmpty(lastRecognizedText))
-            {
-                // Se o texto veio vazio (criança não falou nada), também é um erro.
-                Debug.LogWarning("[PlayTurnRoutine] - Resultado vazio sem código de erro. Tratando como erro normal.");
-            }
-            else
-            {
-                // Se o resultado é válido, compara com a palavra esperada.
-                string expectedWord = currentSyllableList[currentIndex].word.ToLower().Trim();
-                string receivedWord = lastRecognizedText.ToLower().Trim();
-                bool matched = CheckMatch(expectedWord, receivedWord);
+            Debug.LogWarning($"[PlayTurnRoutine] - Erro do plugin (código: {lastErrorCode.Value}). Tratando como erro normal.");
+        }
+        else if (string.IsNullOrEmpty(lastRecognizedText))
+        {
+            Debug.LogWarning("[PlayTurnRoutine] - Resultado vazio sem código de erro. Tratando como erro normal.");
+        }
+        else
+        {
+            string expectedWord = currentSyllableList[currentIndex].word.ToLower().Trim();
+            string receivedWord = lastRecognizedText.ToLower().Trim();
+            bool matched = CheckMatch(expectedWord, receivedWord);
 
-                if (matched)
-                {
-                    Debug.Log("[PlayTurnRoutine] - ACERTOU! Saindo do loop de tentativas.");
-                    yield return StartCoroutine(HandleCorrectAnswerFlow());
-                    break; // Sai do loop `while` e avança para a próxima imagem.
-                }
-            }
-
-            // --- FASE 4: TRATAMENTO DO ERRO ---
-            // Esta parte só é alcançada se a Fase 3 determinar que houve um erro.
-            if (mistakeCount == 0)
+            if (matched)
             {
-                // PRIMEIRO ERRO: Não faz nada de especial, apenas incrementa o contador.
-                // O loop reiniciará e a pergunta padrão será feita novamente, dando uma chance extra.
-                Debug.LogWarning("[PlayTurnRoutine] - Primeiro erro detectado. Apenas reiniciando o turno sem feedback negativo.");
-                mistakeCount++;
-            }
-            else
-            {
-                // A PARTIR DO SEGUNDO ERRO: Segue a rotina normal de dicas.
-                Debug.LogWarning($"[PlayTurnRoutine] - ERROU (tentativa #{mistakeCount + 1})! Ativando rotina de dicas.");
-                mistakeCount++;
+                Debug.Log("[PlayTurnRoutine] - ACERTOU! Saindo do loop de tentativas.");
+                yield return StartCoroutine(HandleCorrectAnswerFlow());
+                break;
             }
         }
 
-        // --- FASE 5: PREPARAÇÃO PARA PRÓXIMA IMAGEM ---
-        Debug.Log("[PlayTurnRoutine] - Fim do turno. Preparando para a próxima imagem.");
-        yield return StartCoroutine(FadeImage(false)); // Esconde a imagem atual com fade
-        isProcessing = false; // Libera o processamento para o próximo turno
-        GoToNextImage();
+        // --- FASE 4: TRATAMENTO DO ERRO ---
+        if (mistakeCount == 0)
+        {
+            Debug.LogWarning("[PlayTurnRoutine] - Primeiro erro. Tentando ouvir novamente em silêncio.");
+            pularPrompt = true;
+            mistakeCount++;
+        }
+        else
+        {
+            Debug.LogWarning($"[PlayTurnRoutine] - ERROU (tentativa #{mistakeCount + 1})! Ativando rotina de dicas.");
+            mistakeCount++;
+        }
     }
+
+    // --- FASE 5: PREPARAÇÃO PARA PRÓXIMA IMAGEM ---
+    Debug.Log("[PlayTurnRoutine] - Fim do turno. Preparando para a próxima imagem.");
+    yield return StartCoroutine(FadeImage(false));
+    isProcessing = false;
+    GoToNextImage();
+}
     #endregion
 
     #region Game Logic & Transitions
