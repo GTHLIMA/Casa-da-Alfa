@@ -840,7 +840,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -3.54, y: 0.8}
+  m_AnchoredPosition: {x: -3.52, y: 0.87}
   m_SizeDelta: {x: 1674.429, y: 737.6646}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &463129772
@@ -2389,7 +2389,7 @@ GameObject:
   - component: {fileID: 1184040404}
   - component: {fileID: 1184040406}
   - component: {fileID: 1184040405}
-  m_Layer: 8
+  m_Layer: 5
   m_Name: ImageWord
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2429,9 +2429,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2699,7 +2699,7 @@ Transform:
   m_GameObject: {fileID: 1512146637}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -824, y: 194, z: -17234.97}
+  m_LocalPosition: {x: -864, y: 199, z: -17234.97}
   m_LocalScale: {x: 192.00002, y: 192.00002, z: 192.00002}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2718,14 +2718,14 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 176
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -3698,7 +3698,7 @@ MonoBehaviour:
   PauseMenu: {fileID: 1028751454}
   endPhasePanel: {fileID: 156379506}
   numberCounter: {fileID: 1743877869}
-  trainAnimator: {fileID: 0}
+  trainAnimator: {fileID: 1512146641}
 --- !u!1 &1706186865
 GameObject:
   m_ObjectHideFlags: 0
