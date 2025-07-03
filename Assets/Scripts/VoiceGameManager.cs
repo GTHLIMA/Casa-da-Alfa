@@ -173,15 +173,12 @@ private IEnumerator PlayTurnRoutine()
     isProcessing = true;
     
     // --- ETAPA 1: O TREM ENTRA COM A IMAGEM CORRETA ---
-    SetMicIndicator(promptingColor, false); // Mic vermelho durante a animação
+    SetMicIndicator(promptingColor, false);
     if (trainAnimator != null)
     {
-        // Pega a imagem do desafio e já entrega para o trem antes da animação.
         Sprite spriteDaVez = currentSyllableList[currentIndex].image;
         yield return StartCoroutine(trainAnimator.AnimateIn(spriteDaVez));
     }
-
-    // A etapa de "revelação" foi removida.
 
     // --- ETAPA 2: LOOP DE TENTATIVA E ERRO (O TREM FICA PARADO) ---
     bool pularPrompt = false;
@@ -211,29 +208,45 @@ private IEnumerator PlayTurnRoutine()
         isListening = false;
         SetMicIndicator(staticColor);
 
-        // FASE 3: PROCESSAMENTO DO RESULTADO
-        if (lastErrorCode.HasValue)
+        // --- FASE 3: PROCESSAMENTO DO RESULTADO (LÓGICA CORRIGIDA) ---
+        bool isCorrect = false;
+
+        // Ignora o erro 11 e prepara para pular o prompt na próxima tentativa silenciosa.
+        if (lastErrorCode.HasValue && lastErrorCode.Value == 11)
         {
-            if (lastErrorCode.Value == 11) { pularPrompt = true; continue; }
+            pularPrompt = true;
+            continue; // Pula para a próxima iteração do loop, reiniciando a escuta
         }
-        else if (string.IsNullOrEmpty(lastRecognizedText)) { /* é um erro */ }
-        else
+        
+        // Verifica se o resultado é válido e se a palavra bate
+        if (!lastErrorCode.HasValue && !string.IsNullOrEmpty(lastRecognizedText))
         {
             string expectedWord = currentSyllableList[currentIndex].word.ToLower().Trim();
             string receivedWord = lastRecognizedText.ToLower().Trim();
             if (CheckMatch(expectedWord, receivedWord))
             {
-                Debug.Log("[PlayTurnRoutine] - ACERTOU! Saindo do loop de tentativas.");
-                break; 
+                isCorrect = true;
             }
         }
 
+        // Se a resposta foi correta, sai do loop de tentativas.
+        if (isCorrect)
+        {
+            Debug.Log("[PlayTurnRoutine] - ACERTOU! Saindo do loop de tentativas.");
+            break; 
+        }
+        
+        // Se chegou até aqui, é porque foi um erro (palavra errada, vazia ou erro do plugin).
         // FASE 4: TRATAMENTO DO ERRO
-        if (mistakeCount == 0) { pularPrompt = true; }
+        if (mistakeCount == 0)
+        {
+            pularPrompt = true; // Prepara para a tentativa silenciosa
+        }
         mistakeCount++;
+        Debug.LogWarning($"[PlayTurnRoutine] - Erro detectado. Contagem de erros: {mistakeCount}");
     }
 
-    // --- ETAPA 3: RESPOSTA CORRETA - SOM DE PARABÉNS E ANIMAÇÃO DE SAÍDA ---
+    // --- ETAPA 4: RESPOSTA CORRETA - SOM DE PARABÉNS E ANIMAÇÃO DE SAÍDA ---
     AddScore(10);
     if (audioManager != null && congratulatoryAudio != null)
     {
@@ -248,7 +261,7 @@ private IEnumerator PlayTurnRoutine()
         yield return StartCoroutine(trainAnimator.AnimateOut());
     }
 
-    // --- ETAPA 4: PREPARAÇÃO PARA O PRÓXIMO TURNO ---
+    // --- ETAPA 5: PREPARAÇÃO PARA O PRÓXIMO TURNO ---
     isProcessing = false;
     GoToNextImage();
 }
