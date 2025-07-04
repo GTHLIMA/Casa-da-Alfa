@@ -3348,7 +3348,7 @@ MonoBehaviour:
       hintMediumAudio: {fileID: 0}
       hintFinalAudio: {fileID: 8300000, guid: 20976104697ad7049956c836fde73930, type: 3}
   languageCode: pt-BR
-  similarityThreshold: 0.7
+  similarityThreshold: 0.855
   displayImage: {fileID: 326633035}
   micIndicatorImage: {fileID: 1876227425}
   micIndicatorAnimator: {fileID: 0}
@@ -3372,7 +3372,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: d022df88f85b2974fb304e318d798482, type: 3}
   endOfLevelConfetti: {fileID: 1470149249}
   initialDelay: 0.1
-  delayAfterCorrect: 0.2
+  delayAfterCorrect: 1
   delayAfterHint: 0.2
   fadeDuration: 0.2
   scorePause: {fileID: 846508828}

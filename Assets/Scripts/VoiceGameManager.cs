@@ -184,23 +184,16 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         StartCoroutine(PlayTurnRoutine());
     }
 
-  /// <summary>
-/// O CORAÇÃO DO JOGO: gerencia um turno completo para uma imagem, incluindo o loop de tentativa e erro.
-/// </summary>
-private IEnumerator PlayTurnRoutine()
+  private IEnumerator PlayTurnRoutine()
 {
     Debug.Log($"== [PlayTurnRoutine] - INICIANDO NOVO TURNO para imagem #{currentIndex}: '{currentSyllableList[currentIndex].word}' ==");
-    isProcessing = true; // Bloqueia o Update e outras ações
-    yield return StartCoroutine(FadeImage(true)); // Mostra a nova imagem com fade
+    isProcessing = true;
+    yield return StartCoroutine(FadeImage(true));
 
-    // Variável de controle para pular o áudio de prompt em situações específicas.
     bool pularPrompt = false;
 
-    // Loop de tentativa e erro. Só sai deste loop quando a criança acerta.
     while (true)
     {
-        // --- FASE 1: PERGUNTA/DICA (AGORA CONDICIONAL) ---
-        // Este bloco de áudio só será executado se a flag 'pularPrompt' for falsa.
         if (!pularPrompt)
         {
             Debug.Log($"[PlayTurnRoutine] - Fase da Pergunta/Dica (Tentativa #{mistakeCount + 1}). Mic Vermelho.");
@@ -217,16 +210,22 @@ private IEnumerator PlayTurnRoutine()
             }
         }
 
-        // Reseta a flag para garantir que na próxima iteração o prompt toque normalmente.
         pularPrompt = false;
 
-        // --- FASE 2: ESCUTA ---
+        // --- FASE 2: ESCUTA (ALTERAÇÃO APLICADA AQUI) ---
         if (!SpeechToText.CheckPermission()) { isProcessing = false; yield break; }
-        Debug.Log("[PlayTurnRoutine] - Fase de Escuta. Mic Verde.");
-        SetMicIndicator(listeningColor, true);
+        
+        // 1. Ativa a escuta de voz primeiro, de forma "invisível".
         receivedResult = false;
         isListening = true;
         SpeechToText.Start(this, true, false);
+
+        // 2. Espera 1 segundo, com a escuta já ativa.
+        yield return new WaitForSeconds(1f);
+
+        // 3. Só agora o microfone fica verde para o usuário.
+        Debug.Log("[PlayTurnRoutine] - Fase de Escuta. Mic Verde.");
+        SetMicIndicator(listeningColor, true);
 
         Debug.Log("[PlayTurnRoutine] - ...Aguardando resultado da voz...");
         yield return new WaitUntil(() => receivedResult);
@@ -234,16 +233,14 @@ private IEnumerator PlayTurnRoutine()
         SetMicIndicator(staticColor);
         Debug.Log("[PlayTurnRoutine] - RESULTADO DA VOZ RECEBIDO! Processando...");
 
-        // --- FASE 3: PROCESSAMENTO DO RESULTADO ---
+        // O resto do método continua como no seu script original.
         if (lastErrorCode.HasValue)
         {
-            // LÓGICA EXISTENTE E CORRETA PARA O ERRO 11
             if (lastErrorCode.Value == 11)
             {
                 Debug.Log("[PlayTurnRoutine] - Recebido Erro 11. Reiniciando a escuta sem contar como erro.");
-                // Define para pular o prompt e tentar ouvir de novo silenciosamente.
                 pularPrompt = true;
-                continue; // Volta ao topo do loop while
+                continue;
             }
             Debug.LogWarning($"[PlayTurnRoutine] - Erro do plugin (código: {lastErrorCode.Value}). Tratando como erro normal.");
         }
@@ -264,8 +261,7 @@ private IEnumerator PlayTurnRoutine()
                 break;
             }
         }
-
-        // --- FASE 4: TRATAMENTO DO ERRO ---
+        
         if (mistakeCount == 0)
         {
             Debug.LogWarning("[PlayTurnRoutine] - Primeiro erro. Tentando ouvir novamente em silêncio.");
@@ -278,8 +274,7 @@ private IEnumerator PlayTurnRoutine()
             mistakeCount++;
         }
     }
-
-    // --- FASE 5: PREPARAÇÃO PARA PRÓXIMA IMAGEM ---
+    
     Debug.Log("[PlayTurnRoutine] - Fim do turno. Preparando para a próxima imagem.");
     yield return StartCoroutine(FadeImage(false));
     isProcessing = false;
@@ -293,43 +288,61 @@ private IEnumerator PlayTurnRoutine()
     /// Decide qual áudio tocar baseado no número de erros da rodada atual.
     /// </summary>
     private AudioClip GetCurrentPromptAudio()
+{
+    // --- NOVO BLOCO DE DEBUG ---
+    // Este bloco vai nos dizer exatamente o que o jogo está pensando.
+    Debug.Log("-------------------------------------------------");
+    Debug.Log("--- VERIFICANDO QUAL ÁUDIO DE PERGUNTA TOCAR ---");
+    Debug.Log($"Índice Atual (currentIndex): {currentIndex}");
+    Debug.Log($"Contagem de Erros (mistakeCount): {mistakeCount}");
+    if (variablePrompts != null)
     {
-        SyllableData currentSyllable = currentSyllableList[currentIndex];
-        AudioClip chosenClip;
-
-        switch (mistakeCount)
-        {
-            case 0: // 1ª Tentativa (sem erro)
-                chosenClip = (currentIndex < 3 || variablePrompts == null || variablePrompts.Count == 0)
-                    ? standardPrompt
-                    : variablePrompts[UnityEngine.Random.Range(0, variablePrompts.Count)];
-                break;
-            case 1: // 2ª Tentativa (após o primeiro erro "silencioso")
-                chosenClip = standardPrompt;
-                break;
-            case 2:
-                chosenClip = currentSyllable.hintBasicAudio;
-                break;
-            case 3:
-                chosenClip = currentSyllable.hintMediumAudio;
-                break;
-            case 4:
-                chosenClip = currentSyllable.hintFinalAudio;
-                break;
-            default: // A partir do 5º erro, alterna dicas e áudios de suporte
-                if (mistakeCount % 2 != 0 && supportAudios != null && supportAudios.Count > 0)
-                {
-                    chosenClip = supportAudios[UnityEngine.Random.Range(0, supportAudios.Count)];
-                }
-                else
-                {
-                    chosenClip = currentSyllable.hintFinalAudio;
-                }
-                break;
-        }
-        Debug.Log($"[GetCurrentPromptAudio] - Escolhido áudio: {(chosenClip != null ? chosenClip.name : "NENHUM")}");
-        return chosenClip;
+        Debug.Log($"Tamanho da Lista 'Variable Prompts': {variablePrompts.Count}");
     }
+    else
+    {
+        Debug.LogError("!!! A LISTA 'Variable Prompts' É NULA (null) !!!");
+    }
+    Debug.Log("-------------------------------------------------");
+    // --- Fim do Bloco de Debug ---
+
+
+    SyllableData currentSyllable = currentSyllableList[currentIndex];
+    AudioClip chosenClip;
+
+    switch (mistakeCount)
+    {
+        case 0: // 1ª Tentativa (sem erro)
+            chosenClip = (currentIndex < 0 || variablePrompts == null || variablePrompts.Count == 0)
+                ? standardPrompt
+                : variablePrompts[UnityEngine.Random.Range(0, variablePrompts.Count)];
+            break;
+        case 1: // 2ª Tentativa (após o primeiro erro "silencioso")
+            chosenClip = standardPrompt;
+            break;
+        case 2:
+            chosenClip = currentSyllable.hintBasicAudio;
+            break;
+        case 3:
+            chosenClip = currentSyllable.hintMediumAudio;
+            break;
+        case 4:
+            chosenClip = currentSyllable.hintFinalAudio;
+            break;
+        default: // A partir do 5º erro, alterna dicas e áudios de suporte
+            if (mistakeCount % 2 != 0 && supportAudios != null && supportAudios.Count > 0)
+            {
+                chosenClip = supportAudios[UnityEngine.Random.Range(0, supportAudios.Count)];
+            }
+            else
+            {
+                chosenClip = currentSyllable.hintFinalAudio;
+            }
+            break;
+    }
+    Debug.Log($"[GetCurrentPromptAudio] - Áudio escolhido: {(chosenClip != null ? chosenClip.name : "NENHUM")}");
+    return chosenClip;
+}
 
     /// <summary>
     /// Prepara o jogo para a próxima imagem ou finaliza a fase se todas foram concluídas.
@@ -350,26 +363,31 @@ private IEnumerator PlayTurnRoutine()
     }
 
     /// <summary>
-    /// Corrotina para o fluxo de acerto (tocar som de parabéns e esperar).
-    /// </summary>
-    private IEnumerator HandleCorrectAnswerFlow()
+/// </summary>
+private IEnumerator HandleCorrectAnswerFlow()
+{
+    Debug.Log("== [HandleCorrectAnswerFlow] - Fluxo de ACERTO RÁPIDO iniciado. ==");
+    SetMicIndicator(staticColor);
+    AddScore(10);
+
+
+    StartCoroutine(FadeImage(false));
+
+
+    if (audioManager != null && congratulatoryAudio != null)
     {
-        Debug.Log("== [HandleCorrectAnswerFlow] - Fluxo de ACERTO iniciado. ==");
-        SetMicIndicator(staticColor);
-        AddScore(10);
-        if (audioManager != null && congratulatoryAudio != null)
-        {
-            audioManager.PlaySFX(congratulatoryAudio);
-            yield return new WaitForSeconds(congratulatoryAudio.length);
-        }
-        yield return new WaitForSeconds(delayAfterCorrect);
+        audioManager.PlaySFX(congratulatoryAudio);
     }
+    
+    // 3. Espera o delay principal. Enquanto essa pausa acontece,
+    // a imagem já está desaparecendo em segundo plano.
+    yield return new WaitForSeconds(delayAfterCorrect);
+}
     #endregion
 
     #region STT Interface & Utility Methods
 
     /// <summary>
-    /// Método da interface que é chamado pelo plugin de voz quando um resultado é obtido.
     /// </summary>
     public void OnResultReceived(string recognizedText, int? errorCode)
     {
@@ -398,14 +416,21 @@ private IEnumerator PlayTurnRoutine()
     /// Compara a palavra esperada com a recebida usando um algoritmo de similaridade.
     /// </summary>
     private bool CheckMatch(string expected, string received)
+{
+    string normalizedExpected = RemoveAccents(expected);
+    string normalizedReceived = RemoveAccents(received);
+
+    if (normalizedExpected == "zaca" && normalizedReceived == "vaca")
     {
-        string normalizedExpected = RemoveAccents(expected);
-        string normalizedReceived = RemoveAccents(received);
-        Debug.Log($"--- COMPARANDO (SEM ACENTOS)! Esperado: '{normalizedExpected}' | Recebido: '{normalizedReceived}' ---");
-        float similarity = 1.0f - ((float)LevenshteinDistance(normalizedExpected, normalizedReceived) / Mathf.Max(normalizedExpected.Length, received.Length));
-        Debug.Log($"--- Similaridade: {similarity:P2} ---");
-        return similarity >= similarityThreshold || normalizedReceived.Contains(normalizedExpected);
+        Debug.Log("--- REGRA ESPECIAL ATIVADA: 'vaca' aceito para 'zaca'. ---");
+        return true;
     }
+    
+    Debug.Log($"--- COMPARANDO (SEM ACENTOS)! Esperado: '{normalizedExpected}' | Recebido: '{normalizedReceived}' ---");
+    float similarity = 1.0f - ((float)LevenshteinDistance(normalizedExpected, normalizedReceived) / Mathf.Max(normalizedExpected.Length, received.Length));
+    Debug.Log($"--- Similaridade: {similarity:P2} ---");
+    return similarity >= similarityThreshold || normalizedReceived.Contains(normalizedExpected);
+}
 
     /// <summary>
     /// Calcula a Distância de Levenshtein entre duas strings (número de edições para igualá-las).
