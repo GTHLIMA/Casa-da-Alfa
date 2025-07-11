@@ -98,6 +98,13 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     private bool isListening = false;
     private AudioManager audioManager;
     private int score;
+
+    [Header("Áudios de Feedback Específico")]
+    [Tooltip("Pergunta específica para a palavra ZACA (Ex: Quem é esse?)")]
+    public AudioClip zacaPrompt1;
+    [Tooltip("Segunda opção de pergunta para ZACA (Ex: Você conhece essa pessoa?)")]
+    public AudioClip zacaPrompt2;
+
     #endregion
 
     #region Unity Lifecycle Methods
@@ -270,62 +277,63 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     /// <summary>
     /// Decide qual áudio tocar baseado no número de erros da rodada atual.
     /// </summary>
+   // MÉTODO MODIFICADO COM AS REGRAS DO ZACA E A CORREÇÃO DO RANDOM
     private AudioClip GetCurrentPromptAudio()
-{
-    // --- NOVO BLOCO DE DEBUG ---
-    // Este bloco vai nos dizer exatamente o que o jogo está pensando.
-    Debug.Log("-------------------------------------------------");
-    Debug.Log("--- VERIFICANDO QUAL ÁUDIO DE PERGUNTA TOCAR ---");
-    Debug.Log($"Índice Atual (currentIndex): {currentIndex}");
-    Debug.Log($"Contagem de Erros (mistakeCount): {mistakeCount}");
-    if (variablePrompts != null)
     {
-        Debug.Log($"Tamanho da Lista 'Variable Prompts': {variablePrompts.Count}");
-    }
-    else
-    {
-        Debug.LogError("!!! A LISTA 'Variable Prompts' É NULA (null) !!!");
-    }
-    Debug.Log("-------------------------------------------------");
-    // --- Fim do Bloco de Debug ---
+        SyllableData currentSyllable = currentSyllableList[currentIndex];
 
+        // --- VERIFICAÇÃO PARA "ZACA" ---
+        if (mistakeCount == 0 && currentSyllable.word.ToLower() == "zaca")
+        {
+            List<AudioClip> zacaPrompts = new List<AudioClip>();
+            if (zacaPrompt1 != null) zacaPrompts.Add(zacaPrompt1);
+            if (zacaPrompt2 != null) zacaPrompts.Add(zacaPrompt2);
 
-    SyllableData currentSyllable = currentSyllableList[currentIndex];
-    AudioClip chosenClip;
-
-    switch (mistakeCount)
-    {
-        case 0: // 1ª Tentativa (sem erro)
-            chosenClip = (currentIndex < 0 || variablePrompts == null || variablePrompts.Count == 0)
-                ? standardPrompt
-                : variablePrompts[UnityEngine.Random.Range(0, variablePrompts.Count)];
-            break;
-        case 1: // 2ª Tentativa (após o primeiro erro "silencioso")
-            chosenClip = standardPrompt;
-            break;
-        case 2:
-            chosenClip = currentSyllable.hintBasicAudio;
-            break;
-        case 3:
-            chosenClip = currentSyllable.hintMediumAudio;
-            break;
-        case 4:
-            chosenClip = currentSyllable.hintFinalAudio;
-            break;
-        default: // A partir do 5º erro, alterna dicas e áudios de suporte
-            if (mistakeCount % 2 != 0 && supportAudios != null && supportAudios.Count > 0)
+            if (zacaPrompts.Count > 0)
             {
-                chosenClip = supportAudios[UnityEngine.Random.Range(0, supportAudios.Count)];
+                // CORREÇÃO: Usando UnityEngine.Random para ser explícito
+                AudioClip chosenZacaPrompt = zacaPrompts[UnityEngine.Random.Range(0, zacaPrompts.Count)];
+                Debug.Log($"[GetCurrentPromptAudio] - REGRA ESPECIAL 'ZACA' ATIVADA. Áudio: {chosenZacaPrompt.name}");
+                return chosenZacaPrompt;
             }
-            else
-            {
+        }
+
+        AudioClip chosenClip;
+        switch (mistakeCount)
+        {
+            case 0:
+                // CORREÇÃO: Usando UnityEngine.Random para ser explícito
+                chosenClip = (currentIndex < 3 || variablePrompts == null || variablePrompts.Count == 0)
+                    ? standardPrompt
+                    : variablePrompts[UnityEngine.Random.Range(0, variablePrompts.Count)];
+                break;
+            case 1:
+                chosenClip = standardPrompt;
+                break;
+            case 2:
+                chosenClip = currentSyllable.hintBasicAudio;
+                break;
+            case 3:
+                chosenClip = currentSyllable.hintMediumAudio;
+                break;
+            case 4:
                 chosenClip = currentSyllable.hintFinalAudio;
-            }
-            break;
+                break;
+            default:
+                if (mistakeCount % 2 != 0 && supportAudios != null && supportAudios.Count > 0)
+                {
+                    // CORREÇÃO: Usando UnityEngine.Random para ser explícito
+                    chosenClip = supportAudios[UnityEngine.Random.Range(0, supportAudios.Count)];
+                }
+                else
+                {
+                    chosenClip = currentSyllable.hintFinalAudio;
+                }
+                break;
+        }
+        Debug.Log($"[GetCurrentPromptAudio] - Áudio escolhido: {(chosenClip != null ? chosenClip.name : "NENHUM")}");
+        return chosenClip;
     }
-    Debug.Log($"[GetCurrentPromptAudio] - Áudio escolhido: {(chosenClip != null ? chosenClip.name : "NENHUM")}");
-    return chosenClip;
-}
 
     /// <summary>
     /// Prepara o jogo para a próxima imagem ou finaliza a fase se todas foram concluídas.

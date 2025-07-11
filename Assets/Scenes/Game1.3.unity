@@ -751,7 +751,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 274, y: -89}
+  m_AnchoredPosition: {x: -34, y: -206}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &561744981
@@ -768,9 +768,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   imageContainer: {fileID: 1177406788}
   moveDuration: 4
-  startX_offscreen: 0
-  targetX_onscreen: 2351
-  endX_offscreen: 3323
+  startX_offscreen: 274
+  targetX_onscreen: 2553
+  endX_offscreen: 3573
   trainEnteringSound: {fileID: 8300000, guid: e527a68e87328fc4ba67a50a0b722986, type: 3}
   trainExitingSound: {fileID: 8300000, guid: 2cf359fccaf758f4292b5cf0e1bc3bad, type: 3}
   moveCurve:
@@ -2425,8 +2425,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2373.32, y: 527.80005}
-  m_SizeDelta: {x: 609.056, y: 580.5992}
+  m_AnchoredPosition: {x: -2536, y: 593.39}
+  m_SizeDelta: {x: 726.53, y: 693.37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1177406788
 MonoBehaviour:
@@ -2478,8 +2478,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9710c604a09dea74982085c8216db106, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floatSpeed: 1
-  floatHeight: 20
+  floatSpeed: 3
+  floatHeight: 40
 --- !u!1 &1214719010
 GameObject:
   m_ObjectHideFlags: 0
@@ -3560,6 +3560,8 @@ MonoBehaviour:
   PauseMenu: {fileID: 1028751454}
   endPhasePanel: {fileID: 156379506}
   numberCounter: {fileID: 1743877869}
+  zacaPrompt1: {fileID: 8300000, guid: fad1a13c82b984b4fbd9d2a0c631a104, type: 3}
+  zacaPrompt2: {fileID: 8300000, guid: d00664cf9cd10cf41baf84f189d09c94, type: 3}
 --- !u!1 &1706186865
 GameObject:
   m_ObjectHideFlags: 0
@@ -4176,8 +4178,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1808.8401, y: 416.44003}
-  m_SizeDelta: {x: 1870.6284, y: 884.1358}
+  m_AnchoredPosition: {x: -1928, y: 404.26}
+  m_SizeDelta: {x: 2016.29, y: 908.51}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1870483363
 MonoBehaviour:
