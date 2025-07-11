@@ -1,33 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FloatingEffect : MonoBehaviour
 {
     [Header("Configurações da Flutuação")]
-
     [Tooltip("A velocidade do movimento de sobe e desce.")]
-    public float speed = 1f;
+    public float floatSpeed = 1f;
 
-    [Tooltip("A altura máxima que o objeto vai subir e descer a partir do seu ponto inicial.")]
-    public float amplitude = 0.2f;
+    [Tooltip("A altura máxima que o objeto alcançará a partir de sua posição inicial.")]
+    public float floatHeight = 20f;
 
-    // Guarda a posição inicial do objeto para que a flutuação seja sempre em relação a ela.
-    private Vector3 startPosition;
+    // Variáveis privadas para guardar a posição inicial
+    private RectTransform rectTransform;
+    private Vector2 startPosition;
 
     void Start()
     {
-        // No início, salvamos a posição original do objeto.
-        startPosition = transform.position;
+        // Guarda a referência ao RectTransform no início
+        rectTransform = GetComponent<RectTransform>();
+        // GUARDA A POSIÇÃO INICIAL. Isso é crucial para que o objeto flutue
+        // em torno do seu ponto de partida, e não saia voando.
+        startPosition = rectTransform.anchoredPosition;
     }
 
     void Update()
     {
-        // Calcula a nova posição Y usando uma onda de seno.
-        // Time.time faz com que o movimento seja contínuo e baseado no tempo de jogo.
-        float newY = startPosition.y + Mathf.Sin(Time.time * speed) * amplitude;
+        // A mágica acontece aqui.
+        // Mathf.Sin(Time.time * floatSpeed) cria um valor que oscila suavemente entre -1 e 1.
+        // Multiplicamos pela altura (floatHeight) para controlar a amplitude do movimento.
+        float newY = startPosition.y + (Mathf.Sin(Time.time * floatSpeed) * floatHeight);
 
-        // Aplica a nova posição Y, mantendo o X e o Z originais.
-        transform.position = new Vector3(startPosition.x, newY, startPosition.z);
+        // Aplicamos a nova posição Y, mantendo a posição X original.
+        rectTransform.anchoredPosition = new Vector2(startPosition.x, newY);
     }
 }
