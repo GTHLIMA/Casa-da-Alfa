@@ -3526,7 +3526,7 @@ MonoBehaviour:
       hintMediumAudio: {fileID: 0}
       hintFinalAudio: {fileID: 8300000, guid: 20976104697ad7049956c836fde73930, type: 3}
   languageCode: pt-BR
-  similarityThreshold: 0.771
+  similarityThreshold: 0.665
   displayImage: {fileID: 1177406788}
   micIndicatorImage: {fileID: 1876227425}
   micIndicatorAnimator: {fileID: 0}
