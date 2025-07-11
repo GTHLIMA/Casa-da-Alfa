@@ -74,6 +74,10 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     public float delayAfterHint = 1.5f;
     public float fadeDuration = 0.5f;
 
+    [Header("Animações")]
+    [Tooltip("Referência ao script que controla a animação do trem.")]
+    public TrainController trainController;
+
     [Header("========== Pause Menu & Score ==========")]
     public TMP_Text scorePause;
     public TMP_Text scoreEndPhase;
@@ -167,121 +171,100 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     }
     #endregion
 
-    #region Main Game Flow (Coroutines)
+       #region Main Game Flow (Coroutines)
 
-    /// <summary>
-    /// Corrotina para a sequência inicial do jogo (delay + permissão de microfone).
-    /// </summary>
     private IEnumerator GameStartSequence()
     {
-        Debug.Log($"[GameStartSequence] - Iniciando delay de {initialDelay} segundos.");
         yield return new WaitForSeconds(initialDelay);
-
-        Debug.Log("[GameStartSequence] - Verificando permissão do microfone.");
         CheckForMicrophonePermission();
-
-        Debug.Log("[GameStartSequence] - Sequência inicial completa. Começando o primeiro turno.");
         StartCoroutine(PlayTurnRoutine());
     }
 
-  private IEnumerator PlayTurnRoutine()
-{
-    Debug.Log($"== [PlayTurnRoutine] - INICIANDO NOVO TURNO para imagem #{currentIndex}: '{currentSyllableList[currentIndex].word}' ==");
-    isProcessing = true;
-    yield return StartCoroutine(FadeImage(true));
-
-    bool pularPrompt = false;
-
-    while (true)
+    // VERSÃO REESCRITA PARA USAR O TRAINCONTROLLER
+    private IEnumerator PlayTurnRoutine()
     {
-        if (!pularPrompt)
+        isProcessing = true;
+        SetMicIndicator(promptingColor, false);
+
+        // ETAPA 1: O TREM ENTRA COM A IMAGEM CORRETA
+        Sprite spriteDaVez = currentSyllableList[currentIndex].image;
+        yield return StartCoroutine(trainController.AnimateIn(spriteDaVez));
+
+        // ETAPA 2: LOOP DE TENTATIVAS (O TREM FICA PARADO)
+        bool pularPrompt = false;
+        while (true)
         {
-            Debug.Log($"[PlayTurnRoutine] - Fase da Pergunta/Dica (Tentativa #{mistakeCount + 1}). Mic Vermelho.");
-            SetMicIndicator(promptingColor);
-            AudioClip promptClip = GetCurrentPromptAudio();
-            if (audioManager != null && promptClip != null)
+            if (!pularPrompt)
             {
-                audioManager.PlaySFX(promptClip);
-                yield return new WaitForSeconds(promptClip.length + delayAfterHint);
+                AudioClip promptClip = GetCurrentPromptAudio();
+                if (audioManager != null && promptClip != null)
+                {
+                    audioManager.PlaySFX(promptClip);
+                    yield return new WaitForSeconds(promptClip.length + delayAfterHint);
+                }
+                else { yield return new WaitForSeconds(delayAfterHint); }
             }
-            else
+            pularPrompt = false;
+
+            // --- ALTERAÇÃO APLICADA AQUI ---
+            if (!SpeechToText.CheckPermission()) { isProcessing = false; yield break; }
+            
+            // 1. Ativa a escuta de voz primeiro, de forma "invisível".
+            receivedResult = false;
+            isListening = true;
+            SpeechToText.Start(this, true, false);
+
+            // 2. Espera 1 segundo, com a escuta já ativa.
+            yield return new WaitForSeconds(1f);
+
+            // 3. Só agora o microfone fica verde para o usuário.
+            SetMicIndicator(listeningColor, true);
+            
+            yield return new WaitUntil(() => receivedResult);
+            isListening = false;
+            SetMicIndicator(staticColor);
+            // --- FIM DA ALTERAÇÃO ---
+
+            bool isCorrect = false;
+            if (lastErrorCode.HasValue && lastErrorCode.Value == 11)
             {
-                yield return new WaitForSeconds(delayAfterHint);
-            }
-        }
-
-        pularPrompt = false;
-
-        // --- FASE 2: ESCUTA (ALTERAÇÃO APLICADA AQUI) ---
-        if (!SpeechToText.CheckPermission()) { isProcessing = false; yield break; }
-        
-        // 1. Ativa a escuta de voz primeiro, de forma "invisível".
-        receivedResult = false;
-        isListening = true;
-        SpeechToText.Start(this, true, false);
-
-        // 2. Espera 1 segundo, com a escuta já ativa.
-        yield return new WaitForSeconds(1f);
-
-        // 3. Só agora o microfone fica verde para o usuário.
-        Debug.Log("[PlayTurnRoutine] - Fase de Escuta. Mic Verde.");
-        SetMicIndicator(listeningColor, true);
-
-        Debug.Log("[PlayTurnRoutine] - ...Aguardando resultado da voz...");
-        yield return new WaitUntil(() => receivedResult);
-        isListening = false;
-        SetMicIndicator(staticColor);
-        Debug.Log("[PlayTurnRoutine] - RESULTADO DA VOZ RECEBIDO! Processando...");
-
-        // O resto do método continua como no seu script original.
-        if (lastErrorCode.HasValue)
-        {
-            if (lastErrorCode.Value == 11)
-            {
-                Debug.Log("[PlayTurnRoutine] - Recebido Erro 11. Reiniciando a escuta sem contar como erro.");
                 pularPrompt = true;
                 continue;
             }
-            Debug.LogWarning($"[PlayTurnRoutine] - Erro do plugin (código: {lastErrorCode.Value}). Tratando como erro normal.");
-        }
-        else if (string.IsNullOrEmpty(lastRecognizedText))
-        {
-            Debug.LogWarning("[PlayTurnRoutine] - Resultado vazio sem código de erro. Tratando como erro normal.");
-        }
-        else
-        {
-            string expectedWord = currentSyllableList[currentIndex].word.ToLower().Trim();
-            string receivedWord = lastRecognizedText.ToLower().Trim();
-            bool matched = CheckMatch(expectedWord, receivedWord);
-
-            if (matched)
+            if (!lastErrorCode.HasValue && !string.IsNullOrEmpty(lastRecognizedText))
             {
-                Debug.Log("[PlayTurnRoutine] - ACERTOU! Saindo do loop de tentativas.");
-                yield return StartCoroutine(HandleCorrectAnswerFlow());
-                break;
+                if (CheckMatch(currentSyllableList[currentIndex].word, lastRecognizedText))
+                {
+                    isCorrect = true;
+                }
             }
-        }
-        
-        if (mistakeCount == 0)
-        {
-            Debug.LogWarning("[PlayTurnRoutine] - Primeiro erro. Tentando ouvir novamente em silêncio.");
-            pularPrompt = true;
-            mistakeCount++;
-        }
-        else
-        {
-            Debug.LogWarning($"[PlayTurnRoutine] - ERROU (tentativa #{mistakeCount + 1})! Ativando rotina de dicas.");
-            mistakeCount++;
-        }
-    }
-    
-    Debug.Log("[PlayTurnRoutine] - Fim do turno. Preparando para a próxima imagem.");
-    yield return StartCoroutine(FadeImage(false));
-    isProcessing = false;
-    GoToNextImage();
-}
-    #endregion
 
+            if (isCorrect)
+            {
+                break; // Acertou, sai do loop de tentativas
+            }
+            
+            if (mistakeCount == 0) { pularPrompt = true; }
+            mistakeCount++;
+        }
+
+        // ETAPA 3: FLUXO DE ACERTO
+        AddScore(10);
+        if (audioManager != null && congratulatoryAudio != null)
+        {
+            audioManager.PlaySFX(congratulatoryAudio);
+        }
+        yield return new WaitForSeconds(delayAfterCorrect);
+
+        // ETAPA 4: O TREM SAI
+        yield return StartCoroutine(trainController.AnimateOut());
+        
+        // ETAPA 5: PREPARAÇÃO PARA O PRÓXIMO TURNO
+        isProcessing = false;
+        GoToNextImage();
+    }
+    #endregion
+    
     #region Game Logic & Transitions
 
     /// <summary>
@@ -361,28 +344,6 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
             StartCoroutine(PlayTurnRoutine());
         }
     }
-
-    /// <summary>
-/// </summary>
-private IEnumerator HandleCorrectAnswerFlow()
-{
-    Debug.Log("== [HandleCorrectAnswerFlow] - Fluxo de ACERTO RÁPIDO iniciado. ==");
-    SetMicIndicator(staticColor);
-    AddScore(10);
-
-
-    StartCoroutine(FadeImage(false));
-
-
-    if (audioManager != null && congratulatoryAudio != null)
-    {
-        audioManager.PlaySFX(congratulatoryAudio);
-    }
-    
-    // 3. Espera o delay principal. Enquanto essa pausa acontece,
-    // a imagem já está desaparecendo em segundo plano.
-    yield return new WaitForSeconds(delayAfterCorrect);
-}
     #endregion
 
     #region STT Interface & Utility Methods
