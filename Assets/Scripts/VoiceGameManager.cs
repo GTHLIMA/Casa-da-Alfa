@@ -434,7 +434,7 @@ private bool CheckMatch(string expected, string received)
     Debug.Log($"--- Similaridade: {similarity:P2} ---");
 
     // 3. A comparação final usa a variável 'thresholdToUse' que foi decidida acima.
-    return similarity >= thresholdToUse || normalizedReceived.Contains(normalizedExpected);
+    return similarity >= thresholdToUse;
 }
 
     /// <summary>
