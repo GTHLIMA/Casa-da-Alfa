@@ -377,21 +377,39 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     /// Compara a palavra esperada com a recebida usando um algoritmo de similaridade.
     /// </summary>
     private bool CheckMatch(string expected, string received)
-{
+    {
     string normalizedExpected = RemoveAccents(expected);
     string normalizedReceived = RemoveAccents(received);
 
+    // --- REGRAS ESPECIAIS ADICIONADAS ---
+
+    // Regra para ZACA
     if (normalizedExpected == "zaca" && normalizedReceived == "vaca")
     {
         Debug.Log("--- REGRA ESPECIAL ATIVADA: 'vaca' aceito para 'zaca'. ---");
         return true;
     }
+
+    // NOVA REGRA: Se esperar "pato" e ouvir "bato", aceita.
+    if (normalizedExpected == "pato" && normalizedReceived == "bato")
+    {
+        Debug.Log("--- REGRA ESPECIAL ATIVADA: 'bato' aceito para 'pato'. ---");
+        return true;
+    }
+
+    // NOVA REGRA: Se esperar "sapo" e ouvir "zapo", aceita.
+    if (normalizedExpected == "sapo" && normalizedReceived == "zapo")
+    {
+        Debug.Log("--- REGRA ESPECIAL ATIVADA: 'zapo' aceito para 'sapo'. ---");
+        return true;
+    }
     
+    // O resto da lógica de comparação continua normalmente...
     Debug.Log($"--- COMPARANDO (SEM ACENTOS)! Esperado: '{normalizedExpected}' | Recebido: '{normalizedReceived}' ---");
     float similarity = 1.0f - ((float)LevenshteinDistance(normalizedExpected, normalizedReceived) / Mathf.Max(normalizedExpected.Length, received.Length));
     Debug.Log($"--- Similaridade: {similarity:P2} ---");
     return similarity >= similarityThreshold || normalizedReceived.Contains(normalizedExpected);
-}
+    }
 
     /// <summary>
     /// Calcula a Distância de Levenshtein entre duas strings (número de edições para igualá-las).
