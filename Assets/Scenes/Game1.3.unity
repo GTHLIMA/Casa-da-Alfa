@@ -751,7 +751,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2038, y: -224}
+  m_AnchoredPosition: {x: 95, y: -224}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &561744981
@@ -3526,7 +3526,8 @@ MonoBehaviour:
       hintMediumAudio: {fileID: 0}
       hintFinalAudio: {fileID: 8300000, guid: 20976104697ad7049956c836fde73930, type: 3}
   languageCode: pt-BR
-  similarityThreshold: 0.956
+  similarityThreshold: 0.991
+  zacaSimilarityThreshold: 0.718
   displayImage: {fileID: 1177406788}
   micIndicatorImage: {fileID: 1876227425}
   micIndicatorAnimator: {fileID: 0}
