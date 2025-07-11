@@ -49,6 +49,11 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     [Range(0f, 1f)]
     public float similarityThreshold = 0.75f;
 
+    [Tooltip("Threshold de similaridade específico para a palavra ZACA. Use um valor menor para ser mais tolerante.")]
+    [Range(0f, 1f)]
+    public float zacaSimilarityThreshold = 0.70f;
+
+
     [Header("Referências da Interface (UI)")]
     public Image displayImage;
     public Image micIndicatorImage;
@@ -382,10 +387,10 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     }
 
     /// <summary>
-    /// Compara a palavra esperada com a recebida usando um algoritmo de similaridade.
-    /// </summary>
-    private bool CheckMatch(string expected, string received)
-    {
+/// Compara a palavra esperada com a recebida usando um algoritmo de similaridade.
+/// </summary>
+private bool CheckMatch(string expected, string received)
+{
     string normalizedExpected = RemoveAccents(expected);
     string normalizedReceived = RemoveAccents(received);
 
@@ -412,12 +417,25 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         return true;
     }
     
+    // --- LÓGICA DE THRESHOLD INDIVIDUAL ADICIONADA AQUI ---
+    // 1. Por padrão, usamos o threshold geral.
+    float thresholdToUse = this.similarityThreshold;
+
+    // 2. Se a palavra esperada for "zaca", trocamos para o threshold específico.
+    if (normalizedExpected == "zaca")
+    {
+        thresholdToUse = this.zacaSimilarityThreshold;
+        Debug.Log($"--- USANDO THRESHOLD ESPECÍFICO PARA ZACA: {thresholdToUse:P0} ---");
+    }
+    
     // O resto da lógica de comparação continua normalmente...
     Debug.Log($"--- COMPARANDO (SEM ACENTOS)! Esperado: '{normalizedExpected}' | Recebido: '{normalizedReceived}' ---");
     float similarity = 1.0f - ((float)LevenshteinDistance(normalizedExpected, normalizedReceived) / Mathf.Max(normalizedExpected.Length, received.Length));
     Debug.Log($"--- Similaridade: {similarity:P2} ---");
-    return similarity >= similarityThreshold || normalizedReceived.Contains(normalizedExpected);
-    }
+
+    // 3. A comparação final usa a variável 'thresholdToUse' que foi decidida acima.
+    return similarity >= thresholdToUse || normalizedReceived.Contains(normalizedExpected);
+}
 
     /// <summary>
     /// Calcula a Distância de Levenshtein entre duas strings (número de edições para igualá-las).
