@@ -1,116 +1,126 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic; // Necessário para usar List<>
 
-// Este script não precisa mais de um Animator, mas ainda pode ter um AudioSource.
-[RequireComponent(typeof(AudioSource))] 
+[RequireComponent(typeof(AudioSource))]
 public class TrainController : MonoBehaviour
 {
     [Header("Referências")]
-    [Tooltip("O componente 'Image' no trem que vai mostrar a figura da palavra.")]
-    public Image imageContainer;
+    [Tooltip("A lista de TODOS os componentes Image de cada vagão, em ordem.")]
+    public List<Image> wagonImageContainers; // MUDANÇA: Agora é uma lista
 
     [Header("Configurações de Movimento")]
-    [Tooltip("Duração, em segundos, da animação de entrada e saída.")]
-    public float moveDuration = 2.0f;
-    [Tooltip("Posição X inicial, fora da tela à esquerda.")]
+    public float moveDuration = 1.5f;
     public float startX_offscreen = -1500f;
-    [Tooltip("Posição X final, no centro da tela.")]
-    public float targetX_onscreen = 0f;
-    [Tooltip("Posição X de saída, fora da tela à direita.")]
-    public float endX_offscreen = 1500f;
+    public float firstStopX_onscreen = 0f;
+    public float stepDistance = 200f;
+    public float imageFadeDuration = 0.5f;
 
     [Header("Áudios do Trem")]
     public AudioClip trainEnteringSound;
-    public AudioClip trainExitingSound;
-    
+    public AudioClip advanceSound;
+
     private RectTransform rectTransform;
     private AudioSource audioSource;
-    private Vector2 initialPosition;
-    public AnimationCurve moveCurve;
-    
+    private float initialYPosition;
+
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         audioSource = GetComponent<AudioSource>();
-        // Guarda a posição Y inicial para que o trem não suba ou desça.
-        initialPosition = rectTransform.anchoredPosition;
+        initialYPosition = rectTransform.anchoredPosition.y;
+
+        // Desativa todas as imagens no início para garantir que comecem limpas
+        foreach (var container in wagonImageContainers)
+        {
+            if (container != null) container.enabled = false;
+        }
     }
 
-    /// <summary>
-    /// Move o trem para a tela com a imagem correta.
-    /// </summary>
-    public IEnumerator AnimateIn(Sprite spriteToShow)
+    public IEnumerator AnimateIn(Sprite firstSprite)
     {
-        // 1. Define a imagem e a posição inicial fora da tela.
-        if (imageContainer != null)
-        {
-            imageContainer.sprite = spriteToShow;
-            imageContainer.enabled = true;
-        }
-        rectTransform.anchoredPosition = new Vector2(startX_offscreen, initialPosition.y);
+        rectTransform.anchoredPosition = new Vector2(startX_offscreen, initialYPosition);
         gameObject.SetActive(true);
 
-        // 2. Toca o som de entrada.
-        if (trainEnteringSound != null)
-        {
-            audioSource.PlayOneShot(trainEnteringSound);
-        }
+        if (trainEnteringSound != null) audioSource.PlayOneShot(trainEnteringSound);
 
-        // 3. Move suavemente para a posição alvo.
-        Vector2 targetPosition = new Vector2(targetX_onscreen, initialPosition.y);
+        Vector2 targetPosition = new Vector2(firstStopX_onscreen, initialYPosition);
         yield return MoveToPosition(targetPosition, moveDuration);
 
-        Debug.Log("[TrainController] - Animação de ENTRADA completa.");
+        // Mostra a primeira imagem no primeiro vagão (índice 0)
+        yield return StartCoroutine(FadeImage(0, firstSprite, 1f));
+        
+        Debug.Log("[TrainController] - Trem chegou à primeira parada.");
     }
 
-    /// <summary>
-    /// Move o trem para fora da tela.
-    /// </summary>
-    public IEnumerator AnimateOut()
+    public IEnumerator AdvanceAndChangeImage(int nextImageIndex, Sprite nextSprite)
     {
-        // 1. Toca o som de saída.
-        if (trainExitingSound != null)
+        // 1. Apaga a imagem do vagão ANTERIOR
+        if (nextImageIndex > 0 && nextImageIndex <= wagonImageContainers.Count)
         {
-            audioSource.PlayOneShot(trainExitingSound);
+            yield return StartCoroutine(FadeImage(nextImageIndex - 1, null, 0f));
         }
 
-        // 2. Move suavemente para fora da tela.
-        Vector2 targetPosition = new Vector2(endX_offscreen, initialPosition.y);
+        // 2. Avança o trem
+        float newX = rectTransform.anchoredPosition.x + stepDistance;
+        Vector2 targetPosition = new Vector2(newX, initialYPosition);
+
+        if (advanceSound != null) audioSource.PlayOneShot(advanceSound);
         yield return MoveToPosition(targetPosition, moveDuration);
 
-        // 3. Desativa o objeto e a imagem.
-        if (imageContainer != null)
-        {
-            imageContainer.enabled = false;
-        }
-        gameObject.SetActive(false);
-        Debug.Log("[TrainController] - Animação de SAÍDA completa.");
+        // 3. Mostra a nova imagem no vagão ATUAL
+        yield return StartCoroutine(FadeImage(nextImageIndex, nextSprite, 1f));
+        
+        Debug.Log($"[TrainController] - Trem avançou para o vagão #{nextImageIndex}.");
     }
-    
-    /// <summary>
-    /// Corrotina genérica que move o objeto de sua posição atual para uma posição alvo.
-    /// </summary>
-   private IEnumerator MoveToPosition(Vector2 targetPosition, float duration)
-{
-    float elapsedTime = 0f;
-    Vector2 startingPosition = rectTransform.anchoredPosition;
 
-    while (elapsedTime < duration)
+    private IEnumerator MoveToPosition(Vector2 targetPosition, float duration)
     {
-        // Calcula o progresso linear (de 0.0 a 1.0)
-        float progress = elapsedTime / duration;
-        
-        // Usa a curva para transformar o progresso linear em um progresso "desacelerado"
-        float curveValue = moveCurve.Evaluate(progress);
-
-        // Movimento NÃO-LINEAR - usa o valor da curva
-        rectTransform.anchoredPosition = Vector2.Lerp(startingPosition, targetPosition, curveValue);
-        
-        elapsedTime += Time.deltaTime;
-        yield return null;
+        float elapsedTime = 0f;
+        Vector2 startingPosition = rectTransform.anchoredPosition;
+        while (elapsedTime < duration)
+        {
+            rectTransform.anchoredPosition = Vector2.Lerp(startingPosition, targetPosition, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        rectTransform.anchoredPosition = targetPosition;
     }
 
-    rectTransform.anchoredPosition = targetPosition;
-}
+    // MUDANÇA: Agora o método FadeImage precisa saber QUAL imagem controlar
+    private IEnumerator FadeImage(int containerIndex, Sprite newSprite, float targetAlpha)
+    {
+        if (containerIndex < 0 || containerIndex >= wagonImageContainers.Count || wagonImageContainers[containerIndex] == null)
+        {
+            Debug.LogError($"Índice de vagão inválido ou não configurado: {containerIndex}");
+            yield break;
+        }
+
+        Image targetImage = wagonImageContainers[containerIndex];
+
+        // Se um novo sprite for fornecido, atualiza
+        if (newSprite != null)
+        {
+            targetImage.sprite = newSprite;
+        }
+        
+        targetImage.enabled = true;
+        float elapsedTime = 0f;
+        Color startColor = targetImage.color;
+        Color endColor = new Color(startColor.r, startColor.g, startColor.b, targetAlpha);
+        
+        while (elapsedTime < imageFadeDuration)
+        {
+            targetImage.color = Color.Lerp(startColor, endColor, elapsedTime / imageFadeDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        targetImage.color = endColor;
+
+        if (targetAlpha == 0f)
+        {
+            targetImage.enabled = false;
+        }
+    }
 }
