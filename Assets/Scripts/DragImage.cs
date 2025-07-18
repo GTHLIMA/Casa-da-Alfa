@@ -11,6 +11,8 @@ public class DragImage : MonoBehaviour
     private float minX, maxX;
     private float objectHalfWidth;
 
+    private Vector2 lastMousePosition;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -29,17 +31,23 @@ public class DragImage : MonoBehaviour
     void OnMouseDown()
     {
         isDragging = true;
+        lastMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 
     void OnMouseUp()
     {
         if (isDragging)
         {
-            rb.constraints = RigidbodyConstraints2D.None;
             isDragging = false;
-
-            // Quando soltar, parar de mover horizontalmente
+            rb.constraints = RigidbodyConstraints2D.None;
             rb.velocity = Vector2.zero;
+
+            // Desativa a linha ao soltar
+            LineToBottom line = GetComponent<LineToBottom>();
+            if (line != null)
+            {
+                line.lineRenderer.enabled = false;
+            }
         }
     }
 
@@ -47,20 +55,26 @@ public class DragImage : MonoBehaviour
     {
         if (isDragging && Input.GetMouseButton(0))
         {
-            Vector2 touchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            float deltaX = currentMousePosition.x - lastMousePosition.x;
 
-            if (touchPosition.x < transform.position.x)
+            // Apenas aplica movimento se o mouse se mover significativamente
+            if (Mathf.Abs(deltaX) > 0.01f)
             {
-                rb.velocity = new Vector2(-moveSpeed, 0f); // Esquerda
+                float direction = Mathf.Sign(deltaX);
+                rb.velocity = new Vector2(direction * moveSpeed, 0f);
             }
             else
             {
-                rb.velocity = new Vector2(moveSpeed, 0f);  // Direita
+                // Se não houver movimento, parar horizontalmente
+                rb.velocity = new Vector2(0f, rb.velocity.y);
             }
+
+            lastMousePosition = currentMousePosition;
         }
         else
         {
-            // Parar de mover caso não esteja arrastando
+            // Não está arrastando, garantir que não se mova horizontalmente
             rb.velocity = new Vector2(0f, rb.velocity.y);
         }
 
