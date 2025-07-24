@@ -37,6 +37,10 @@ public class DragManager : MonoBehaviour
     public AudioClip end2;
     // public Text scoreEndPhase;
 
+    [Header("Efeitos Visuais")]
+    public GameObject smokePrefab;
+
+
     private AudioSource audioSource;
     private int currentIndex = 0;
     private GameObject currentBalloon;
@@ -56,15 +60,18 @@ public class DragManager : MonoBehaviour
         SpawnPlayerBalloon();
     }
 
+    [Header("Altura dos Targets")]
+    [Range(0f, 1f)]
+    public float targetYViewport = 0.15f;
+
     void SpawnTargetsAleatorios()
     {
         var shuffled = targetVariants.OrderBy(x => Random.value).ToList();
-        float yViewport = 0.15f;
 
         for (int i = 0; i < 4; i++)
         {
-            float xViewport = 0.11f + i * 0.200f;
-            Vector3 viewportPosition = new Vector3(xViewport, yViewport, Camera.main.nearClipPlane + 5f);
+            float xViewport = 0.12f + i * 0.260f;
+            Vector3 viewportPosition = new Vector3(xViewport, targetYViewport, Camera.main.nearClipPlane + 4f);
             Vector3 worldPos = Camera.main.ViewportToWorldPoint(viewportPosition);
             worldPos.z = 0f;
 
@@ -73,11 +80,12 @@ public class DragManager : MonoBehaviour
         }
     }
 
+
     public void SpawnPlayerBalloon()
     {
         if (currentIndex >= prefabSprites.Length)
         {
-            Debug.Log("Todos os balões foram usados.");
+            Debug.Log("Deploy de todos os prefabs!");
             return;
         }
 
@@ -98,6 +106,13 @@ public class DragManager : MonoBehaviour
                 break;
             }
         }
+
+        // Ativa a linha ao instanciar o prefab
+        LineToBottom line = currentBalloon.GetComponent<LineToBottom>();
+        if (line != null && line.lineRenderer != null)
+        {
+            line.lineRenderer.enabled = true;
+        }
     }
 
     public void HandleFusion()
@@ -107,26 +122,67 @@ public class DragManager : MonoBehaviour
         var fusionScript = currentBalloon.GetComponent<ImageFusion>();
         if (fusionScript != null && fusionScript.currentTarget != null)
         {
-            var targetSpriteRenderer = fusionScript.currentTarget.GetComponent<SpriteRenderer>();
-            if (targetSpriteRenderer != null && currentIndex < mergedSprites.Length)
+            // Obter o centro visual do sprite alvo
+            var targetRenderer = fusionScript.currentTarget.GetComponent<SpriteRenderer>();
+            Vector3 fusionPoint = targetRenderer.bounds.center;
+
+            // Instancia a fumaça no local da fusão
+            if (smokePrefab != null)
+            {
+                GameObject smoke = Instantiate(smokePrefab, fusionPoint, Quaternion.identity);
+                Destroy(smoke, 1f);
+            }
+
+            StartCoroutine(TransitionFusion(fusionScript.currentTarget));
+        }
+
+        Destroy(currentBalloon);
+    
+
+}
+
+    private IEnumerator TransitionFusion(GameObject target)
+    {
+        if (target != null)
+        {
+            // Desativar o alvo temporariamente
+            target.SetActive(false);
+        }
+
+        yield return new WaitForSeconds(0.1f);
+
+        // Atualiza o sprite do target (mesmo ainda desativado)
+        if (target != null && currentIndex < mergedSprites.Length)
+        {
+            var targetSpriteRenderer = target.GetComponent<SpriteRenderer>();
+            if (targetSpriteRenderer != null)
             {
                 targetSpriteRenderer.sprite = mergedSprites[currentIndex];
             }
         }
 
+        // Reativa o alvo
+        if (target != null)
+        {
+            target.SetActive(true);
+        }
+
+        // Toca o som da fusão
         if (fusionSounds != null && currentIndex < fusionSounds.Length && audioSource != null)
         {
             audioSource.PlayOneShot(fusionSounds[currentIndex]);
         }
 
-        Destroy(currentBalloon);
+        yield return new WaitForSeconds(0.1f); 
 
         StartCoroutine(ShowMergedAndRespawn());
     }
 
+
+
     IEnumerator ShowMergedAndRespawn()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(0.2f);
 
         currentIndex++;
 
