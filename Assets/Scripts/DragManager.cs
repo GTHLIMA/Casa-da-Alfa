@@ -182,7 +182,7 @@ public class DragManager : MonoBehaviour
 
     IEnumerator ShowMergedAndRespawn()
     {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(3f);
 
         currentIndex++;
 
