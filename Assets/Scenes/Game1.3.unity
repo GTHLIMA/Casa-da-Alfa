@@ -1236,7 +1236,7 @@ MonoBehaviour:
   moveDuration: 4.5
   startX_offscreen: 2888
   firstStopX_onscreen: 5617
-  stepDistance: 1015
+  stepDistance: 1050
   imageFadeDuration: 0.5
   trainEnteringSound: {fileID: 8300000, guid: e527a68e87328fc4ba67a50a0b722986, type: 3}
   advanceSound: {fileID: 8300000, guid: 18970d069624ab548a408e841cacd24e, type: 3}
