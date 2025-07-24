@@ -61,7 +61,7 @@ public class DragManager : MonoBehaviour
         var shuffled = targetVariants.OrderBy(x => Random.value).ToList();
         float yViewport = 0.15f;
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 4; i++)
         {
             float xViewport = 0.11f + i * 0.200f;
             Vector3 viewportPosition = new Vector3(xViewport, yViewport, Camera.main.nearClipPlane + 5f);
