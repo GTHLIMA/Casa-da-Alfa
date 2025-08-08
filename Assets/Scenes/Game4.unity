@@ -833,16 +833,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 233da6c7570f99d4d8bed29402bbe5c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnnablePrefabs:
-  - {fileID: 5838160969091504949, guid: ddb9851a2804c724083500a5f68e528a, type: 3}
-  - {fileID: 5838160969091504949, guid: 11bdac266da92034f9ed571ffd368779, type: 3}
-  - {fileID: 5838160969091504949, guid: 8a93b11f3969103499b3d618a7604bcc, type: 3}
-  - {fileID: 5838160969091504949, guid: bc6e245769a21564f99c14b7bda190a4, type: 3}
-  - {fileID: 5838160969091504949, guid: 9d9225f0fced87346be510c685cb0029, type: 3}
-  - {fileID: 5838160969091504949, guid: f6d0d74e89ecb3f4faa30b2100c24271, type: 3}
+  spawnnablePrefabs: []
   horizontalSpawnPadding: 0.4
   spawnPoint: {fileID: 0}
-  spawnRate: 1
+  spawnRate: 0
   numberCounter: {fileID: 182244623}
   scorePause: {fileID: 2019836792}
   scoreEndPhase: {fileID: 864717725}
@@ -3080,19 +3074,24 @@ MonoBehaviour:
     finalWordAudio: {fileID: 8300000, guid: 33b887fa47c3a974c869f6d96239a02a, type: 3}
     finalWordImage: {fileID: 21300000, guid: 116ebd8fa2981e348ba201a6f52d0ae3, type: 3}
     syllablesInOrder:
-    - syllableImage: {fileID: 21300000, guid: b8e43101f32df644694965c7b531055e, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: b8e43101f32df644694965c7b531055e, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: d3a76d9bb503221418011d0f5e0dfd27, type: 3}
       syllableAudio: {fileID: 8300000, guid: 3d305eca04e72fb4eae413ea7a7fb010, type: 3}
-    - syllableImage: {fileID: 21300000, guid: 48bba921ad04aed4fadaf468c66c3850, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 48bba921ad04aed4fadaf468c66c3850, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: dcefc9a832818ad4d8b42fdd6cf00623, type: 3}
       syllableAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
-    - syllableImage: {fileID: 21300000, guid: 56b19e9f0db43f346ab09332bd88f755, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 56b19e9f0db43f346ab09332bd88f755, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: e9b6d7e5f0c7df74f809bf086bee1f1a, type: 3}
       syllableAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
   - targetWord: FADA
     finalWordAudio: {fileID: 8300000, guid: 094b05fd1d3c29448a32f5fdb5b2e0bf, type: 3}
     finalWordImage: {fileID: 21300000, guid: 26f99ebe22be5484aaebf8a57c49d2dc, type: 3}
     syllablesInOrder:
-    - syllableImage: {fileID: 21300000, guid: 03b89fd5eb24bdf44bc11363ff633130, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 03b89fd5eb24bdf44bc11363ff633130, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: 6c5cbd34b012337429b5de4f70f74f41, type: 3}
       syllableAudio: {fileID: 8300000, guid: 129794c8ee0dc12408c51fd88ac9e2bb, type: 3}
-    - syllableImage: {fileID: 21300000, guid: 56b19e9f0db43f346ab09332bd88f755, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 56b19e9f0db43f346ab09332bd88f755, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: e9b6d7e5f0c7df74f809bf086bee1f1a, type: 3}
       syllableAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
   syllableButtonParent: {fileID: 1901301553}
   syllableButtonPrefab: {fileID: 172084926591892809, guid: fe5add4a1ff7c5a429b50dc85000b9b3, type: 3}
