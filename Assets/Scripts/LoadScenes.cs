@@ -16,6 +16,7 @@ public class LoadScenes : MonoBehaviour
     public void Level2_2() => SceneManager.LoadScene("Game2.3");
     
     public void Level2_3() => SceneManager.LoadScene("Game2.3");
+    public void Level3() => SceneManager.LoadScene("Game3");
 
 
 
