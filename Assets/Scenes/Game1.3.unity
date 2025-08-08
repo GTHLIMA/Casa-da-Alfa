@@ -1201,7 +1201,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2888, y: -463}
+  m_AnchoredPosition: {x: 2834, y: -463}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &561744981
@@ -1234,10 +1234,18 @@ MonoBehaviour:
   - questionMarkImage: {fileID: 1643696188}
     wordImage: {fileID: 2064253008}
   moveDuration: 4.5
-  startX_offscreen: 2888
-  firstStopX_onscreen: 5617
-  stepDistance: 1030
+  startX_offscreen: 0
+  firstStopX_onscreen: 5638
   imageFadeDuration: 0.5
+  delayBeforeReveal: 0.5
+  stepDistances:
+  - 1039
+  - 1019
+  - 1056
+  - 1019
+  - 1030
+  - 1001
+  - 1020
   trainEnteringSound: {fileID: 8300000, guid: e527a68e87328fc4ba67a50a0b722986, type: 3}
   advanceSound: {fileID: 8300000, guid: 18970d069624ab548a408e841cacd24e, type: 3}
 --- !u!82 &561744982
@@ -5862,7 +5870,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -8425, y: 607.8}
+  m_AnchoredPosition: {x: -8451, y: 607.8}
   m_SizeDelta: {x: 9866.59, y: 1185.77}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2024117644
