@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-// Classe interna para agrupar as duas imagens de cada vagão.
 [System.Serializable]
 public class WagonImageGroup
 {
@@ -15,20 +14,23 @@ public class WagonImageGroup
 public class TrainController : MonoBehaviour
 {
     [Header("Referências dos Vagões")]
-    [Tooltip("Lista de TODOS os pares de imagens de cada vagão, em ordem.")]
-    public List<WagonImageGroup> wagonImages; // MUDANÇA: Agora é uma lista de grupos de imagens
+    public List<WagonImageGroup> wagonImages;
 
     [Header("Configurações de Movimento")]
     public float moveDuration = 1.5f;
     public float startX_offscreen = -1500f;
     public float firstStopX_onscreen = 0f;
-    public float stepDistance = 200f;
     public float imageFadeDuration = 0.5f;
+    public float delayBeforeReveal = 0.5f;
+
+    // AQUI ESTÁ A LISTA CORRETA PARA AS DISTÂNCIAS VARIADAS
+    [Tooltip("A sequência de distâncias que o trem avança. A ordem será repetida.")]
+    public float[] stepDistances = new float[8];
 
     [Header("Áudios do Trem")]
     public AudioClip trainEnteringSound;
     public AudioClip advanceSound;
-    
+
     private RectTransform rectTransform;
     private AudioSource audioSource;
     private float initialYPosition;
@@ -40,49 +42,47 @@ public class TrainController : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         initialYPosition = rectTransform.anchoredPosition.y;
 
-        // Garante que no início, só as interrogações apareçam.
         foreach (var wagon in wagonImages)
         {
             if (wagon.questionMarkImage != null) wagon.questionMarkImage.enabled = true;
             if (wagon.wordImage != null)
             {
                 wagon.wordImage.enabled = false;
-                wagon.wordImage.color = new Color(1, 1, 1, 0); // Começa transparente
+                wagon.wordImage.color = new Color(1, 1, 1, 0);
             }
         }
     }
 
     public IEnumerator AnimateIn(Sprite firstSprite)
     {
+        currentWagonIndex = 0;
         rectTransform.anchoredPosition = new Vector2(startX_offscreen, initialYPosition);
         gameObject.SetActive(true);
-
         if (trainEnteringSound != null) audioSource.PlayOneShot(trainEnteringSound);
-
         Vector2 targetPosition = new Vector2(firstStopX_onscreen, initialYPosition);
         yield return MoveToPosition(targetPosition, moveDuration);
-
-        // Revela a imagem do primeiro vagão (índice 0)
+        yield return new WaitForSeconds(delayBeforeReveal);
         yield return RevealWagonImage(0, firstSprite);
     }
 
     public IEnumerator AdvanceAndChangeImage(int nextImageIndex, Sprite nextSprite)
     {
-        // Esconde a imagem do vagão anterior ao começar a avançar
         yield return HideWagonImage(currentWagonIndex);
+        
+        if (stepDistances != null && stepDistances.Length > 0)
+        {
+            float distanceToMove = stepDistances[currentWagonIndex % stepDistances.Length];
+            float newX = rectTransform.anchoredPosition.x + distanceToMove;
+            Vector2 targetPosition = new Vector2(newX, initialYPosition);
+            if (advanceSound != null) audioSource.PlayOneShot(advanceSound);
+            yield return MoveToPosition(targetPosition, moveDuration);
+        }
 
         currentWagonIndex = nextImageIndex;
-        float targetX = firstStopX_onscreen + (currentWagonIndex * stepDistance);
-        Vector2 targetPosition = new Vector2(targetX, initialYPosition);
-
-        if (advanceSound != null) audioSource.PlayOneShot(advanceSound);
-        yield return MoveToPosition(targetPosition, moveDuration);
-
-        // Revela a nova imagem no vagão atual
+        yield return new WaitForSeconds(delayBeforeReveal);
         yield return RevealWagonImage(currentWagonIndex, nextSprite);
     }
 
-    // Corrotina para mover o trem
     private IEnumerator MoveToPosition(Vector2 targetPosition, float duration)
     {
         float elapsedTime = 0f;
@@ -96,20 +96,15 @@ public class TrainController : MonoBehaviour
         rectTransform.anchoredPosition = targetPosition;
     }
 
-    // Corrotina que faz a "mágica" da revelação
     private IEnumerator RevealWagonImage(int index, Sprite sprite)
     {
         if (index < 0 || index >= wagonImages.Count) yield break;
         WagonImageGroup wagon = wagonImages[index];
-
-        // 1. Some com a interrogação
         if (wagon.questionMarkImage != null)
         {
             yield return StartCoroutine(Fade(wagon.questionMarkImage, 0f, imageFadeDuration));
             wagon.questionMarkImage.enabled = false;
         }
-
-        // 2. Aparece com a imagem do desenho
         if (wagon.wordImage != null)
         {
             wagon.wordImage.sprite = sprite;
@@ -118,29 +113,22 @@ public class TrainController : MonoBehaviour
         }
     }
 
-    // Corrotina que reseta o vagão para o estado inicial (mostrando a interrogação)
     private IEnumerator HideWagonImage(int index)
     {
         if (index < 0 || index >= wagonImages.Count) yield break;
         WagonImageGroup wagon = wagonImages[index];
-
-        // 1. Some com a imagem do desenho
         if (wagon.wordImage != null)
         {
             yield return StartCoroutine(Fade(wagon.wordImage, 0f, imageFadeDuration));
             wagon.wordImage.enabled = false;
         }
-
-        // 2. Reaparece com a interrogação
         if (wagon.questionMarkImage != null)
         {
             wagon.questionMarkImage.enabled = true;
-            // Opcional: fade-in para a interrogação também
-            yield return StartCoroutine(Fade(wagon.questionMarkImage, 1f, imageFadeDuration)); 
+            yield return StartCoroutine(Fade(wagon.questionMarkImage, 1f, imageFadeDuration));
         }
     }
 
-    // Corrotina genérica para controlar o fade de qualquer imagem
     private IEnumerator Fade(Image image, float targetAlpha, float duration)
     {
         if (image == null) yield break;

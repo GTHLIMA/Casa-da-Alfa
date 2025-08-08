@@ -191,68 +191,72 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     }
     
     private IEnumerator PlayTurnRoutineForCurrentIndex()
-    {
-        isProcessing = true;
-        mistakeCount = 0;
-        bool pularPrompt = false;
+{
+    isProcessing = true;
+    mistakeCount = 0;
+    bool pularPrompt = false;
 
-        while (true)
+    while (true)
+    {
+        if (!pularPrompt)
         {
-            if (!pularPrompt)
+            SetMicIndicator(promptingColor);
+            AudioClip promptClip = GetCurrentPromptAudio();
+            if (audioManager != null && promptClip != null)
             {
-                SetMicIndicator(promptingColor);
-                AudioClip promptClip = GetCurrentPromptAudio();
-                if (audioManager != null && promptClip != null)
-                {
-                    audioManager.PlaySFX(promptClip);
-                    yield return new WaitForSeconds(promptClip.length + delayAfterHint);
-                }
-                else { yield return new WaitForSeconds(delayAfterHint); }
+                audioManager.PlaySFX(promptClip);
+                yield return new WaitForSeconds(promptClip.length + delayAfterHint);
             }
-            pularPrompt = false;
-            
-            if (!SpeechToText.CheckPermission()) { isProcessing = false; yield break; }
-            
-            receivedResult = false;
-            isListening = true;
-            SpeechToText.Start(this, true, false);
+            else { yield return new WaitForSeconds(delayAfterHint); }
+        }
+        pularPrompt = false;
+        
+        if (!SpeechToText.CheckPermission()) { isProcessing = false; yield break; }
+        receivedResult = false;
+        isListening = true;
+        SpeechToText.Start(this, true, false);
+
+        // MUDANÇA: A cor verde só é ativada se não for a primeira tentativa.
+        if (mistakeCount > 0)
+        {
             yield return new WaitForSeconds(1f);
             SetMicIndicator(listeningColor, true);
-            
-            yield return new WaitUntil(() => receivedResult);
-            isListening = false;
-            SetMicIndicator(staticColor);
-            
-            bool isCorrect = false;
-            if (lastErrorCode.HasValue && lastErrorCode.Value == 11)
-            {
-                pularPrompt = true;
-                continue;
-            }
-            if (!lastErrorCode.HasValue && !string.IsNullOrEmpty(lastRecognizedText))
-            {
-                if (CheckMatch(currentSyllableList[currentIndex].word, lastRecognizedText))
-                {
-                    isCorrect = true;
-                }
-            }
-
-            if (isCorrect)
-            {
-                AddScore(10);
-                if (audioManager != null && congratulatoryAudio != null)
-                {
-                    audioManager.PlaySFX(congratulatoryAudio);
-                }
-                yield return new WaitForSeconds(delayAfterCorrect);
-                break; 
-            }
-            
-            if (mistakeCount == 0) { pularPrompt = true; }
-            mistakeCount++;
         }
-        isProcessing = false;
+        
+        yield return new WaitUntil(() => receivedResult);
+        isListening = false;
+        SetMicIndicator(staticColor);
+        
+        bool isCorrect = false;
+        if (lastErrorCode.HasValue && lastErrorCode.Value == 11)
+        {
+            pularPrompt = true;
+            continue;
+        }
+        if (!lastErrorCode.HasValue && !string.IsNullOrEmpty(lastRecognizedText))
+        {
+            if (CheckMatch(currentSyllableList[currentIndex].word, lastRecognizedText))
+            {
+                isCorrect = true;
+            }
+        }
+
+        if (isCorrect)
+        {
+            AddScore(10);
+            if (audioManager != null && congratulatoryAudio != null)
+            {
+                audioManager.PlaySFX(congratulatoryAudio);
+            }
+            yield return new WaitForSeconds(delayAfterCorrect);
+            break; 
+        }
+        
+        if (mistakeCount == 0) { pularPrompt = true; }
+        mistakeCount++;
     }
+    isProcessing = false;
+}
     #endregion
 
     #region Game Logic & Transitions
