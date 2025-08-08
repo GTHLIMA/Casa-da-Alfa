@@ -11,7 +11,12 @@ public class SyllableBuilderManager : MonoBehaviour
     [System.Serializable]
     public class SyllableButtonData
     {
-        public Sprite syllableImage;
+        [Tooltip("A imagem da sílaba escrita (Ex: BO.png), que será o próprio botão.")]
+        public Sprite syllableTextImage;
+        
+        [Tooltip("A imagem do desenho que representa a sílaba (Ex: bola.png)")]
+        public Sprite syllableDrawingImage;
+        
         public AudioClip syllableAudio;
     }
 
@@ -121,8 +126,32 @@ public class SyllableBuilderManager : MonoBehaviour
     foreach (var syllableData in currentRound.syllablesInOrder)
     {
         GameObject buttonGO = Instantiate(syllableButtonPrefab, syllableButtonParent);
-        buttonGO.GetComponent<Image>().sprite = syllableData.syllableImage;
         
+        // --- LÓGICA ATUALIZADA ---
+
+        // 1. Define a imagem do botão principal (a sílaba escrita)
+        Image mainButtonImage = buttonGO.GetComponent<Image>();
+        if (mainButtonImage != null)
+        {
+            mainButtonImage.sprite = syllableData.syllableTextImage;
+        }
+        else
+        {
+            Debug.LogError("O prefab do botão não tem um componente Image no seu objeto raiz!");
+        }
+
+        // 2. Encontra o objeto filho e define a imagem do desenho
+        Image drawingImageComponent = buttonGO.transform.Find("ImagemDesenho")?.GetComponent<Image>();
+        if (drawingImageComponent != null)
+        {
+            drawingImageComponent.sprite = syllableData.syllableDrawingImage;
+        }
+        else
+        {
+            Debug.LogError("Não foi possível encontrar o GameObject filho 'ImagemDesenho' no prefab do botão!");
+        }
+        
+        // O resto da configuração continua igual
         SyllableButton buttonComponent = buttonGO.GetComponent<SyllableButton>();
         buttonComponent.Setup(syllableData, this);
 
