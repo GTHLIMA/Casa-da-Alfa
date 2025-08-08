@@ -13,8 +13,9 @@ GameObject:
   - component: {fileID: 7654041140900745245}
   - component: {fileID: 4165694963318427576}
   - component: {fileID: 4414159268632501370}
+  - component: {fileID: 925242225572597658}
   m_Layer: 5
-  m_Name: Button Syllabe
+  m_Name: BotaoSilaba_Modelo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36,8 +37,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -393, y: 245}
-  m_SizeDelta: {x: 230, y: 250}
+  m_AnchoredPosition: {x: -285, y: 103}
+  m_SizeDelta: {x: 120, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5188799057544225340
 CanvasRenderer:
@@ -133,3 +134,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d489be70168b043bdd9c5f93372534, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fadeInDuration: 0.3
+--- !u!225 &925242225572597658
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 172084926591892809}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
