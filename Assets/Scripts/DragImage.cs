@@ -27,7 +27,7 @@ public class DragImage : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        rb.constraints = RigidbodyConstraints2D.FreezePositionY;
+        rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
 
         audioSource = GetComponent<AudioSource>();
 
@@ -50,9 +50,17 @@ public class DragImage : MonoBehaviour
 
         isDragging = true;
         lastMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        // Congela Y e rotação para evitar queda enquanto arrasta
+        rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
     }
 
     void OnMouseUp()
+    {
+        OnDragRelease();
+    }
+
+    void OnDragRelease()
     {
         if (audioSource != null && popUpClip != null)
         {
@@ -62,8 +70,12 @@ public class DragImage : MonoBehaviour
         if (isDragging)
         {
             isDragging = false;
-            rb.constraints = RigidbodyConstraints2D.None;
-            rb.velocity = Vector2.zero;
+
+            // Remove restrição de Y para permitir queda natural
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+
+            // Para o movimento horizontal ao soltar, mantém velocidade Y
+            rb.velocity = new Vector2(0f, rb.velocity.y);
 
             LineToBottom line = GetComponent<LineToBottom>();
             if (line != null)
@@ -83,9 +95,32 @@ public class DragImage : MonoBehaviour
         }
     }
 
-
     void Update()
     {
+        // Detecta fim do toque/drag em dispositivos touch e mouse
+        if (isDragging)
+        {
+            bool released = false;
+
+            // Mouse
+            if (Input.GetMouseButtonUp(0))
+                released = true;
+
+            // Touch
+            if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);
+                if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+                    released = true;
+            }
+
+            if (released)
+            {
+                OnDragRelease();
+            }
+        }
+
+        // Movimentação enquanto arrasta
         if (isDragging && Input.GetMouseButton(0))
         {
             Vector2 currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -103,11 +138,13 @@ public class DragImage : MonoBehaviour
 
             lastMousePosition = currentMousePosition;
         }
-        else
+        else if (!isDragging)
         {
-            rb.velocity = new Vector2(0f, rb.velocity.y);
+            // Permite queda natural, sem restrição em Y
+            // Aqui não precisa setar nada porque Rigidbody já está com constraints só na rotação
         }
 
+        // Limita posição X para ficar dentro da tela
         Vector3 clampedPosition = transform.position;
         clampedPosition.x = Mathf.Clamp(clampedPosition.x, minX, maxX);
         transform.position = clampedPosition;
