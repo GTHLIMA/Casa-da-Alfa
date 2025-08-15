@@ -98,31 +98,35 @@ public class SyllableBuilderManager : MonoBehaviour
     }
 
     private IEnumerator ClearAndCreateButtons()
+{
+    foreach (SyllableButton button in currentButtons)
     {
-        // Faz o fade-out dos botões existentes
-        foreach (SyllableButton button in currentButtons)
-        {
-            if (button != null) StartCoroutine(button.Fade(false, fadeDuration));
-        }
-        
-        StartCoroutine(FadeCanvasGroup(finalImageCanvasGroup, 0f, fadeDuration));
-        
-        yield return new WaitForSeconds(fadeDuration);
-
-        foreach (SyllableButton button in currentButtons)
-        {
-            if (button != null) Destroy(button.gameObject);
-        }
-        currentButtons.Clear();
-
-       foreach (Image slot in answerSlotImages)
-        {
-            slot.gameObject.SetActive(false);
-            slot.sprite = null;
-        }
-
-        CreateNewButtons();
+        if (button != null) StartCoroutine(button.Fade(false, fadeDuration));
     }
+    
+    StartCoroutine(FadeCanvasGroup(finalImageCanvasGroup, 0f, fadeDuration));
+    
+    if (answerSlotsCanvasGroup != null)
+    {
+        StartCoroutine(FadeCanvasGroup(answerSlotsCanvasGroup, 0f, fadeDuration));
+    }
+    yield return new WaitForSeconds(fadeDuration);
+
+
+    foreach (SyllableButton button in currentButtons)
+    {
+        if (button != null) Destroy(button.gameObject);
+    }
+    currentButtons.Clear();
+
+    foreach (Image slot in answerSlotImages)
+    {
+        slot.gameObject.SetActive(false);
+        slot.sprite = null;
+    }
+
+    CreateNewButtons();
+}
 
     private void CreateNewButtons()
 {
@@ -190,41 +194,46 @@ public class SyllableBuilderManager : MonoBehaviour
     }
 
     private IEnumerator RoundWinSequence()
+{
+    RoundData currentRound = allRounds[currentRoundIndex];
+    if(GameManager.Instance != null)
+        GameManager.Instance.AddScore(50);
+    
+    // ETAPA 1: Prepara os slots de resposta (ainda invisíveis).
+    for(int i = 0; i < currentRound.syllablesInOrder.Count; i++)
     {
-        RoundData currentRound = allRounds[currentRoundIndex];
-        if(GameManager.Instance != null)
-            GameManager.Instance.AddScore(50);
-        
-        // ETAPA 1: Prepara os slots de resposta (ainda invisíveis)
-        for(int i = 0; i < currentRound.syllablesInOrder.Count; i++)
+        if(i < answerSlotImages.Count)
         {
-            if(i < answerSlotImages.Count)
-            {
-                answerSlotImages[i].sprite = currentRound.syllablesInOrder[i].syllableTextImage;
-                answerSlotImages[i].gameObject.SetActive(true);
-            }
+            Image slotImage = answerSlotImages[i];
+            slotImage.sprite = currentRound.syllablesInOrder[i].syllableTextImage;
+            slotImage.gameObject.SetActive(true);
         }
-        
-        // ETAPA 2: Prepara a imagem final (ainda invisível)
-        finalImageDisplay.sprite = currentRound.finalWordImage;
-        finalImageDisplay.gameObject.SetActive(true);
-
-        // ETAPA 3: Faz o fade-in da imagem final E dos slots de resposta ao mesmo tempo
-        StartCoroutine(FadeCanvasGroup(finalImageCanvasGroup, 1f, fadeDuration));
-        if(answerSlotsCanvasGroup != null) StartCoroutine(FadeCanvasGroup(answerSlotsCanvasGroup, 1f, fadeDuration));
-        
-        // Espera o fade terminar
-        yield return new WaitForSeconds(fadeDuration);
-        
-        // ETAPA 4: Toca o som da palavra completa
-        if (audioManager != null && currentRound.finalWordAudio != null)
-        {
-            audioManager.PlaySFX(currentRound.finalWordAudio);
-        }
-        
-        yield return new WaitForSeconds(delayAfterRoundWin);
-        StartNextRound();
     }
+    
+    // ETAPA 2: Prepara a imagem final.
+    finalImageDisplay.sprite = currentRound.finalWordImage;
+    finalImageDisplay.gameObject.SetActive(true);
+
+    // ETAPA 3: Faz o fade-in da imagem final E dos slots de resposta...
+    StartCoroutine(FadeCanvasGroup(finalImageCanvasGroup, 1f, fadeDuration));
+    if(answerSlotsCanvasGroup != null) 
+    {
+        answerSlotsCanvasGroup.gameObject.SetActive(true);
+        StartCoroutine(FadeCanvasGroup(answerSlotsCanvasGroup, 1f, fadeDuration));
+    }
+    
+    // Espera o fade terminar.
+    yield return new WaitForSeconds(fadeDuration);
+    
+    // ETAPA 4: Toca o som da palavra completa.
+    if (audioManager != null && currentRound.finalWordAudio != null)
+    {
+        audioManager.PlaySFX(currentRound.finalWordAudio);
+    }
+    
+    yield return new WaitForSeconds(delayAfterRoundWin);
+    StartNextRound();
+}
 
     private IEnumerator FadeCanvasGroup(CanvasGroup cg, float targetAlpha, float duration)
     {
