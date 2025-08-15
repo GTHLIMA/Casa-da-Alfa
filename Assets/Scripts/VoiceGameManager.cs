@@ -170,7 +170,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         if (trainController != null)
         {
             Sprite firstSprite = currentSyllableList[0].image;
-            yield return StartCoroutine(trainController.AnimateIn(firstSprite));
+            yield return StartCoroutine(trainController.AnimateIn());
         }
 
         for (currentIndex = 0; currentIndex < currentSyllableList.Count; currentIndex++)
@@ -182,7 +182,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
                 if (trainController != null)
                 {
                     Sprite nextSprite = currentSyllableList[currentIndex + 1].image;
-                    yield return StartCoroutine(trainController.AdvanceAndChangeImage(currentIndex + 1, nextSprite));
+                    yield return StartCoroutine(trainController.AdvanceToNextWagon(currentIndex + 1));
                 }
             }
         }
@@ -190,73 +190,85 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         ShowEndPhasePanel();
     }
     
-    private IEnumerator PlayTurnRoutineForCurrentIndex()
-{
-    isProcessing = true;
-    mistakeCount = 0;
-    bool pularPrompt = false;
-
-    while (true)
+     private IEnumerator PlayTurnRoutineForCurrentIndex()
     {
-        if (!pularPrompt)
-        {
-            SetMicIndicator(promptingColor);
-            AudioClip promptClip = GetCurrentPromptAudio();
-            if (audioManager != null && promptClip != null)
-            {
-                audioManager.PlaySFX(promptClip);
-                yield return new WaitForSeconds(promptClip.length + delayAfterHint);
-            }
-            else { yield return new WaitForSeconds(delayAfterHint); }
-        }
-        pularPrompt = false;
+        isProcessing = true;
+        mistakeCount = 0;
         
-        if (!SpeechToText.CheckPermission()) { isProcessing = false; yield break; }
-        receivedResult = false;
-        isListening = true;
-        SpeechToText.Start(this, true, false);
-
-        // MUDANÇA: A cor verde só é ativada se não for a primeira tentativa.
-        if (mistakeCount > 0)
+        // 1. TOCA A PERGUNTA PRIMEIRO
+        AudioClip promptClip = GetCurrentPromptAudio();
+        if (audioManager != null && promptClip != null)
         {
-            yield return new WaitForSeconds(1f);
-            SetMicIndicator(listeningColor, true);
+            audioManager.PlaySFX(promptClip);
+            yield return new WaitForSeconds(promptClip.length);
         }
-        
-        yield return new WaitUntil(() => receivedResult);
-        isListening = false;
-        SetMicIndicator(staticColor);
-        
-        bool isCorrect = false;
-        if (lastErrorCode.HasValue && lastErrorCode.Value == 11)
+        else
         {
-            pularPrompt = true;
-            continue;
-        }
-        if (!lastErrorCode.HasValue && !string.IsNullOrEmpty(lastRecognizedText))
-        {
-            if (CheckMatch(currentSyllableList[currentIndex].word, lastRecognizedText))
-            {
-                isCorrect = true;
-            }
+            yield return new WaitForSeconds(delayAfterHint);
         }
 
-        if (isCorrect)
+        // 2. REVELA A IMAGEM
+        if (trainController != null)
         {
-            AddScore(10);
-            if (audioManager != null && congratulatoryAudio != null)
-            {
-                audioManager.PlaySFX(congratulatoryAudio);
-            }
-            yield return new WaitForSeconds(delayAfterCorrect);
-            break; 
+            Sprite currentSprite = currentSyllableList[currentIndex].image;
+            yield return StartCoroutine(trainController.RevealCurrentImage(currentSprite));
         }
         
-        if (mistakeCount == 0) { pularPrompt = true; }
-        mistakeCount++;
+        // 3. ATIVA A DETECÇÃO DE VOZ (LOOP DE TENTATIVAS)
+        bool pularPromptNaProximaTentativa = false;
+        while (true)
+        {
+            if (pularPromptNaProximaTentativa)
+            {
+                // Toca a dica de áudio em caso de erro
+                AudioClip hintClip = GetCurrentPromptAudio();
+                if (audioManager != null && hintClip != null)
+                {
+                    audioManager.PlaySFX(hintClip);
+                    yield return new WaitForSeconds(hintClip.length + delayAfterHint);
+                }
+            }
+            pularPromptNaProximaTentativa = false;
+            
+            // Ativa a escuta de voz
+            if (!SpeechToText.CheckPermission()) { isProcessing = false; yield break; }
+            receivedResult = false;
+            isListening = true;
+            SpeechToText.Start(this, true, false);
+
+            if (mistakeCount > 0)
+            {
+                SetMicIndicator(listeningColor, true);
+            }
+            
+            yield return new WaitUntil(() => receivedResult);
+            isListening = false;
+            SetMicIndicator(staticColor);
+            
+            bool isCorrect = false;
+            if (lastErrorCode.HasValue && lastErrorCode.Value == 11) { pularPromptNaProximaTentativa = true; continue; }
+            if (!lastErrorCode.HasValue && !string.IsNullOrEmpty(lastRecognizedText))
+            {
+                if (CheckMatch(currentSyllableList[currentIndex].word, lastRecognizedText))
+                {
+                    isCorrect = true;
+                }
+            }
+
+            if (isCorrect)
+            {
+                AddScore(10);
+                if (audioManager != null && congratulatoryAudio != null) { audioManager.PlaySFX(congratulatoryAudio); }
+                yield return new WaitForSeconds(delayAfterCorrect);
+                break; 
+            }
+            
+            mistakeCount++;
+            pularPromptNaProximaTentativa = true;
+        }
+        isProcessing = false;
     }
-    isProcessing = false;
-}
+
     #endregion
 
     #region Game Logic & Transitions
