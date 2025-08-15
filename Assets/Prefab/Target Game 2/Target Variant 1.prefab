@@ -64,6 +64,10 @@ PrefabInstance:
       propertyPath: m_Size.x
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9056698116714107346, guid: 1d1f003c5e6ec0c4ea76ad0eea36f3c7, type: 3}
+      propertyPath: preferredWidthPercent
+      value: 0.1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
     m_RemovedGameObjects: []
@@ -90,4 +94,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a14eeb8d2c06f54192f1232a9b2a6ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  preferredWidthPercent: 0.16
+  preferredWidthPercent: 0.2
