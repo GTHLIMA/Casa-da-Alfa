@@ -1236,8 +1236,6 @@ MonoBehaviour:
   moveDuration: 4.5
   startX_offscreen: 0
   firstStopX_onscreen: 5638
-  imageFadeDuration: 0.5
-  delayBeforeReveal: 0.5
   stepDistances:
   - 1039
   - 1019
@@ -1246,6 +1244,8 @@ MonoBehaviour:
   - 1030
   - 1001
   - 1020
+  imageFadeDuration: 0.5
+  delayBeforeReveal: 0.5
   trainEnteringSound: {fileID: 8300000, guid: e527a68e87328fc4ba67a50a0b722986, type: 3}
   advanceSound: {fileID: 8300000, guid: 18970d069624ab548a408e841cacd24e, type: 3}
 --- !u!82 &561744982
@@ -5121,7 +5121,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1876227423
 RectTransform:
   m_ObjectHideFlags: 0

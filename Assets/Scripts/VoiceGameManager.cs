@@ -117,6 +117,8 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     private void Start()
     {
         Debug.Log("== [ImageVoiceMatcher] - JOGO INICIADO ==");
+
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
         
         score = ScoreTransfer.Instance?.Score ?? 0;
         if (numberCounter != null) numberCounter.Value = score;
@@ -137,6 +139,8 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 
         SpeechToText.Initialize(languageCode);
         SetMicIndicator(staticColor);
+
+        
         
         StartCoroutine(GameLoop());
     }
