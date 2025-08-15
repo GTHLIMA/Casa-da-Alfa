@@ -41,6 +41,9 @@ public class SyllableBuilderManager : MonoBehaviour
     public GameObject syllableButtonPrefab;
     public Image finalImageDisplay;
     public Button pauseButton;
+    public List<Image> answerSlotImages; 
+    public CanvasGroup answerSlotsCanvasGroup;
+
 
     [Header("Controles de Tempo e Efeitos")]
     public float delayAfterRoundWin = 3.0f;
@@ -102,19 +105,22 @@ public class SyllableBuilderManager : MonoBehaviour
             if (button != null) StartCoroutine(button.Fade(false, fadeDuration));
         }
         
-        // CORREÇÃO: Garante que a imagem final da rodada anterior também suma.
         StartCoroutine(FadeCanvasGroup(finalImageCanvasGroup, 0f, fadeDuration));
         
         yield return new WaitForSeconds(fadeDuration);
 
-        // Destrói os objetos dos botões antigos
         foreach (SyllableButton button in currentButtons)
         {
             if (button != null) Destroy(button.gameObject);
         }
         currentButtons.Clear();
 
-        // Agora, cria os novos botões
+       foreach (Image slot in answerSlotImages)
+        {
+            slot.gameObject.SetActive(false);
+            slot.sprite = null;
+        }
+
         CreateNewButtons();
     }
 
@@ -126,10 +132,7 @@ public class SyllableBuilderManager : MonoBehaviour
     foreach (var syllableData in currentRound.syllablesInOrder)
     {
         GameObject buttonGO = Instantiate(syllableButtonPrefab, syllableButtonParent);
-        
-        // --- LÓGICA ATUALIZADA ---
-
-        // 1. Define a imagem do botão principal (a sílaba escrita)
+    
         Image mainButtonImage = buttonGO.GetComponent<Image>();
         if (mainButtonImage != null)
         {
@@ -140,7 +143,6 @@ public class SyllableBuilderManager : MonoBehaviour
             Debug.LogError("O prefab do botão não tem um componente Image no seu objeto raiz!");
         }
 
-        // 2. Encontra o objeto filho e define a imagem do desenho
         Image drawingImageComponent = buttonGO.transform.Find("ImagemDesenho")?.GetComponent<Image>();
         if (drawingImageComponent != null)
         {
@@ -151,7 +153,6 @@ public class SyllableBuilderManager : MonoBehaviour
             Debug.LogError("Não foi possível encontrar o GameObject filho 'ImagemDesenho' no prefab do botão!");
         }
         
-        // O resto da configuração continua igual
         SyllableButton buttonComponent = buttonGO.GetComponent<SyllableButton>();
         buttonComponent.Setup(syllableData, this);
 
@@ -159,7 +160,6 @@ public class SyllableBuilderManager : MonoBehaviour
     }
 }
 
-    // --- MÉTODO ALTERADO ---
     public void OnSyllableClicked(SyllableButtonData clickedSyllable, SyllableButton button)
     {
         RoundData currentRound = allRounds[currentRoundIndex];
@@ -173,14 +173,13 @@ public class SyllableBuilderManager : MonoBehaviour
 
             nextSyllableIndexToClick++;
 
-            // MUDANÇA: O botão não some, apenas fica semitransparente e desativado.
             Button uiButton = button.GetComponent<Button>();
             CanvasGroup canvasGroup = button.GetComponent<CanvasGroup>();
             
-            uiButton.interactable = false; // Desativa o clique
+            uiButton.interactable = false; 
             if (canvasGroup != null)
             {
-                canvasGroup.alpha = 0.5f; // Deixa com 50% de opacidade
+                canvasGroup.alpha = 0.5f; 
             }
             
             if (nextSyllableIndexToClick >= currentRound.syllablesInOrder.Count)
@@ -191,26 +190,42 @@ public class SyllableBuilderManager : MonoBehaviour
     }
 
     private IEnumerator RoundWinSequence()
-{
-    RoundData currentRound = allRounds[currentRoundIndex];
-    
-    if(GameManager.Instance != null)
-        GameManager.Instance.AddScore(50);
-    
-    finalImageDisplay.sprite = currentRound.finalWordImage;
-    finalImageDisplay.gameObject.SetActive(true);
-    yield return StartCoroutine(FadeCanvasGroup(finalImageCanvasGroup, 1f, fadeDuration));
-    
-    if (audioManager != null && currentRound.finalWordAudio != null)
     {
-        audioManager.PlaySFX(currentRound.finalWordAudio);
-    }
-    
-    yield return new WaitForSeconds(delayAfterRoundWin);
+        RoundData currentRound = allRounds[currentRoundIndex];
+        if(GameManager.Instance != null)
+            GameManager.Instance.AddScore(50);
+        
+        // ETAPA 1: Prepara os slots de resposta (ainda invisíveis)
+        for(int i = 0; i < currentRound.syllablesInOrder.Count; i++)
+        {
+            if(i < answerSlotImages.Count)
+            {
+                answerSlotImages[i].sprite = currentRound.syllablesInOrder[i].syllableTextImage;
+                answerSlotImages[i].gameObject.SetActive(true);
+            }
+        }
+        
+        // ETAPA 2: Prepara a imagem final (ainda invisível)
+        finalImageDisplay.sprite = currentRound.finalWordImage;
+        finalImageDisplay.gameObject.SetActive(true);
 
-    StartNextRound();
-}
-    
+        // ETAPA 3: Faz o fade-in da imagem final E dos slots de resposta ao mesmo tempo
+        StartCoroutine(FadeCanvasGroup(finalImageCanvasGroup, 1f, fadeDuration));
+        if(answerSlotsCanvasGroup != null) StartCoroutine(FadeCanvasGroup(answerSlotsCanvasGroup, 1f, fadeDuration));
+        
+        // Espera o fade terminar
+        yield return new WaitForSeconds(fadeDuration);
+        
+        // ETAPA 4: Toca o som da palavra completa
+        if (audioManager != null && currentRound.finalWordAudio != null)
+        {
+            audioManager.PlaySFX(currentRound.finalWordAudio);
+        }
+        
+        yield return new WaitForSeconds(delayAfterRoundWin);
+        StartNextRound();
+    }
+
     private IEnumerator FadeCanvasGroup(CanvasGroup cg, float targetAlpha, float duration)
     {
         float time = 0f;
@@ -225,8 +240,7 @@ public class SyllableBuilderManager : MonoBehaviour
         }
         cg.alpha = targetAlpha;
 
-        // Se o fade for para sumir, desativa o objeto no final para garantir.
-        if (targetAlpha == 0f)
+        if (targetAlpha == 0f && cg != finalImageCanvasGroup) 
         {
             cg.gameObject.SetActive(false);
         }
@@ -234,8 +248,23 @@ public class SyllableBuilderManager : MonoBehaviour
 
     private void EndGame()
     {
-        Debug.Log("FIM DE JOGO! PARABÉNS!");
+        StartCoroutine(EndGameSequence());
+    }
+
+    private IEnumerator EndGameSequence()
+    {
+        foreach (SyllableButton button in currentButtons)
+        {
+            if (button != null) StartCoroutine(button.Fade(false, fadeDuration));
+        }
+        if (finalImageCanvasGroup.alpha > 0) StartCoroutine(FadeCanvasGroup(finalImageCanvasGroup, 0f, fadeDuration));
+        if (answerSlotsCanvasGroup != null && answerSlotsCanvasGroup.alpha > 0) StartCoroutine(FadeCanvasGroup(answerSlotsCanvasGroup, 0f, fadeDuration));
+
+        yield return new WaitForSeconds(fadeDuration);
+
         if(GameManager.Instance != null)
+        {
             GameManager.Instance.ShowEndPhasePanel();
+        }
     }
 }

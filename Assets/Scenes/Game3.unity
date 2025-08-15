@@ -153,7 +153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 121733377}
   SFXSource: {fileID: 44034172}
-  background: {fileID: 8300000, guid: 1634df1390fe68e448ae1cdf4ac3e7bd, type: 3}
+  background: {fileID: 8300000, guid: 15467ff6ab9d9124ba9a3adc96eae50c, type: 3}
   end1: {fileID: 8300000, guid: 0b834cbd0f0b6334f8d428a79a527202, type: 3}
   end2: {fileID: 8300000, guid: 0b834cbd0f0b6334f8d428a79a527202, type: 3}
   end3: {fileID: 8300000, guid: 0b834cbd0f0b6334f8d428a79a527202, type: 3}
@@ -476,15 +476,15 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 1634df1390fe68e448ae1cdf4ac3e7bd, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 15467ff6ab9d9124ba9a3adc96eae50c, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0
+  m_Volume: 0.03
   m_Pitch: 1
   Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 71
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -930,8 +930,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.070007, y: -401}
-  m_SizeDelta: {x: 400, y: 400}
+  m_AnchoredPosition: {x: -0.0000076294, y: -153}
+  m_SizeDelta: {x: 634.49, y: 556.33}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &477691021
 GameObject:
@@ -2791,8 +2791,8 @@ Transform:
   m_GameObject: {fileID: 1501442351}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.000015258789}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.0357, y: -0.2054, z: -0.000015258789}
+  m_LocalScale: {x: 7.2690725, y: 5.6403956, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -2851,7 +2851,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
-  m_Sprite: {fileID: 21300000, guid: 642049d97fefb014895ee9f75be982f8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1f3277876de1233419b6f5206f168d5c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3070,6 +3070,46 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allRounds:
+  - targetWord: BALA
+    finalWordAudio: {fileID: 8300000, guid: 44950199f447f3941a0078ccc35a0267, type: 3}
+    finalWordImage: {fileID: 21300000, guid: 1416ed7db0d6e4a4eaef65c6b990c681, type: 3}
+    syllablesInOrder:
+    - syllableTextImage: {fileID: 21300000, guid: 2d7c90b96a7d4e6418fa25132f4199da, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: e630823da395193488033f1cce68cbe8, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 48bba921ad04aed4fadaf468c66c3850, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: dcefc9a832818ad4d8b42fdd6cf00623, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
+  - targetWord: FADA
+    finalWordAudio: {fileID: 8300000, guid: 094b05fd1d3c29448a32f5fdb5b2e0bf, type: 3}
+    finalWordImage: {fileID: 21300000, guid: 26f99ebe22be5484aaebf8a57c49d2dc, type: 3}
+    syllablesInOrder:
+    - syllableTextImage: {fileID: 21300000, guid: 03b89fd5eb24bdf44bc11363ff633130, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: 6c5cbd34b012337429b5de4f70f74f41, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 129794c8ee0dc12408c51fd88ac9e2bb, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 56b19e9f0db43f346ab09332bd88f755, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: e9b6d7e5f0c7df74f809bf086bee1f1a, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
+  - targetWord: CAPA
+    finalWordAudio: {fileID: 8300000, guid: 64016e06e4c860145bf5ca8ad44e146d, type: 3}
+    finalWordImage: {fileID: 21300000, guid: ada24ba552e29a442a09b606fcb49dc0, type: 3}
+    syllablesInOrder:
+    - syllableTextImage: {fileID: 21300000, guid: e25eb2282ad129b4b84238a258d65dcd, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: 48f4db9758b527a428ef0e3b5e796c24, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: cb47391074732b74bbe502eca36d9d86, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: 8b59a47ee0bd64d4ba24f0f5c469252a, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
+  - targetWord: LAMA
+    finalWordAudio: {fileID: 8300000, guid: 940804cec75cb2e4a9d3e2adc436a81b, type: 3}
+    finalWordImage: {fileID: 21300000, guid: 22cf1da0f22e04640b91a44378708d1f, type: 3}
+    syllablesInOrder:
+    - syllableTextImage: {fileID: 21300000, guid: 48bba921ad04aed4fadaf468c66c3850, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: dcefc9a832818ad4d8b42fdd6cf00623, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 52c215ba658955944813b77314c6a7fb, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: 5f7a589463e3200489d67fb145d9bdf9, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
   - targetWord: SALADA
     finalWordAudio: {fileID: 8300000, guid: 33b887fa47c3a974c869f6d96239a02a, type: 3}
     finalWordImage: {fileID: 21300000, guid: 116ebd8fa2981e348ba201a6f52d0ae3, type: 3}
@@ -3083,16 +3123,19 @@ MonoBehaviour:
     - syllableTextImage: {fileID: 21300000, guid: 56b19e9f0db43f346ab09332bd88f755, type: 3}
       syllableDrawingImage: {fileID: 21300000, guid: e9b6d7e5f0c7df74f809bf086bee1f1a, type: 3}
       syllableAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
-  - targetWord: FADA
-    finalWordAudio: {fileID: 8300000, guid: 094b05fd1d3c29448a32f5fdb5b2e0bf, type: 3}
-    finalWordImage: {fileID: 21300000, guid: 26f99ebe22be5484aaebf8a57c49d2dc, type: 3}
+  - targetWord: MACACA
+    finalWordAudio: {fileID: 8300000, guid: 2e8876ef382b70749b2991f1df1ac1c3, type: 3}
+    finalWordImage: {fileID: 21300000, guid: e60db5ebf3e0b374797b25045234832b, type: 3}
     syllablesInOrder:
-    - syllableTextImage: {fileID: 21300000, guid: 03b89fd5eb24bdf44bc11363ff633130, type: 3}
-      syllableDrawingImage: {fileID: 21300000, guid: 6c5cbd34b012337429b5de4f70f74f41, type: 3}
-      syllableAudio: {fileID: 8300000, guid: 129794c8ee0dc12408c51fd88ac9e2bb, type: 3}
-    - syllableTextImage: {fileID: 21300000, guid: 56b19e9f0db43f346ab09332bd88f755, type: 3}
-      syllableDrawingImage: {fileID: 21300000, guid: e9b6d7e5f0c7df74f809bf086bee1f1a, type: 3}
-      syllableAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 52c215ba658955944813b77314c6a7fb, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: 5f7a589463e3200489d67fb145d9bdf9, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: e25eb2282ad129b4b84238a258d65dcd, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: 48f4db9758b527a428ef0e3b5e796c24, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: e25eb2282ad129b4b84238a258d65dcd, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: 48f4db9758b527a428ef0e3b5e796c24, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
   syllableButtonParent: {fileID: 1901301553}
   syllableButtonPrefab: {fileID: 172084926591892809, guid: fe5add4a1ff7c5a429b50dc85000b9b3, type: 3}
   finalImageDisplay: {fileID: 348103271}
@@ -3568,7 +3611,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0.070007, y: 131}
+  m_AnchoredPosition: {x: 4.41, y: 137.51}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1901301554
