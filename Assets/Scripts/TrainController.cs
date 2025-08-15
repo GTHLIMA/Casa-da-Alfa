@@ -20,12 +20,9 @@ public class TrainController : MonoBehaviour
     public float moveDuration = 1.5f;
     public float startX_offscreen = -1500f;
     public float firstStopX_onscreen = 0f;
-    public float imageFadeDuration = 0.5f;
-    public float delayBeforeReveal = 0.5f;
-
-    // AQUI ESTÁ A LISTA CORRETA PARA AS DISTÂNCIAS VARIADAS
-    [Tooltip("A sequência de distâncias que o trem avança. A ordem será repetida.")]
     public float[] stepDistances = new float[8];
+    public float imageFadeDuration = 0.5f;
+    public float delayBeforeReveal = 0.5f; // Manteremos este delay para a lógica futura
 
     [Header("Áudios do Trem")]
     public AudioClip trainEnteringSound;
@@ -41,7 +38,45 @@ public class TrainController : MonoBehaviour
         rectTransform = GetComponent<RectTransform>();
         audioSource = GetComponent<AudioSource>();
         initialYPosition = rectTransform.anchoredPosition.y;
+        HideAllWordImages();
+    }
 
+
+     public IEnumerator AnimateIn()
+    {
+        currentWagonIndex = 0;
+        HideAllWordImages();
+        rectTransform.anchoredPosition = new Vector2(startX_offscreen, initialYPosition);
+        gameObject.SetActive(true);
+        if (trainEnteringSound != null) audioSource.PlayOneShot(trainEnteringSound);
+        Vector2 targetPosition = new Vector2(firstStopX_onscreen, initialYPosition);
+        yield return MoveToPosition(targetPosition, moveDuration);
+    }
+
+    
+    public IEnumerator AdvanceToNextWagon(int nextImageIndex)
+    {
+        HideAllWordImages(); 
+
+        if (stepDistances.Length > 0)
+        {
+            float distanceToMove = stepDistances[currentWagonIndex % stepDistances.Length];
+            float newX = rectTransform.anchoredPosition.x + distanceToMove;
+            Vector2 targetPosition = new Vector2(newX, initialYPosition);
+            if (advanceSound != null) audioSource.PlayOneShot(advanceSound);
+            yield return MoveToPosition(targetPosition, moveDuration);
+        }
+        currentWagonIndex = nextImageIndex;
+    }
+
+    public IEnumerator RevealCurrentImage(Sprite sprite)
+    {
+        yield return RevealWagonImage(currentWagonIndex, sprite);
+    }
+
+
+    private void HideAllWordImages()
+    {
         foreach (var wagon in wagonImages)
         {
             if (wagon.questionMarkImage != null) wagon.questionMarkImage.enabled = true;
@@ -52,37 +87,7 @@ public class TrainController : MonoBehaviour
             }
         }
     }
-
-    public IEnumerator AnimateIn(Sprite firstSprite)
-    {
-        currentWagonIndex = 0;
-        rectTransform.anchoredPosition = new Vector2(startX_offscreen, initialYPosition);
-        gameObject.SetActive(true);
-        if (trainEnteringSound != null) audioSource.PlayOneShot(trainEnteringSound);
-        Vector2 targetPosition = new Vector2(firstStopX_onscreen, initialYPosition);
-        yield return MoveToPosition(targetPosition, moveDuration);
-        yield return new WaitForSeconds(delayBeforeReveal);
-        yield return RevealWagonImage(0, firstSprite);
-    }
-
-    public IEnumerator AdvanceAndChangeImage(int nextImageIndex, Sprite nextSprite)
-    {
-        yield return HideWagonImage(currentWagonIndex);
-        
-        if (stepDistances != null && stepDistances.Length > 0)
-        {
-            float distanceToMove = stepDistances[currentWagonIndex % stepDistances.Length];
-            float newX = rectTransform.anchoredPosition.x + distanceToMove;
-            Vector2 targetPosition = new Vector2(newX, initialYPosition);
-            if (advanceSound != null) audioSource.PlayOneShot(advanceSound);
-            yield return MoveToPosition(targetPosition, moveDuration);
-        }
-
-        currentWagonIndex = nextImageIndex;
-        yield return new WaitForSeconds(delayBeforeReveal);
-        yield return RevealWagonImage(currentWagonIndex, nextSprite);
-    }
-
+    
     private IEnumerator MoveToPosition(Vector2 targetPosition, float duration)
     {
         float elapsedTime = 0f;
