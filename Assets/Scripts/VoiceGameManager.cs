@@ -253,32 +253,32 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 
         SyllableData currentSyllable = currentSyllableList[indexToUse];
         
-        
+        // Pergunta inicial (nenhum erro)
         if (mistakeCount == 0)
         {
-           
             if (currentSyllable.word.ToLower() == "zaca" && zacaPrompt1 != null)
             {
                 return zacaPrompt1;
             }
-
-            // Se a lista de perguntas variáveis tiver itens, escolhe um aleatoriamente.
+            
             if (variablePrompts != null && variablePrompts.Count > 0)
             {
                 return variablePrompts[UnityEngine.Random.Range(0, variablePrompts.Count)];
             }
             
-            // Se a lista estiver vazia, usa a pergunta padrão como fallback.
             return standardPrompt;
         }
-        
+
+        // --- LÓGICA DE DICAS MODIFICADA ---
         switch (mistakeCount)
         {
-            case 1:
+            case 1: // Após o 1º erro: Silêncio.
+                return null; // Retornar null faz com que o AudioManager não toque nada.
+            case 2: // Após o 2º erro: Toca a PRIMEIRA dica.
                 return currentSyllable.hintBasicAudio;
-            case 2:
+            case 3: // Após o 3º erro: Toca a SEGUNDA dica.
                 return currentSyllable.hintMediumAudio;
-            default:
+            default: // 4º erro em diante: Toca a dica final.
                 return currentSyllable.hintFinalAudio;
         }
     }
