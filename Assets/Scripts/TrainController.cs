@@ -22,7 +22,8 @@ public class TrainController : MonoBehaviour
     public float firstStopX_onscreen = 0f;
     public float[] stepDistances = new float[8];
     public float imageFadeDuration = 0.5f;
-    public float delayBeforeReveal = 0.5f; // Manteremos este delay para a lógica futura
+    [Tooltip("Tempo (em segundos) após o início do movimento para tocar o áudio da pergunta.")]
+    public float promptAudioDelay = 0.5f;
 
     [Header("Áudios do Trem")]
     public AudioClip trainEnteringSound;
@@ -41,30 +42,31 @@ public class TrainController : MonoBehaviour
         HideAllWordImages();
     }
 
-
-     public IEnumerator AnimateIn()
+    public IEnumerator AnimateIn(AudioClip promptAudio)
     {
         currentWagonIndex = 0;
         HideAllWordImages();
         rectTransform.anchoredPosition = new Vector2(startX_offscreen, initialYPosition);
         gameObject.SetActive(true);
+        
         if (trainEnteringSound != null) audioSource.PlayOneShot(trainEnteringSound);
+        
         Vector2 targetPosition = new Vector2(firstStopX_onscreen, initialYPosition);
-        yield return MoveToPosition(targetPosition, moveDuration);
+        yield return MoveAndPlayAudio(targetPosition, moveDuration, promptAudio, promptAudioDelay);
     }
 
-    
-    public IEnumerator AdvanceToNextWagon(int nextImageIndex)
+    public IEnumerator AdvanceToNextWagon(int nextImageIndex, AudioClip promptAudio)
     {
         HideAllWordImages(); 
-
         if (stepDistances.Length > 0)
         {
             float distanceToMove = stepDistances[currentWagonIndex % stepDistances.Length];
             float newX = rectTransform.anchoredPosition.x + distanceToMove;
             Vector2 targetPosition = new Vector2(newX, initialYPosition);
+
             if (advanceSound != null) audioSource.PlayOneShot(advanceSound);
-            yield return MoveToPosition(targetPosition, moveDuration);
+
+            yield return MoveAndPlayAudio(targetPosition, moveDuration, promptAudio, promptAudioDelay);
         }
         currentWagonIndex = nextImageIndex;
     }
@@ -74,12 +76,46 @@ public class TrainController : MonoBehaviour
         yield return RevealWagonImage(currentWagonIndex, sprite);
     }
 
+    // MÉTODO DE MOVIMENTO ATUALIZADO PARA CONTROLAR O ÁUDIO
+    private IEnumerator MoveAndPlayAudio(Vector2 targetPosition, float duration, AudioClip clipToPlay, float delay)
+    {
+        float elapsedTime = 0f;
+        Vector2 startingPosition = rectTransform.anchoredPosition;
+        bool audioHasPlayed = false;
 
+        while (elapsedTime < duration)
+        {
+            // Movimenta o trem
+            rectTransform.anchoredPosition = Vector2.Lerp(startingPosition, targetPosition, elapsedTime / duration);
+            
+            // Verifica se já passou o tempo do delay e se o áudio ainda não tocou
+            if (!audioHasPlayed && elapsedTime >= delay)
+            {
+                if (clipToPlay != null)
+                {
+                    audioSource.PlayOneShot(clipToPlay);
+                }
+                audioHasPlayed = true;
+            }
+            
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        
+        // Garante que o trem pare na posição exata
+        rectTransform.anchoredPosition = targetPosition;
+    }
+
+    // --- ESTE É O MÉTODO QUE ESTAVA FALTANDO ---
     private void HideAllWordImages()
     {
         foreach (var wagon in wagonImages)
         {
-            if (wagon.questionMarkImage != null) wagon.questionMarkImage.enabled = true;
+            if (wagon.questionMarkImage != null)
+            {
+                wagon.questionMarkImage.enabled = true;
+                wagon.questionMarkImage.color = new Color(1, 1, 1, 1);
+            }
             if (wagon.wordImage != null)
             {
                 wagon.wordImage.enabled = false;
@@ -108,7 +144,6 @@ public class TrainController : MonoBehaviour
         if (wagon.questionMarkImage != null)
         {
             yield return StartCoroutine(Fade(wagon.questionMarkImage, 0f, imageFadeDuration));
-            wagon.questionMarkImage.enabled = false;
         }
         if (wagon.wordImage != null)
         {
@@ -118,28 +153,17 @@ public class TrainController : MonoBehaviour
         }
     }
 
-    private IEnumerator HideWagonImage(int index)
-    {
-        if (index < 0 || index >= wagonImages.Count) yield break;
-        WagonImageGroup wagon = wagonImages[index];
-        if (wagon.wordImage != null)
-        {
-            yield return StartCoroutine(Fade(wagon.wordImage, 0f, imageFadeDuration));
-            wagon.wordImage.enabled = false;
-        }
-        if (wagon.questionMarkImage != null)
-        {
-            wagon.questionMarkImage.enabled = true;
-            yield return StartCoroutine(Fade(wagon.questionMarkImage, 1f, imageFadeDuration));
-        }
-    }
-
     private IEnumerator Fade(Image image, float targetAlpha, float duration)
     {
         if (image == null) yield break;
+
+        // Ativa a imagem antes do fade-out para garantir que a cor possa ser alterada
+        if(targetAlpha < 1f) image.enabled = true;
+
         float elapsedTime = 0f;
         Color startColor = image.color;
         Color endColor = new Color(startColor.r, startColor.g, startColor.b, targetAlpha);
+        
         while (elapsedTime < duration)
         {
             image.color = Color.Lerp(startColor, endColor, elapsedTime / duration);
@@ -147,5 +171,8 @@ public class TrainController : MonoBehaviour
             yield return null;
         }
         image.color = endColor;
+
+        // Desativa a imagem apenas se o fade for para ficar invisível
+        if(targetAlpha == 0f) image.enabled = false;
     }
 }
