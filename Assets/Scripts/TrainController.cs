@@ -34,18 +34,31 @@ public class TrainController : MonoBehaviour
     private float initialYPosition;
     private int currentWagonIndex = -1;
 
+    // --- NOVA VARIÁVEL ADICIONADA ---
+    private List<int> completedWagonIndices = new List<int>();
+
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         audioSource = GetComponent<AudioSource>();
         initialYPosition = rectTransform.anchoredPosition.y;
-        HideAllWordImages();
+        UpdateWagonsVisibility(); // Nome alterado para maior clareza
+    }
+    
+    // --- NOVO MÉTODO PÚBLICO ---
+    // O ImageVoiceMatcher chamará este método para registrar um acerto.
+    public void MarkWagonAsCompleted(int index)
+    {
+        if (!completedWagonIndices.Contains(index))
+        {
+            completedWagonIndices.Add(index);
+        }
     }
 
     public IEnumerator AnimateIn(AudioClip promptAudio)
     {
         currentWagonIndex = 0;
-        HideAllWordImages();
+        UpdateWagonsVisibility();
         rectTransform.anchoredPosition = new Vector2(startX_offscreen, initialYPosition);
         gameObject.SetActive(true);
         
@@ -57,7 +70,7 @@ public class TrainController : MonoBehaviour
 
     public IEnumerator AdvanceToNextWagon(int nextImageIndex, AudioClip promptAudio)
     {
-        HideAllWordImages(); 
+        UpdateWagonsVisibility(); 
         if (stepDistances.Length > 0)
         {
             float distanceToMove = stepDistances[currentWagonIndex % stepDistances.Length];
@@ -74,6 +87,33 @@ public class TrainController : MonoBehaviour
     public IEnumerator RevealCurrentImage(Sprite sprite)
     {
         yield return RevealWagonImage(currentWagonIndex, sprite);
+    }
+
+    // --- MÉTODO 'HideAllWordImages' RENOMEADO E ATUALIZADO ---
+    private void UpdateWagonsVisibility()
+    {
+        for (int i = 0; i < wagonImages.Count; i++)
+        {
+            WagonImageGroup wagon = wagonImages[i];
+            bool isCompleted = completedWagonIndices.Contains(i);
+
+            if (isCompleted)
+            {
+                // Se já foi completado, mostra a imagem da palavra e esconde a interrogação.
+                if (wagon.questionMarkImage != null) wagon.questionMarkImage.enabled = false;
+                if (wagon.wordImage != null)
+                {
+                    wagon.wordImage.enabled = true;
+                    wagon.wordImage.color = Color.white; // Garante que esteja totalmente visível
+                }
+            }
+            else
+            {
+                // Se ainda não foi completado, mostra a interrogação e esconde a imagem da palavra.
+                if (wagon.questionMarkImage != null) wagon.questionMarkImage.enabled = true;
+                if (wagon.wordImage != null) wagon.wordImage.enabled = false;
+            }
+        }
     }
 
     // MÉTODO DE MOVIMENTO ATUALIZADO PARA CONTROLAR O ÁUDIO
