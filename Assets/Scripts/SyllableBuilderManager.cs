@@ -47,6 +47,8 @@ public class SyllableBuilderManager : MonoBehaviour
     [Header("Controles de Tempo e Efeitos")]
     public float delayAfterRoundWin = 3.0f;
     public float fadeDuration = 0.5f;
+    [Tooltip("Pausa após o último acerto, antes de revelar a imagem final.")]
+    public float delayBeforeFinalReveal = 1.0f;
 
     private AudioManager audioManager;
     #endregion
@@ -168,24 +170,34 @@ public class SyllableBuilderManager : MonoBehaviour
 
     private IEnumerator RoundWinSequence()
     {
+        // --- NOVA PAUSA ADICIONADA AQUI ---
+        // Espera um pouco depois do último acerto, antes de mostrar qualquer coisa.
+        yield return new WaitForSeconds(delayBeforeFinalReveal);
+
         RoundData currentRound = allRounds[currentRoundIndex];
         if(GameManager.Instance != null)
             GameManager.Instance.AddScore(50);
         
+        // ETAPA 1: Prepara as duas imagens finais
         finalImageDisplay.sprite = currentRound.finalWordImage;
         silabaJuntaFinalDisplay.sprite = currentRound.silabaJuntaFinal;
         
         finalImageDisplay.gameObject.SetActive(true);
         silabaJuntaFinalDisplay.gameObject.SetActive(true);
 
+        // ETAPA 2: Faz o fade-in de ambas ao mesmo tempo
         StartCoroutine(FadeCanvasGroup(finalImageCanvasGroup, 1f, fadeDuration));
         StartCoroutine(FadeCanvasGroup(silabaJuntaFinalCanvasGroup, 1f, fadeDuration));
         
         yield return new WaitForSeconds(fadeDuration);
         
+        // ETAPA 3: Toca o som da palavra completa
         if (audioManager != null && currentRound.finalWordAudio != null)
+        {
             audioManager.PlaySFX(currentRound.finalWordAudio);
+        }
         
+        // ETAPA 4: Espera o tempo final antes de ir para a próxima rodada.
         yield return new WaitForSeconds(delayAfterRoundWin);
         StartNextRound();
     }
