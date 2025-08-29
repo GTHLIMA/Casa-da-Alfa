@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DragImage : MonoBehaviour
 {
-    public float moveSpeed = 5f;
+    public float moveSpeed = 50f;
     private bool isDragging;
     private Rigidbody2D rb;
 

@@ -34,9 +34,6 @@ public class DragManager : MonoBehaviour
     private int currentIndex = 0;
     private GameObject currentBalloon;
     private List<GameObject> spawnedTargets = new List<GameObject>();
-
-    [Header("Altura dos Targets")]
-    [Range(0f, 1f)]
     public float targetYViewport = 0.15f;
 
     private void Awake()
@@ -54,27 +51,31 @@ public class DragManager : MonoBehaviour
     }
 
     void SpawnTargetsAleatorios()
+{
+    var shuffled = targetVariants.OrderBy(x => Random.value).ToList();
+
+    int count = Mathf.Min(9, shuffled.Count);
+    float y = Mathf.Clamp01(targetYViewport); // 0..1; 0.5 = centro vertical
+
+    for (int i = 0; i < count; i++)
     {
-        var shuffled = targetVariants.OrderBy(x => Random.value).ToList();
+        // Distribui de 0.1 a 0.9 (deixando margens) e centraliza bem
+        float t = (count == 1) ? 0.5f : (float)i / (count - 1);
+        float xViewport = Mathf.Lerp(0.1f, 0.92f, t);
 
-        for (int i = 0; i < 4; i++)
-        {
-            float xViewport = 0.12f + i * 0.260f;
-            Vector3 viewportPosition = new Vector3(xViewport, targetYViewport, Camera.main.nearClipPlane + 4f);
-            Vector3 worldPos = Camera.main.ViewportToWorldPoint(viewportPosition);
-            worldPos.z = 0f;
+        Vector3 viewportPos = new Vector3(xViewport, y, Camera.main.nearClipPlane + 4f);
+        Vector3 worldPos = Camera.main.ViewportToWorldPoint(viewportPos);
+        worldPos.z = 0f;
 
-            GameObject instance = Instantiate(shuffled[i], worldPos, Quaternion.identity);
-            spawnedTargets.Add(instance);
+        GameObject instance = Instantiate(shuffled[i], worldPos, Quaternion.identity);
+        spawnedTargets.Add(instance);
 
+        var col = instance.GetComponent<Collider2D>();
+        if (col != null) col.enabled = true;
 
-            var collider = instance.GetComponent<Collider2D>();
-            if (collider != null) collider.enabled = true;
-
-
-            instance.SetActive(true);
-        }
+        instance.SetActive(true);
     }
+}
 
     public void SpawnPlayerBalloon()
     {
