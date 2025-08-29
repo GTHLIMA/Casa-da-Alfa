@@ -3,33 +3,25 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System;
 using System.Text;
 using System.Globalization;
-using System;
 
 public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 {
-    #region Data Structures
-
-    /// <summary>
-    /// Contém todas as informações de uma única palavra/sílaba da atividade.
-    /// </summary>
+    #region Data Structures, Public Variables, Private Variables
+        #region Data Structures
     [System.Serializable]
     public class SyllableData
     {
         public string word;
         public Sprite image;
-        [Tooltip("Dica para o 2º erro.")]
         public AudioClip hintBasicAudio;
-        [Tooltip("Dica para o 3º erro.")]
         public AudioClip hintMediumAudio;
-        [Tooltip("Dica final (diz a resposta). Toca no 4º erro em diante.")]
         public AudioClip hintFinalAudio;
     }
 
-    /// <summary>
-    /// Agrupa uma lista de sílabas, geralmente por vogal, para organização.
-    /// </summary>
     [System.Serializable]
     public class VowelDataGroup
     {
@@ -38,21 +30,15 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     }
     #endregion
 
-    #region Public Variables (Inspector Settings)
-
+    #region Public Variables
     [Header("== Configuração Central da Atividade ==")]
-    [Tooltip("Qual grupo de vogal usar da lista abaixo? (0 para o primeiro, 1 para o segundo, etc.)")]
     public int vowelIndexToPlay = 0;
     public List<VowelDataGroup> allVowelData;
     public string languageCode = "pt-BR";
-
+    
     [Header("Controles de Similaridade")]
-    [Tooltip("Quão similar a palavra falada deve ser da esperada para a maioria das palavras. (0.75 = 75%)")]
-    [Range(0f, 1f)]
-    public float similarityThreshold = 0.75f;
-    [Tooltip("Threshold específico para ZACA. Use um valor menor para ser mais tolerante.")]
-    [Range(0f, 1f)]
-    public float zacaSimilarityThreshold = 0.70f;
+    [Range(0f, 1f)] public float similarityThreshold = 0.75f;
+    [Range(0f, 1f)] public float zacaSimilarityThreshold = 0.70f;
     
     [Header("Referências da Interface (UI)")]
     public Image micIndicatorImage;
@@ -80,6 +66,14 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     public float initialDelay = 2.0f;
     public float delayAfterCorrect = 1.0f;
     public float delayAfterHint = 1.5f;
+    
+    // --- NOVAS VARIÁVEIS ADICIONADAS AQUI ---
+    [Header("--- Delays da Pergunta 'Que desenho é esse?' ---")]
+    [Tooltip("Tempo de espera ANTES da primeira pergunta, no início do jogo.")]
+    public float initialPromptDelay = 1.0f;
+    [Tooltip("Tempo de espera DEPOIS de um acerto, antes da próxima pergunta.")]
+    public float nextPromptDelay = 1.5f;
+
 
     [Header("Animações")]
     public TrainController trainController;
@@ -105,21 +99,17 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     private AudioManager audioManager;
     private int score;
     #endregion
+    #endregion
 
     #region Unity Lifecycle Methods
-
     private void Awake()
     {
         Time.timeScale = 1f;
-        audioManager = GameObject.FindGameObjectWithTag("Audio")?.GetComponent<AudioManager>();
+        audioManager = FindObjectOfType<AudioManager>();
     }
 
     private void Start()
     {
-        Debug.Log("== [ImageVoiceMatcher] - JOGO INICIADO ==");
-
-        Screen.sleepTimeout = SleepTimeout.NeverSleep;
-        
         score = ScoreTransfer.Instance?.Score ?? 0;
         if (numberCounter != null) numberCounter.Value = score;
         UpdateAllScoreDisplays();
@@ -139,9 +129,6 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 
         SpeechToText.Initialize(languageCode);
         SetMicIndicator(staticColor);
-
-        
-        
         StartCoroutine(GameLoop());
     }
 
@@ -150,22 +137,13 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         if (isProcessing) return;
         if (isListening)
         {
-            if (Input.GetKeyDown(KeyCode.C))
-            {
-                SpeechToText.Cancel();
-                OnResultReceived(currentSyllableList[currentIndex].word, null);
-            }
-            if (Input.GetKeyDown(KeyCode.X))
-            {
-                SpeechToText.Cancel();
-                OnResultReceived("palavra_errada_para_teste", null);
-            }
+            if (Input.GetKeyDown(KeyCode.C)) { OnResultReceived(currentSyllableList[currentIndex].word, null); }
+            if (Input.GetKeyDown(KeyCode.X)) { OnResultReceived("palavra_errada", null); }
         }
     }
     #endregion
 
-    #region Main Game Flow (Coroutines)
-
+    #region Main Game Flow
     private IEnumerator GameLoop()
     {
         yield return new WaitForSeconds(initialDelay);
@@ -173,58 +151,51 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 
         if (trainController != null)
         {
-            Sprite firstSprite = currentSyllableList[0].image;
-            yield return StartCoroutine(trainController.AnimateIn());
+            // Pega o áudio e manda o trem se mover (o som tocará DURANTE o movimento)
+            AudioClip firstPrompt = GetCurrentPromptAudio();
+            yield return StartCoroutine(trainController.AnimateIn(firstPrompt));
         }
 
         for (currentIndex = 0; currentIndex < currentSyllableList.Count; currentIndex++)
         {
+            // A rotina agora só revela a imagem e ativa a escuta
             yield return StartCoroutine(PlayTurnRoutineForCurrentIndex());
 
             if (currentIndex < currentSyllableList.Count - 1)
             {
                 if (trainController != null)
                 {
-                    Sprite nextSprite = currentSyllableList[currentIndex + 1].image;
-                    yield return StartCoroutine(trainController.AdvanceToNextWagon(currentIndex + 1));
+                    // Pega o áudio da PRÓXIMA pergunta e manda o trem avançar
+                    AudioClip nextPrompt = GetCurrentPromptAudio(currentIndex + 1);
+                    yield return StartCoroutine(trainController.AdvanceToNextWagon(currentIndex + 1, nextPrompt));
                 }
             }
         }
         
         ShowEndPhasePanel();
     }
-    
+
      private IEnumerator PlayTurnRoutineForCurrentIndex()
     {
         isProcessing = true;
-        mistakeCount = 0;
+        mistakeCount = 0; 
         
-        // 1. TOCA A PERGUNTA PRIMEIRO
-        AudioClip promptClip = GetCurrentPromptAudio();
-        if (audioManager != null && promptClip != null)
-        {
-            audioManager.PlaySFX(promptClip);
-            yield return new WaitForSeconds(promptClip.length);
-        }
-        else
-        {
-            yield return new WaitForSeconds(delayAfterHint);
-        }
-
-        // 2. REVELA A IMAGEM
+        // A pergunta não é mais feita aqui
+        
+        // 1. REVELA A IMAGEM
         if (trainController != null)
         {
             Sprite currentSprite = currentSyllableList[currentIndex].image;
             yield return StartCoroutine(trainController.RevealCurrentImage(currentSprite));
         }
         
-        // 3. ATIVA A DETECÇÃO DE VOZ (LOOP DE TENTATIVAS)
+        // 2. ATIVA A DETECÇÃO DE VOZ (LOOP DE TENTATIVAS)
         bool pularPromptNaProximaTentativa = false;
         while (true)
         {
+            // (Esta parte do loop, que toca as DICAS em caso de erro, continua a mesma)
             if (pularPromptNaProximaTentativa)
             {
-                // Toca a dica de áudio em caso de erro
                 AudioClip hintClip = GetCurrentPromptAudio();
                 if (audioManager != null && hintClip != null)
                 {
@@ -271,43 +242,36 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
             pularPromptNaProximaTentativa = true;
         }
         isProcessing = false;
-    }
 
+    }
     #endregion
 
     #region Game Logic & Transitions
-    private AudioClip GetCurrentPromptAudio()
+      // MODIFICADO: O 'private' foi removido para corrigir o erro CS0106
+     AudioClip GetCurrentPromptAudio(int specificIndex = -1)
     {
-        SyllableData currentSyllable = currentSyllableList[currentIndex];
+        int indexToUse = (specificIndex == -1) ? currentIndex : specificIndex;
+        if (indexToUse < 0 || indexToUse >= currentSyllableList.Count) return null;
 
-        if (mistakeCount == 0 && currentSyllable.word.ToLower() == "zaca")
+        SyllableData currentSyllable = currentSyllableList[indexToUse];
+        
+        if (mistakeCount == 0)
         {
-            List<AudioClip> zacaPrompts = new List<AudioClip> { zacaPrompt1, zacaPrompt2 };
-            zacaPrompts.RemoveAll(item => item == null);
-            if (zacaPrompts.Count > 0)
+            if (currentSyllable.word.ToLower() == "zaca" && zacaPrompt1 != null)
             {
-                return zacaPrompts[UnityEngine.Random.Range(0, zacaPrompts.Count)];
+                return zacaPrompt1;
             }
+            return standardPrompt;
         }
 
         switch (mistakeCount)
         {
-            case 0:
-                 return (currentIndex < 3 || variablePrompts == null || variablePrompts.Count == 0)
-                    ? standardPrompt
-                    : variablePrompts[UnityEngine.Random.Range(0, variablePrompts.Count)];
-            case 1: 
-                return standardPrompt;
-            case 2: 
+            case 1:
                 return currentSyllable.hintBasicAudio;
-            case 3: 
+            case 2:
                 return currentSyllable.hintMediumAudio;
-            case 4: 
-                return currentSyllable.hintFinalAudio;
             default:
-                return (mistakeCount % 2 != 0 && supportAudios != null && supportAudios.Count > 0)
-                    ? supportAudios[UnityEngine.Random.Range(0, supportAudios.Count)]
-                    : currentSyllable.hintFinalAudio;
+                return currentSyllable.hintFinalAudio;
         }
     }
     #endregion
