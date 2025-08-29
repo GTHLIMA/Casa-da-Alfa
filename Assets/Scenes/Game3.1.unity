@@ -159,6 +159,7 @@ MonoBehaviour:
   end3: {fileID: 8300000, guid: 0b834cbd0f0b6334f8d428a79a527202, type: 3}
   VoiceRecognition: {fileID: 0}
   ballonPop: {fileID: 8300000, guid: b94f048cab48bd346bc322c3e7ee9606, type: 3}
+  initialSFXVolume: 0.2
 --- !u!4 &18487021
 Transform:
   m_ObjectHideFlags: 0
@@ -612,7 +613,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: 96}
+  m_AnchoredPosition: {x: 0, y: 96.00003}
   m_SizeDelta: {x: 600, y: 300}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &146444622
