@@ -10,7 +10,10 @@ public class LoadScenes : MonoBehaviour
     public void Level2() => LoadSceneWithOrientation("Game2", true);
     public void Level2_1() => LoadSceneWithOrientation("Game2.1", true);
     public void Level2_2() => LoadSceneWithOrientation("Game2.2", true);
-    public void Level3() => LoadSceneWithOrientation("Game3", false);
+    public void Level2_3() => LoadSceneWithOrientation("Game2.3", true);
+    public void Level2_4() => LoadSceneWithOrientation("Game2.4", true);
+    public void Level2_5() => LoadSceneWithOrientation("Game2.5", true);
+    public void Level3() => LoadSceneWithOrientation("Game3", true);
     public void placeholder() => LoadSceneWithOrientation("LandScape", true);
 
     private void LoadSceneWithOrientation(string sceneName, bool isLandscape)
@@ -34,22 +37,18 @@ public class LoadScenes : MonoBehaviour
             Screen.autorotateToPortrait = false;
         }
 
-        // Carregar a cena e forçar update da UI
+        // vai carregar a cena e forçar update da UI
         StartCoroutine(LoadAndFixUI(sceneName));
     }
 
     private IEnumerator LoadAndFixUI(string sceneName)
     {
-        // Carrega a cena
-        SceneManager.LoadScene(sceneName);
 
-        // Espera a cena abrir completamente (fim do frame)
+        SceneManager.LoadScene(sceneName);
         yield return null;
 
-        // Força redesenho dos canvases
         Canvas.ForceUpdateCanvases();
 
-        // Aguarda mais 1 frame para garantir ajuste de anchors e SafeArea
         yield return null;
         Canvas.ForceUpdateCanvases();
     }
