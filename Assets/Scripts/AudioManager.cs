@@ -19,6 +19,9 @@ public class AudioManager : MonoBehaviour
     public AudioClip ballonPop;
 
     [Header("------------- Configurações -------------")]
+    // --- NOVA VARIÁVEL ADICIONADA AQUI ---
+    [Tooltip("Define o volume inicial para os efeitos sonoros (SFX) nesta cena.")]
+    [SerializeField] private float initialSFXVolume = 1.0f; // Valor padrão agora é 1 (máximo)
 
 
     private float savedTime;
@@ -26,7 +29,9 @@ public class AudioManager : MonoBehaviour
     private void Start()
     {
         audioSource.loop = true;
-        SetSFXVolume(0.2f);
+        // --- LINHA MODIFICADA ---
+        // Agora usa a variável que você pode configurar no Inspector
+        SetSFXVolume(initialSFXVolume);
     }
 
     public void PlaySFX(AudioClip clip)
@@ -61,10 +66,6 @@ public class AudioManager : MonoBehaviour
 
     public void SetBackgroundVolume(float volume)
     {
-        audioSource.volume = Mathf.Clamp01(volume); // Garante que o volume fique entre 0 e 1
+        audioSource.volume = Mathf.Clamp01(volume);
     }
-
-
-
-
 }
