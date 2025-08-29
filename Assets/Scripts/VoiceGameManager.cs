@@ -18,7 +18,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         public string word;
         public Sprite image;
         public AudioClip hintBasicAudio;
-        public AudioClip hintMediumAudio;
+        // public AudioClip hintMediumAudio;
         public AudioClip hintFinalAudio;
     }
 
@@ -157,14 +157,19 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
             // Entra na rotina de adivinhação
             yield return StartCoroutine(PlayTurnRoutineForCurrentIndex());
             
-            // Zera o contador de erros APÓS um acerto, preparando para a próxima rodada
+            // --- NOVA LINHA ADICIONADA AQUI ---
+            // Avisa ao trem que o vagão atual foi completado com sucesso.
+            if (trainController != null)
+            {
+                trainController.MarkWagonAsCompleted(currentIndex);
+            }
+            
             mistakeCount = 0;
 
             if (currentIndex < currentSyllableList.Count - 1)
             {
                 if (trainController != null)
                 {
-                    // Pega o áudio da PRÓXIMA pergunta e manda o trem avançar
                     AudioClip nextPrompt = GetCurrentPromptAudio(currentIndex + 1);
                     yield return StartCoroutine(trainController.AdvanceToNextWagon(currentIndex + 1, nextPrompt));
                 }
@@ -276,8 +281,8 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
                 return null; // Retornar null faz com que o AudioManager não toque nada.
             case 2: // Após o 2º erro: Toca a PRIMEIRA dica.
                 return currentSyllable.hintBasicAudio;
-            case 3: // Após o 3º erro: Toca a SEGUNDA dica.
-                return currentSyllable.hintMediumAudio;
+            case 3: // Retornar null faz com que o AudioManager não toque nada.
+                return null;
             default: // 4º erro em diante: Toca a dica final.
                 return currentSyllable.hintFinalAudio;
         }
