@@ -168,10 +168,9 @@ public class SyllableBuilderManager : MonoBehaviour
         }
     }
 
-    private IEnumerator RoundWinSequence()
+       private IEnumerator RoundWinSequence()
     {
-        // --- NOVA PAUSA ADICIONADA AQUI ---
-        // Espera um pouco depois do último acerto, antes de mostrar qualquer coisa.
+        // A pausa ANTES da revelação continua, se você quiser usá-la.
         yield return new WaitForSeconds(delayBeforeFinalReveal);
 
         RoundData currentRound = allRounds[currentRoundIndex];
@@ -185,17 +184,18 @@ public class SyllableBuilderManager : MonoBehaviour
         finalImageDisplay.gameObject.SetActive(true);
         silabaJuntaFinalDisplay.gameObject.SetActive(true);
 
-        // ETAPA 2: Faz o fade-in de ambas ao mesmo tempo
+        // ETAPA 2: Inicia o fade-in de ambas as imagens
         StartCoroutine(FadeCanvasGroup(finalImageCanvasGroup, 1f, fadeDuration));
         StartCoroutine(FadeCanvasGroup(silabaJuntaFinalCanvasGroup, 1f, fadeDuration));
         
-        yield return new WaitForSeconds(fadeDuration);
-        
-        // ETAPA 3: Toca o som da palavra completa
+        // ETAPA 3 (NOVA ORDEM): Toca o som da palavra completa JUNTO com o início do fade-in.
         if (audioManager != null && currentRound.finalWordAudio != null)
         {
             audioManager.PlaySFX(currentRound.finalWordAudio);
         }
+        
+        // Espera apenas a duração do fade-in visual terminar.
+        yield return new WaitForSeconds(fadeDuration);
         
         // ETAPA 4: Espera o tempo final antes de ir para a próxima rodada.
         yield return new WaitForSeconds(delayAfterRoundWin);
