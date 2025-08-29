@@ -3270,28 +3270,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allRounds:
-  - targetWord: PAPA
-    finalWordAudio: {fileID: 8300000, guid: 083e1b67d4e2af3478ce4b915dfe9ed8, type: 3}
-    finalWordImage: {fileID: 21300000, guid: 0e55b8f5544f3eb418c1d8459f55de7d, type: 3}
-    silabaJuntaFinal: {fileID: 21300000, guid: 9bacac38ff7b478449b24d05dff19694, type: 3}
-    syllablesInOrder:
-    - syllableTextImage: {fileID: 21300000, guid: cb47391074732b74bbe502eca36d9d86, type: 3}
-      syllableDrawingImage: {fileID: 21300000, guid: e72658e467a3012409db9b2e8d2310b1, type: 3}
-      syllableAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
-    - syllableTextImage: {fileID: 21300000, guid: cb47391074732b74bbe502eca36d9d86, type: 3}
-      syllableDrawingImage: {fileID: 21300000, guid: e72658e467a3012409db9b2e8d2310b1, type: 3}
-      syllableAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
-  - targetWord: LAMA
-    finalWordAudio: {fileID: 8300000, guid: 940804cec75cb2e4a9d3e2adc436a81b, type: 3}
-    finalWordImage: {fileID: 21300000, guid: 22cf1da0f22e04640b91a44378708d1f, type: 3}
-    silabaJuntaFinal: {fileID: 21300000, guid: a06adf3d9cfa5dd45933d793474f96b9, type: 3}
-    syllablesInOrder:
-    - syllableTextImage: {fileID: 21300000, guid: 48bba921ad04aed4fadaf468c66c3850, type: 3}
-      syllableDrawingImage: {fileID: 21300000, guid: 5ae6e45565994364a80cf6ee8375fcf3, type: 3}
-      syllableAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
-    - syllableTextImage: {fileID: 21300000, guid: 52c215ba658955944813b77314c6a7fb, type: 3}
-      syllableDrawingImage: {fileID: 21300000, guid: 67bc93b57360d4046ae9ff4004c6f18e, type: 3}
-      syllableAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
   - targetWord: BATATA
     finalWordAudio: {fileID: 8300000, guid: 2979d84f7080bf94385b1d91834491d3, type: 3}
     finalWordImage: {fileID: 21300000, guid: f3f5f56462a1f70439235e26ac0cfada, type: 3}
@@ -3348,14 +3326,28 @@ MonoBehaviour:
     - syllableTextImage: {fileID: 21300000, guid: 56b19e9f0db43f346ab09332bd88f755, type: 3}
       syllableDrawingImage: {fileID: 21300000, guid: 7ac550a7ae2b46b43bc979cb7e82844b, type: 3}
       syllableAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
+  - targetWord: MACACA
+    finalWordAudio: {fileID: 8300000, guid: 2e8876ef382b70749b2991f1df1ac1c3, type: 3}
+    finalWordImage: {fileID: 21300000, guid: e60db5ebf3e0b374797b25045234832b, type: 3}
+    silabaJuntaFinal: {fileID: 21300000, guid: e7b1969c6f2626241830ec136699a621, type: 3}
+    syllablesInOrder:
+    - syllableTextImage: {fileID: 21300000, guid: 52c215ba658955944813b77314c6a7fb, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: 67bc93b57360d4046ae9ff4004c6f18e, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: e25eb2282ad129b4b84238a258d65dcd, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: 02d2b68ba8464d44598496ef5dfbbff9, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: e25eb2282ad129b4b84238a258d65dcd, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: 02d2b68ba8464d44598496ef5dfbbff9, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
   syllableButtonParent: {fileID: 1901301553}
   syllableButtonPrefab: {fileID: 172084926591892809, guid: fe5add4a1ff7c5a429b50dc85000b9b3, type: 3}
   finalImageDisplay: {fileID: 348103271}
   silabaJuntaFinalDisplay: {fileID: 1380997456}
   pauseButton: {fileID: 1849789898}
-  delayAfterRoundWin: 2
-  fadeDuration: 1
-  delayBeforeFinalReveal: 1
+  delayAfterRoundWin: 3
+  fadeDuration: 2
+  delayBeforeFinalReveal: 3
 --- !u!4 &1797320797
 Transform:
   m_ObjectHideFlags: 0
@@ -3365,11 +3357,11 @@ Transform:
   m_GameObject: {fileID: 1797320795}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -200.12144, y: 74.25073, z: 377486.8}
-  m_LocalScale: {x: 101.77981, y: 101.77981, z: 101.77981}
+  m_LocalPosition: {x: -1.9662194, y: 0.7295232, z: 3798.8574}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2086059457}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1806051676
 PrefabInstance:
@@ -4393,7 +4385,6 @@ RectTransform:
   m_Children:
   - {fileID: 348103273}
   - {fileID: 1901301553}
-  - {fileID: 1797320797}
   - {fileID: 1380997454}
   - {fileID: 491122259}
   - {fileID: 1849789897}
@@ -4418,3 +4409,4 @@ SceneRoots:
   - {fileID: 1501442352}
   - {fileID: 1125635933}
   - {fileID: 692153929}
+  - {fileID: 1797320797}
