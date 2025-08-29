@@ -14,7 +14,7 @@ public class LoadScenes : MonoBehaviour
     public void Level2_4() => LoadSceneWithOrientation("Game2.4", true);
     public void Level2_5() => LoadSceneWithOrientation("Game2.5", true);
     public void Level3() => LoadSceneWithOrientation("Game3", true);
-     public void Level3_1() => LoadSceneWithOrientation("Game3.1", true);
+    public void Level3_1() => LoadSceneWithOrientation("Game3.1", true);
     public void placeholder() => LoadSceneWithOrientation("LandScape", true);
 
     private void LoadSceneWithOrientation(string sceneName, bool isLandscape)
