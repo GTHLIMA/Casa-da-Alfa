@@ -118,7 +118,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 2
 --- !u!61 &5702769797446873598
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -176,7 +176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98b822eb0ce7b884f8588303c92206ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 2
+  moveSpeed: 7.5
   popDownClip: {fileID: 8300000, guid: 0f6b01c9ed64a5b4a9c0006351f5bd15, type: 3}
   popUpClip: {fileID: 8300000, guid: 34b5765264b31f1479524724fe668962, type: 3}
   popOtherClip: {fileID: 8300000, guid: 7228f8a4f233dca48a7fc03347432e88, type: 3}
@@ -207,7 +207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a14eeb8d2c06f54192f1232a9b2a6ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  preferredWidthPercent: 0.1
+  preferredWidthPercent: 0.09
 --- !u!120 &6856866751557083687
 LineRenderer:
   serializedVersion: 2
@@ -324,8 +324,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ef0cb2720078864e982d42751ac4007, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lineHeight: 5
-  verticalOffset: 0.5
+  lineHeight: 4
+  verticalOffset: 0.97
   lineWidth: 0.05
   lineRenderer: {fileID: 6856866751557083687}
 --- !u!82 &8270283621218776499

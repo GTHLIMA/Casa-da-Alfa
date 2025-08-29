@@ -55,11 +55,11 @@ public class DragManager : MonoBehaviour
     var shuffled = targetVariants.OrderBy(x => Random.value).ToList();
 
     int count = Mathf.Min(9, shuffled.Count);
-    float y = Mathf.Clamp01(targetYViewport); // 0..1; 0.5 = centro vertical
+    float y = Mathf.Clamp01(targetYViewport); 
 
     for (int i = 0; i < count; i++)
     {
-        // Distribui de 0.1 a 0.9 (deixando margens) e centraliza bem
+        // Tá centralizando as imagens
         float t = (count == 1) ? 0.5f : (float)i / (count - 1);
         float xViewport = Mathf.Lerp(0.1f, 0.92f, t);
 
