@@ -145,42 +145,45 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 
     #region Main Game Flow
     private IEnumerator GameLoop()
+{
+    yield return new WaitForSeconds(initialDelay);
+    CheckForMicrophonePermission();
+
+    if (trainController != null)
     {
-        yield return new WaitForSeconds(initialDelay);
-        CheckForMicrophonePermission();
+        yield return new WaitForSeconds(initialPromptDelay);
 
-        if (trainController != null)
+        AudioClip firstPrompt = GetCurrentPromptAudio();
+        yield return StartCoroutine(trainController.AnimateIn(firstPrompt));
+    }
+
+    for (currentIndex = 0; currentIndex < currentSyllableList.Count; currentIndex++)
+    {
+        yield return StartCoroutine(PlayTurnRoutineForCurrentIndex());
+        
+        // Zera o contador de erros APÓS um acerto, garantindo que a próxima rodada comece limpa.
+        mistakeCount = 0;
+
+        if (currentIndex < currentSyllableList.Count - 1)
         {
-            // Pega o áudio e manda o trem se mover (o som tocará DURANTE o movimento)
-            AudioClip firstPrompt = GetCurrentPromptAudio();
-            yield return StartCoroutine(trainController.AnimateIn(firstPrompt));
-        }
-
-        for (currentIndex = 0; currentIndex < currentSyllableList.Count; currentIndex++)
-        {
-            // A rotina agora só revela a imagem e ativa a escuta
-            yield return StartCoroutine(PlayTurnRoutineForCurrentIndex());
-
-            if (currentIndex < currentSyllableList.Count - 1)
+            if (trainController != null)
             {
-                if (trainController != null)
-                {
-                    // Pega o áudio da PRÓXIMA pergunta e manda o trem avançar
-                    AudioClip nextPrompt = GetCurrentPromptAudio(currentIndex + 1);
-                    yield return StartCoroutine(trainController.AdvanceToNextWagon(currentIndex + 1, nextPrompt));
-                }
+                yield return new WaitForSeconds(nextPromptDelay);
+
+                AudioClip nextPrompt = GetCurrentPromptAudio(currentIndex + 1);
+                yield return StartCoroutine(trainController.AdvanceToNextWagon(currentIndex + 1, nextPrompt));
             }
         }
-        
-        ShowEndPhasePanel();
     }
+    
+    ShowEndPhasePanel();
+}
 
      private IEnumerator PlayTurnRoutineForCurrentIndex()
     {
         isProcessing = true;
         mistakeCount = 0; 
         
-        // A pergunta não é mais feita aqui
         
         // 1. REVELA A IMAGEM
         if (trainController != null)
