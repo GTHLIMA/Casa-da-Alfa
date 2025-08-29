@@ -1,24 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DragImage : MonoBehaviour
 {
     public float moveSpeed = 50f;
+
     private bool isDragging;
+    private bool hasFallen;
+    private bool startedDragging; 
     private Rigidbody2D rb;
 
     private float minX, maxX;
     private float objectHalfWidth;
 
     private Vector2 lastMousePosition;
+    private Vector2 dragStartPosition;
 
     private AudioSource audioSource;
 
     [Header("Sons")]
-    public AudioClip popDownClip;    
-    public AudioClip popUpClip;       
-    public AudioClip popOtherClip;   
+    public AudioClip popDownClip;
+    public AudioClip popUpClip;
+    public AudioClip popOtherClip;
 
     [Header("AudioSource Extra para colisão")]
     public AudioSource otherAudioSource;
@@ -43,110 +45,84 @@ public class DragImage : MonoBehaviour
 
     void OnMouseDown()
     {
+        if (hasFallen) return;
+
         if (audioSource != null && popDownClip != null)
-        {
             audioSource.PlayOneShot(popDownClip);
-        }
 
         isDragging = true;
-        lastMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        startedDragging = false;
+        dragStartPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        // Congela Y e rotação para evitar queda enquanto arrasta
         rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+        lastMousePosition = dragStartPosition;
     }
 
     void OnMouseUp()
     {
-        OnDragRelease();
+        if (hasFallen) return;
+
+        if (startedDragging)
+        {
+            OnDragRelease();
+        }
+
+        isDragging = false;
     }
 
     void OnDragRelease()
     {
         if (audioSource != null && popUpClip != null)
-        {
             audioSource.PlayOneShot(popUpClip);
-        }
 
-        if (isDragging)
-        {
-            isDragging = false;
+        hasFallen = true;
 
-            // Remove restrição de Y para permitir queda natural
-            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        rb.velocity = new Vector2(0f, rb.velocity.y);
 
-            // Para o movimento horizontal ao soltar, mantém velocidade Y
-            rb.velocity = new Vector2(0f, rb.velocity.y);
-
-            LineToBottom line = GetComponent<LineToBottom>();
-            if (line != null)
-            {
-                line.lineRenderer.enabled = false;
-            }
-        }
+        LineToBottom line = GetComponent<LineToBottom>();
+        if (line != null)
+            line.lineRenderer.enabled = false;
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        // Debug.Log("Colidiu com: " + other.name);
-
         if (otherAudioSource != null && popOtherClip != null)
-        {
             otherAudioSource.PlayOneShot(popOtherClip);
-        }
     }
 
     void Update()
     {
-        // Detecta fim do toque/drag em dispositivos touch e mouse
-        if (isDragging)
-        {
-            bool released = false;
-
-            // Mouse
-            if (Input.GetMouseButtonUp(0))
-                released = true;
-
-            // Touch
-            if (Input.touchCount > 0)
-            {
-                Touch touch = Input.GetTouch(0);
-                if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
-                    released = true;
-            }
-
-            if (released)
-            {
-                OnDragRelease();
-            }
-        }
-
-        // Movimentação enquanto arrasta
-        if (isDragging && Input.GetMouseButton(0))
+        if (isDragging && !hasFallen)
         {
             Vector2 currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            float deltaX = currentMousePosition.x - lastMousePosition.x;
 
-            if (Mathf.Abs(deltaX) > 0.01f)
+            // Só cai se arrastou o suficiente
+            if (!startedDragging && Vector2.Distance(currentMousePosition, dragStartPosition) > 0.1f)
             {
-                float direction = Mathf.Sign(deltaX);
-                rb.velocity = new Vector2(direction * moveSpeed, 0f);
-            }
-            else
-            {
-                rb.velocity = new Vector2(0f, rb.velocity.y);
+                startedDragging = true;
             }
 
-            lastMousePosition = currentMousePosition;
-        }
-        else if (!isDragging)
-        {
-            // Permite queda natural, sem restrição em Y
-            // Aqui não precisa setar nada porque Rigidbody já está com constraints só na rotação
-        }
+            if (startedDragging)
+            {
+                float deltaX = currentMousePosition.x - lastMousePosition.x;
 
-        // Limita posição X para ficar dentro da tela
-        Vector3 clampedPosition = transform.position;
-        clampedPosition.x = Mathf.Clamp(clampedPosition.x, minX, maxX);
-        transform.position = clampedPosition;
+                if (Mathf.Abs(deltaX) > 0.01f)
+                {
+                    float direction = Mathf.Sign(deltaX);
+                    rb.velocity = new Vector2(direction * moveSpeed, 0f);
+                }
+                else
+                {
+                    rb.velocity = new Vector2(0f, rb.velocity.y);
+                }
+
+                lastMousePosition = currentMousePosition;
+            }
+
+            Vector3 clampedPosition = transform.position;
+            clampedPosition.x = Mathf.Clamp(clampedPosition.x, minX, maxX);
+            transform.position = clampedPosition;
+        }
     }
 }
