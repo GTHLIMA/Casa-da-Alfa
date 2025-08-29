@@ -3327,13 +3327,27 @@ MonoBehaviour:
     syllablesInOrder:
     - syllableTextImage: {fileID: 21300000, guid: 2d7c90b96a7d4e6418fa25132f4199da, type: 3}
       syllableDrawingImage: {fileID: 21300000, guid: 41cd00b389c65354ab8cf489d22fee87, type: 3}
-      syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 3d305eca04e72fb4eae413ea7a7fb010, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 544fb619a54e7d148984fb2c810fd32a, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: d9b44c9113a9a9a459db3f5785a23782, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
     - syllableTextImage: {fileID: 21300000, guid: 544fb619a54e7d148984fb2c810fd32a, type: 3}
       syllableDrawingImage: {fileID: 21300000, guid: d9b44c9113a9a9a459db3f5785a23782, type: 3}
       syllableAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
-    - syllableTextImage: {fileID: 21300000, guid: 544fb619a54e7d148984fb2c810fd32a, type: 3}
-      syllableDrawingImage: {fileID: 21300000, guid: d9b44c9113a9a9a459db3f5785a23782, type: 3}
-      syllableAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
+  - targetWord: SALADA
+    finalWordAudio: {fileID: 8300000, guid: 33b887fa47c3a974c869f6d96239a02a, type: 3}
+    finalWordImage: {fileID: 21300000, guid: 116ebd8fa2981e348ba201a6f52d0ae3, type: 3}
+    silabaJuntaFinal: {fileID: 21300000, guid: abb0e36ff0bb1544086f542166a257b2, type: 3}
+    syllablesInOrder:
+    - syllableTextImage: {fileID: 21300000, guid: b8e43101f32df644694965c7b531055e, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: 9e97978f96f8f9040a9ba3e7b1d6d320, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 3d305eca04e72fb4eae413ea7a7fb010, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 48bba921ad04aed4fadaf468c66c3850, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: 5ae6e45565994364a80cf6ee8375fcf3, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 56b19e9f0db43f346ab09332bd88f755, type: 3}
+      syllableDrawingImage: {fileID: 21300000, guid: 7ac550a7ae2b46b43bc979cb7e82844b, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
   syllableButtonParent: {fileID: 1901301553}
   syllableButtonPrefab: {fileID: 172084926591892809, guid: fe5add4a1ff7c5a429b50dc85000b9b3, type: 3}
   finalImageDisplay: {fileID: 348103271}
@@ -3341,6 +3355,7 @@ MonoBehaviour:
   pauseButton: {fileID: 1849789898}
   delayAfterRoundWin: 2
   fadeDuration: 1
+  delayBeforeFinalReveal: 1
 --- !u!4 &1797320797
 Transform:
   m_ObjectHideFlags: 0
