@@ -66,13 +66,9 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     public float initialDelay = 2.0f;
     public float delayAfterCorrect = 1.0f;
     public float delayAfterHint = 1.5f;
-    
-    // --- NOVAS VARIÁVEIS ADICIONADAS AQUI ---
-    [Header("--- Delays da Pergunta 'Que desenho é esse?' ---")]
-    [Tooltip("Tempo de espera ANTES da primeira pergunta, no início do jogo.")]
-    public float initialPromptDelay = 1.0f;
-    [Tooltip("Tempo de espera DEPOIS de um acerto, antes da próxima pergunta.")]
-    public float nextPromptDelay = 1.5f;
+    // Removido os delays antigos que causavam confusão
+    // public float initialPromptDelay = 1.0f;
+    // public float nextPromptDelay = 1.5f;
 
 
     [Header("Animações")]
@@ -145,45 +141,45 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 
     #region Main Game Flow
     private IEnumerator GameLoop()
-{
-    yield return new WaitForSeconds(initialDelay);
-    CheckForMicrophonePermission();
-
-    if (trainController != null)
     {
-        yield return new WaitForSeconds(initialPromptDelay);
+        yield return new WaitForSeconds(initialDelay);
+        CheckForMicrophonePermission();
 
-        AudioClip firstPrompt = GetCurrentPromptAudio();
-        yield return StartCoroutine(trainController.AnimateIn(firstPrompt));
-    }
-
-    for (currentIndex = 0; currentIndex < currentSyllableList.Count; currentIndex++)
-    {
-        yield return StartCoroutine(PlayTurnRoutineForCurrentIndex());
-        
-        // Zera o contador de erros APÓS um acerto, garantindo que a próxima rodada comece limpa.
-        mistakeCount = 0;
-
-        if (currentIndex < currentSyllableList.Count - 1)
+        if (trainController != null)
         {
-            if (trainController != null)
-            {
-                yield return new WaitForSeconds(nextPromptDelay);
+            // Pega o áudio da primeira pergunta e manda o trem se mover
+            AudioClip firstPrompt = GetCurrentPromptAudio();
+            yield return StartCoroutine(trainController.AnimateIn(firstPrompt));
+        }
 
-                AudioClip nextPrompt = GetCurrentPromptAudio(currentIndex + 1);
-                yield return StartCoroutine(trainController.AdvanceToNextWagon(currentIndex + 1, nextPrompt));
+        for (currentIndex = 0; currentIndex < currentSyllableList.Count; currentIndex++)
+        {
+            // Entra na rotina de adivinhação
+            yield return StartCoroutine(PlayTurnRoutineForCurrentIndex());
+            
+            // Zera o contador de erros APÓS um acerto, preparando para a próxima rodada
+            mistakeCount = 0;
+
+            if (currentIndex < currentSyllableList.Count - 1)
+            {
+                if (trainController != null)
+                {
+                    // Pega o áudio da PRÓXIMA pergunta e manda o trem avançar
+                    AudioClip nextPrompt = GetCurrentPromptAudio(currentIndex + 1);
+                    yield return StartCoroutine(trainController.AdvanceToNextWagon(currentIndex + 1, nextPrompt));
+                }
             }
         }
+        
+        ShowEndPhasePanel();
     }
     
-    ShowEndPhasePanel();
-}
 
-     private IEnumerator PlayTurnRoutineForCurrentIndex()
+    private IEnumerator PlayTurnRoutineForCurrentIndex()
     {
         isProcessing = true;
+       
         mistakeCount = 0; 
-        
         
         // 1. REVELA A IMAGEM
         if (trainController != null)
@@ -196,7 +192,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         bool pularPromptNaProximaTentativa = false;
         while (true)
         {
-            // (Esta parte do loop, que toca as DICAS em caso de erro, continua a mesma)
+            // Este bloco agora só toca as DICAS em caso de erro.
             if (pularPromptNaProximaTentativa)
             {
                 AudioClip hintClip = GetCurrentPromptAudio();
@@ -208,7 +204,6 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
             }
             pularPromptNaProximaTentativa = false;
             
-            // Ativa a escuta de voz
             if (!SpeechToText.CheckPermission()) { isProcessing = false; yield break; }
             receivedResult = false;
             isListening = true;
@@ -223,8 +218,12 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
             isListening = false;
             SetMicIndicator(staticColor);
             
+            if (lastErrorCode.HasValue && (lastErrorCode.Value == 6 || lastErrorCode.Value == 7))
+            {
+                continue;
+            }
+
             bool isCorrect = false;
-            if (lastErrorCode.HasValue && lastErrorCode.Value == 11) { pularPromptNaProximaTentativa = true; continue; }
             if (!lastErrorCode.HasValue && !string.IsNullOrEmpty(lastRecognizedText))
             {
                 if (CheckMatch(currentSyllableList[currentIndex].word, lastRecognizedText))
@@ -245,28 +244,34 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
             pularPromptNaProximaTentativa = true;
         }
         isProcessing = false;
-
     }
-    #endregion
 
-    #region Game Logic & Transitions
-      // MODIFICADO: O 'private' foi removido para corrigir o erro CS0106
-     AudioClip GetCurrentPromptAudio(int specificIndex = -1)
+    AudioClip GetCurrentPromptAudio(int specificIndex = -1)
     {
         int indexToUse = (specificIndex == -1) ? currentIndex : specificIndex;
         if (indexToUse < 0 || indexToUse >= currentSyllableList.Count) return null;
 
         SyllableData currentSyllable = currentSyllableList[indexToUse];
         
+        
         if (mistakeCount == 0)
         {
+           
             if (currentSyllable.word.ToLower() == "zaca" && zacaPrompt1 != null)
             {
                 return zacaPrompt1;
             }
+
+            // Se a lista de perguntas variáveis tiver itens, escolhe um aleatoriamente.
+            if (variablePrompts != null && variablePrompts.Count > 0)
+            {
+                return variablePrompts[UnityEngine.Random.Range(0, variablePrompts.Count)];
+            }
+            
+            // Se a lista estiver vazia, usa a pergunta padrão como fallback.
             return standardPrompt;
         }
-
+        
         switch (mistakeCount)
         {
             case 1:
