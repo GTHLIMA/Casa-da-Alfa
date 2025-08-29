@@ -3186,7 +3186,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ad81df78b44e9a741add408d0b219716, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 94c97a233eec8b74da9c3b9355cade9b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3300,8 +3300,9 @@ MonoBehaviour:
   finalImageDisplay: {fileID: 348103271}
   silabaJuntaFinalDisplay: {fileID: 1380997456}
   pauseButton: {fileID: 1849789898}
-  delayAfterRoundWin: 2
+  delayAfterRoundWin: 4
   fadeDuration: 1
+  delayBeforeFinalReveal: 3
 --- !u!4 &1797320797
 Transform:
   m_ObjectHideFlags: 0
