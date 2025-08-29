@@ -159,6 +159,7 @@ MonoBehaviour:
   end3: {fileID: 8300000, guid: 0b834cbd0f0b6334f8d428a79a527202, type: 3}
   VoiceRecognition: {fileID: 0}
   ballonPop: {fileID: 8300000, guid: b94f048cab48bd346bc322c3e7ee9606, type: 3}
+  initialSFXVolume: 0.2
 --- !u!4 &18487021
 Transform:
   m_ObjectHideFlags: 0

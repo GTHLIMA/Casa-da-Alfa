@@ -3444,6 +3444,7 @@ MonoBehaviour:
   end3: {fileID: 8300000, guid: 0b834cbd0f0b6334f8d428a79a527202, type: 3}
   VoiceRecognition: {fileID: 8300000, guid: 5b5fb2daeb0e21446821345f5f36df23, type: 3}
   ballonPop: {fileID: 0}
+  initialSFXVolume: 1
 --- !u!4 &1571296622
 Transform:
   m_ObjectHideFlags: 0
@@ -3558,7 +3559,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1595718222}
         m_TargetAssemblyTypeName: LoadScenes, Assembly-CSharp
-        m_MethodName: placeholder
+        m_MethodName: Level2
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4038,8 +4039,6 @@ MonoBehaviour:
   initialDelay: 0.1
   delayAfterCorrect: 1
   delayAfterHint: 0.2
-  initialPromptDelay: 3
-  nextPromptDelay: 3
   trainController: {fileID: 561744981}
   scorePause: {fileID: 846508828}
   scoreEndPhase: {fileID: 1607863755}
@@ -4447,7 +4446,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.037
+  m_Volume: 0.225
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -5118,7 +5117,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1929552921}
         m_TargetAssemblyTypeName: LoadScenes, Assembly-CSharp
-        m_MethodName: placeholder
+        m_MethodName: Level2
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
