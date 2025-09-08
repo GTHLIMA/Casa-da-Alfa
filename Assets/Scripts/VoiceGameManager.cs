@@ -18,7 +18,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         public string word;
         public Sprite image;
         public AudioClip hintBasicAudio;
-        // public AudioClip hintMediumAudio; // Removido da lógica
+        // public AudioClip hintMediumAudio;
         public AudioClip hintFinalAudio;
     }
 
@@ -66,12 +66,9 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     public float initialDelay = 2.0f;
     public float delayAfterCorrect = 1.0f;
     public float delayAfterHint = 1.5f;
-    
-    [Header("--- Delays da Pergunta 'Que desenho é esse?' ---")]
-    [Tooltip("Tempo de espera ANTES da primeira pergunta, no início do jogo.")]
-    public float initialPromptDelay = 1.0f;
-    [Tooltip("Tempo de espera DEPOIS de um acerto, antes da próxima pergunta.")]
-    public float nextPromptDelay = 1.5f;
+    // Removido os delays antigos que causavam confusão
+    // public float initialPromptDelay = 1.0f;
+    // public float nextPromptDelay = 1.5f;
 
 
     [Header("Animações")]
@@ -150,16 +147,18 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 
         if (trainController != null)
         {
-            yield return new WaitForSeconds(initialPromptDelay);
-            
+            // Pega o áudio da primeira pergunta e manda o trem se mover
             AudioClip firstPrompt = GetCurrentPromptAudio();
             yield return StartCoroutine(trainController.AnimateIn(firstPrompt));
         }
 
         for (currentIndex = 0; currentIndex < currentSyllableList.Count; currentIndex++)
         {
+            // Entra na rotina de adivinhação
             yield return StartCoroutine(PlayTurnRoutineForCurrentIndex());
             
+            // --- NOVA LINHA ADICIONADA AQUI ---
+            // Avisa ao trem que o vagão atual foi completado com sucesso.
             if (trainController != null)
             {
                 trainController.MarkWagonAsCompleted(currentIndex);
@@ -171,8 +170,6 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
             {
                 if (trainController != null)
                 {
-                    yield return new WaitForSeconds(nextPromptDelay);
-
                     AudioClip nextPrompt = GetCurrentPromptAudio(currentIndex + 1);
                     yield return StartCoroutine(trainController.AdvanceToNextWagon(currentIndex + 1, nextPrompt));
                 }
@@ -182,20 +179,25 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         ShowEndPhasePanel();
     }
     
+
     private IEnumerator PlayTurnRoutineForCurrentIndex()
     {
         isProcessing = true;
+       
         mistakeCount = 0; 
         
+        // 1. REVELA A IMAGEM
         if (trainController != null)
         {
             Sprite currentSprite = currentSyllableList[currentIndex].image;
             yield return StartCoroutine(trainController.RevealCurrentImage(currentSprite));
         }
         
+        // 2. ATIVA A DETECÇÃO DE VOZ (LOOP DE TENTATIVAS)
         bool pularPromptNaProximaTentativa = false;
         while (true)
         {
+            // Este bloco agora só toca as DICAS em caso de erro.
             if (pularPromptNaProximaTentativa)
             {
                 AudioClip hintClip = GetCurrentPromptAudio();
@@ -256,6 +258,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 
         SyllableData currentSyllable = currentSyllableList[indexToUse];
         
+        // Pergunta inicial (nenhum erro)
         if (mistakeCount == 0)
         {
             if (currentSyllable.word.ToLower() == "zaca" && zacaPrompt1 != null)
@@ -271,25 +274,17 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
             return standardPrompt;
         }
 
-       switch (mistakeCount)
+        // --- LÓGICA DE DICAS MODIFICADA ---
+        switch (mistakeCount)
         {
             case 1: // Após o 1º erro: Silêncio.
-                return null;
+                return null; // Retornar null faz com que o AudioManager não toque nada.
             case 2: // Após o 2º erro: Toca a PRIMEIRA dica.
                 return currentSyllable.hintBasicAudio;
-            case 3: // Após o 3º erro: Silêncio.
+            case 3: // Retornar null faz com que o AudioManager não toque nada.
                 return null;
-            default: // A partir do 4º erro em diante: ALTERNA entre a dica final e o silêncio.
-                
-                // Se o número de erros for ÍMPAR (3, 5, 7...), toca a dica final.
-                if (mistakeCount % 2 != 0)
-                {
-                    return currentSyllable.hintFinalAudio;
-                }
-                else // Se o número de erros for PAR (4, 6, 8...), fica em silêncio.
-                {
-                    return null;
-                }
+            default: // 4º erro em diante: Toca a dica final.
+                return currentSyllable.hintFinalAudio;
         }
     }
     #endregion
