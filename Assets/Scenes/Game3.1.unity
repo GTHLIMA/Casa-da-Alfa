@@ -3037,8 +3037,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -343}
-  m_SizeDelta: {x: 890, y: 275}
+  m_AnchoredPosition: {x: 4.23, y: -343}
+  m_SizeDelta: {x: 949.21, y: 275}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1380997455
 CanvasGroup:
@@ -3835,15 +3835,15 @@ MonoBehaviour:
   - targetWord: BATATA
     finalWordAudio: {fileID: 8300000, guid: 2979d84f7080bf94385b1d91834491d3, type: 3}
     finalWordImage: {fileID: 21300000, guid: f3f5f56462a1f70439235e26ac0cfada, type: 3}
-    silabaJuntaFinal: {fileID: 21300000, guid: 5d981ed35678a724193e76fee51f90f2, type: 3}
+    silabaJuntaFinal: {fileID: 21300000, guid: 5214ea80d78bf4349a685aa57d7b8aa4, type: 3}
     syllablesInOrder:
-    - syllableTextImage: {fileID: 21300000, guid: 2d7c90b96a7d4e6418fa25132f4199da, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
       syllableDrawingImage: {fileID: 21300000, guid: 41cd00b389c65354ab8cf489d22fee87, type: 3}
       syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
-    - syllableTextImage: {fileID: 21300000, guid: eb67af988fcd6a740b6e7f4781593231, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: a0d5ab77003a2274f919fcb594be6880, type: 3}
       syllableDrawingImage: {fileID: 21300000, guid: 82538c4ed3b58134c8d5aeb296b06070, type: 3}
       syllableAudio: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
-    - syllableTextImage: {fileID: 21300000, guid: eb67af988fcd6a740b6e7f4781593231, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: a0d5ab77003a2274f919fcb594be6880, type: 3}
       syllableDrawingImage: {fileID: 21300000, guid: 82538c4ed3b58134c8d5aeb296b06070, type: 3}
       syllableAudio: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
   - targetWord: CABANA
