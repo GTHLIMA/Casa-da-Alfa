@@ -3341,6 +3341,7 @@ MonoBehaviour:
   pauseButton: {fileID: 1849789898}
   delayAfterRoundWin: 2
   fadeDuration: 1
+  delayBeforeFinalReveal: 1.5
 --- !u!4 &1797320797
 Transform:
   m_ObjectHideFlags: 0

@@ -951,7 +951,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &477691022
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3338,6 +3338,7 @@ MonoBehaviour:
   pauseButton: {fileID: 1849789898}
   delayAfterRoundWin: 2
   fadeDuration: 1
+  delayBeforeFinalReveal: 1.5
 --- !u!4 &1797320797
 Transform:
   m_ObjectHideFlags: 0

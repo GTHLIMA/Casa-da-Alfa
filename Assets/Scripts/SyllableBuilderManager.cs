@@ -47,6 +47,8 @@ public class SyllableBuilderManager : MonoBehaviour
     [Header("Controles de Tempo e Efeitos")]
     public float delayAfterRoundWin = 3.0f;
     public float fadeDuration = 0.5f;
+    [Tooltip("Pausa após o último acerto, antes de revelar a imagem final.")]
+    public float delayBeforeFinalReveal = 1.0f;
 
     private AudioManager audioManager;
     #endregion
@@ -166,26 +168,36 @@ public class SyllableBuilderManager : MonoBehaviour
         }
     }
 
-    private IEnumerator RoundWinSequence()
+       private IEnumerator RoundWinSequence()
     {
+        // A pausa ANTES da revelação continua, se você quiser usá-la.
+        yield return new WaitForSeconds(delayBeforeFinalReveal);
+
         RoundData currentRound = allRounds[currentRoundIndex];
         if(GameManager.Instance != null)
             GameManager.Instance.AddScore(50);
         
+        // ETAPA 1: Prepara as duas imagens finais
         finalImageDisplay.sprite = currentRound.finalWordImage;
         silabaJuntaFinalDisplay.sprite = currentRound.silabaJuntaFinal;
         
         finalImageDisplay.gameObject.SetActive(true);
         silabaJuntaFinalDisplay.gameObject.SetActive(true);
 
+        // ETAPA 2: Inicia o fade-in de ambas as imagens
         StartCoroutine(FadeCanvasGroup(finalImageCanvasGroup, 1f, fadeDuration));
         StartCoroutine(FadeCanvasGroup(silabaJuntaFinalCanvasGroup, 1f, fadeDuration));
         
+        // ETAPA 3 (NOVA ORDEM): Toca o som da palavra completa JUNTO com o início do fade-in.
+        if (audioManager != null && currentRound.finalWordAudio != null)
+        {
+            audioManager.PlaySFX(currentRound.finalWordAudio);
+        }
+        
+        // Espera apenas a duração do fade-in visual terminar.
         yield return new WaitForSeconds(fadeDuration);
         
-        if (audioManager != null && currentRound.finalWordAudio != null)
-            audioManager.PlaySFX(currentRound.finalWordAudio);
-        
+        // ETAPA 4: Espera o tempo final antes de ir para a próxima rodada.
         yield return new WaitForSeconds(delayAfterRoundWin);
         StartNextRound();
     }
