@@ -832,12 +832,12 @@ MonoBehaviour:
   - {fileID: 3514156077457054651, guid: b5238764df4ae53479561c94ac53f756, type: 3}
   - {fileID: 3514156077457054651, guid: 73f4cc58fe3605449adc124f18771872, type: 3}
   mergedSprites:
-  - {fileID: 21300000, guid: aa97d4d244e6c8e469d483caacd6c508, type: 3}
-  - {fileID: 21300000, guid: e2e8a3311442eae47b9e80ef73d14532, type: 3}
-  - {fileID: 21300000, guid: 17009ac61a9fe7345985b3f0e3ebe145, type: 3}
-  - {fileID: 21300000, guid: c0d55754002d8fe449ee1e1858c60447, type: 3}
-  - {fileID: 21300000, guid: 19166d4de31f45247a2acdb30c923ff0, type: 3}
-  - {fileID: 21300000, guid: a0fd41d005c566444a5df04d497ccc19, type: 3}
+  - {fileID: 21300000, guid: 641d10b1786f30049a883c3facc88891, type: 3}
+  - {fileID: 21300000, guid: f25ba6fec2dd0254da1b253f262a683e, type: 3}
+  - {fileID: 21300000, guid: 680db218197ed89469643e5113dcbabf, type: 3}
+  - {fileID: 21300000, guid: ae7b513eea644884692166373fdf06e6, type: 3}
+  - {fileID: 21300000, guid: 766bd1c7dcc50374ea8dcc77726f031c, type: 3}
+  - {fileID: 21300000, guid: f90e61cb992bc44418e5a27f71d443e8, type: 3}
   fusionSounds:
   - {fileID: 8300000, guid: c96e17bef7505bb4892d3739af4ecdca, type: 3}
   - {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
