@@ -177,6 +177,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 7.5
+  dragThreshold: 0.1
   popDownClip: {fileID: 8300000, guid: 0f6b01c9ed64a5b4a9c0006351f5bd15, type: 3}
   popUpClip: {fileID: 8300000, guid: 34b5765264b31f1479524724fe668962, type: 3}
   popOtherClip: {fileID: 8300000, guid: 7228f8a4f233dca48a7fc03347432e88, type: 3}
@@ -194,7 +195,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manager: {fileID: 0}
-  currentTarget: {fileID: 0}
+  currentTarget: {fileID: 2116391639288400984}
 --- !u!114 &1545707435573770613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -207,7 +208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a14eeb8d2c06f54192f1232a9b2a6ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  preferredWidthPercent: 0.09
+  preferredWidthPercent: 0.18
 --- !u!120 &6856866751557083687
 LineRenderer:
   serializedVersion: 2
@@ -325,7 +326,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineHeight: 4
-  verticalOffset: 0.97
+  verticalOffset: 0.5
   lineWidth: 0.05
   lineRenderer: {fileID: 6856866751557083687}
 --- !u!82 &8270283621218776499

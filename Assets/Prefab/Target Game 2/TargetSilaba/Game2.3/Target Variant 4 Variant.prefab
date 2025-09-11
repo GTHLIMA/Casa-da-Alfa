@@ -24,6 +24,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Target Variant 4 Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 3749989799392008996, guid: 2c38a880a8af348458110a945d3cf8da, type: 3}
+      propertyPath: preferredWidthPercent
+      value: 0.16
+      objectReference: {fileID: 0}
     - target: {fileID: 8431777336423665345, guid: 2c38a880a8af348458110a945d3cf8da, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

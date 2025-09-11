@@ -12,29 +12,39 @@ public class DragManager : MonoBehaviour
 
     public Sprite[] prefabSprites;
 
+
+
     [Header("Target Variants")]
     public List<GameObject> targetVariants;
+
+
 
     [Header("Sprites da Fusão")]
     public Sprite[] mergedSprites;
 
+
+
     [Header("Áudios de Fusão")]
     public AudioClip[] fusionSounds;
+    
+
+
 
     [Header("Pause Menu && Painel de Fim de Fase")]
     public GameObject PauseMenu;
     public GameObject endPhasePanel;
     public ParticleSystem confettiEffect;
     public AudioClip end2;
+    // public Text scoreEndPhase;
 
     [Header("Efeitos Visuais")]
     public GameObject smokePrefab;
+
 
     private AudioSource audioSource;
     private int currentIndex = 0;
     private GameObject currentBalloon;
     private List<GameObject> spawnedTargets = new List<GameObject>();
-    public float targetYViewport = 0.15f;
 
     private void Awake()
     {
@@ -50,32 +60,26 @@ public class DragManager : MonoBehaviour
         SpawnPlayerBalloon();
     }
 
+    [Header("Altura dos Targets")]
+    [Range(0f, 1f)]
+    public float targetYViewport = 0.15f;
+
     void SpawnTargetsAleatorios()
-{
-    var shuffled = targetVariants.OrderBy(x => Random.value).ToList();
-
-    int count = Mathf.Min(9, shuffled.Count);
-    float y = Mathf.Clamp01(targetYViewport); 
-
-    for (int i = 0; i < count; i++)
     {
-        // Tá centralizando as imagens
-        float t = (count == 1) ? 0.5f : (float)i / (count - 1);
-        float xViewport = Mathf.Lerp(0.1f, 0.92f, t);
+        var shuffled = targetVariants.OrderBy(x => Random.value).ToList();
 
-        Vector3 viewportPos = new Vector3(xViewport, y, Camera.main.nearClipPlane + 4f);
-        Vector3 worldPos = Camera.main.ViewportToWorldPoint(viewportPos);
-        worldPos.z = 0f;
+        for (int i = 0; i < 4; i++)
+        {
+            float xViewport = 0.11f + i * 0.260f;
+            Vector3 viewportPosition = new Vector3(xViewport, targetYViewport, Camera.main.nearClipPlane + 4f);
+            Vector3 worldPos = Camera.main.ViewportToWorldPoint(viewportPosition);
+            worldPos.z = 0f;
 
-        GameObject instance = Instantiate(shuffled[i], worldPos, Quaternion.identity);
-        spawnedTargets.Add(instance);
-
-        var col = instance.GetComponent<Collider2D>();
-        if (col != null) col.enabled = true;
-
-        instance.SetActive(true);
+            GameObject instance = Instantiate(shuffled[i], worldPos, Quaternion.identity);
+            spawnedTargets.Add(instance);
+        }
     }
-}
+
 
     public void SpawnPlayerBalloon()
     {
@@ -93,14 +97,10 @@ public class DragManager : MonoBehaviour
         var spriteRenderer = currentBalloon.GetComponent<SpriteRenderer>();
         spriteRenderer.sprite = prefabSprites[currentIndex];
 
-        // Procura o target com sprite igual ao prefab 
-        fusionScript.currentTarget = null;
         foreach (var target in spawnedTargets)
         {
             var targetSpriteRenderer = target.GetComponent<SpriteRenderer>();
-            if (targetSpriteRenderer != null && 
-                (targetSpriteRenderer.sprite == prefabSprites[currentIndex] || 
-                 targetSpriteRenderer.sprite == mergedSprites[currentIndex]))
+            if (targetSpriteRenderer != null && targetSpriteRenderer.sprite == prefabSprites[currentIndex])
             {
                 fusionScript.currentTarget = target;
                 break;
@@ -113,9 +113,6 @@ public class DragManager : MonoBehaviour
         {
             line.lineRenderer.enabled = true;
         }
-
-        // Atualiza limite de queda com base no target
-        fusionScript.UpdateFallLimit();
     }
 
     public void HandleFusion()
@@ -125,9 +122,11 @@ public class DragManager : MonoBehaviour
         var fusionScript = currentBalloon.GetComponent<ImageFusion>();
         if (fusionScript != null && fusionScript.currentTarget != null)
         {
+            // Obter o centro visual do sprite alvo
             var targetRenderer = fusionScript.currentTarget.GetComponent<SpriteRenderer>();
             Vector3 fusionPoint = targetRenderer.bounds.center;
 
+            // Instancia a fumaça no local da fusão
             if (smokePrefab != null)
             {
                 GameObject smoke = Instantiate(smokePrefab, fusionPoint, Quaternion.identity);
@@ -138,52 +137,64 @@ public class DragManager : MonoBehaviour
         }
 
         Destroy(currentBalloon);
-    }
+    
+
+}
 
     private IEnumerator TransitionFusion(GameObject target)
     {
+        if (target != null)
+        {
+            // Desativar o alvo temporariamente
+            target.SetActive(false);
+        }
+
+        yield return new WaitForSeconds(0.1f);
+
+        // Atualiza o sprite do target (mesmo ainda desativado)
         if (target != null && currentIndex < mergedSprites.Length)
         {
             var targetSpriteRenderer = target.GetComponent<SpriteRenderer>();
-
             if (targetSpriteRenderer != null)
             {
-                // Atualiza o sprite do target para o sprite fundido correspondente
                 targetSpriteRenderer.sprite = mergedSprites[currentIndex];
             }
+        }
 
-            // Garante que o collider está ativo para futuras fusões
-            var collider = target.GetComponent<Collider2D>();
-            if (collider != null)
-                collider.enabled = true;
-
-            // Mantém o target ativo (não desativa mais)
+        // Reativa o alvo
+        if (target != null)
+        {
             target.SetActive(true);
         }
 
+        // Toca o som da fusão
         if (fusionSounds != null && currentIndex < fusionSounds.Length && audioSource != null)
         {
             audioSource.PlayOneShot(fusionSounds[currentIndex]);
         }
 
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.1f); 
 
         StartCoroutine(ShowMergedAndRespawn());
     }
 
+
+
     IEnumerator ShowMergedAndRespawn()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(0.2f);
 
         currentIndex++;
 
-        if (currentIndex < prefabSprites.Length)
+        if (currentIndex < prefabSprites
+.Length)
         {
             SpawnPlayerBalloon();
         }
         else
         {
-            CheckEndPhase(currentIndex, prefabSprites.Length);
+            CheckEndPhase(currentIndex, prefabSprites
+    .Length);
         }
     }
 
@@ -242,13 +253,10 @@ public class DragManager : MonoBehaviour
 
     private IEnumerator ShowEndPhasePanelCoroutine()
     {
-        // yield return new WaitForSeconds(0.1f);
-        
-
+        yield return new WaitForSeconds(2f);
 
         if (endPhasePanel != null)
             endPhasePanel.SetActive(true);
-
 
         if (confettiEffect != null)
             confettiEffect.Play();
@@ -259,7 +267,6 @@ public class DragManager : MonoBehaviour
             yield return new WaitForSeconds(end2.length);
             audioSource.Stop();
         }
-
-
     }
+
 }
