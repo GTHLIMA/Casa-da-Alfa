@@ -4,29 +4,31 @@ public class ImageFusion : MonoBehaviour
 {
     public DragManager manager;
     public GameObject currentTarget;
-
     private float fallLimitY;
-    private bool hasFallen = false;
 
     void Start()
     {
-        UpdateFallLimit();
+        // Define o limite com base na posição Y do target (para cair abaixo)
+        if (currentTarget != null)
+            fallLimitY = currentTarget.transform.position.y - 0.5f; // margem de tolerância
     }
 
     void Update()
     {
-        if (!hasFallen && transform.position.y < fallLimitY)
+        if (transform.position.y < fallLimitY)
         {
-            hasFallen = true;
+            // Evita múltiplas chamadas
             if (manager != null)
             {
                 manager.RespawnAfterFall(gameObject);
+                manager = null; // Impede chamadas duplicadas
             }
         }
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        // Confirma que encostou no target
         if (other.gameObject == currentTarget)
         {
             var playerSprite = GetComponent<SpriteRenderer>().sprite;
@@ -43,9 +45,4 @@ public class ImageFusion : MonoBehaviour
         }
     }
 
-    public void UpdateFallLimit()
-    {
-        if (currentTarget != null)
-            fallLimitY = currentTarget.transform.position.y - 0.5f;
-    }
 }
