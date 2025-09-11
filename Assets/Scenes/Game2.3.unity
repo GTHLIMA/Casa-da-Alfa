@@ -831,11 +831,11 @@ MonoBehaviour:
   - {fileID: 4465140223506274930, guid: ed917fef18f9e6f49a195c273515005d, type: 3}
   - {fileID: 2088530184576676639, guid: d598949e24d2652449cdf5c8c86bc6a8, type: 3}
   mergedSprites:
-  - {fileID: 21300000, guid: cdc1342f58d076c4e94fe3e2355605df, type: 3}
-  - {fileID: 21300000, guid: 0773f11a64e04844e9669767e1cf724c, type: 3}
-  - {fileID: 21300000, guid: 5f0a67ca818680249ad94ff6bb0f85b9, type: 3}
-  - {fileID: 21300000, guid: 8cf75ef8c70383446ae904eeb5f34983, type: 3}
-  - {fileID: 21300000, guid: deefde6b3b76d0e4ca8098e8fe127d6e, type: 3}
+  - {fileID: 21300000, guid: e33a706c35947ce48a67cc9bfc673b42, type: 3}
+  - {fileID: 21300000, guid: aef55a8c297cffd4e9d4f80c6eedeef8, type: 3}
+  - {fileID: 21300000, guid: 0b6c1c05e4186d9498110b4ed172fa4e, type: 3}
+  - {fileID: 21300000, guid: c7e5ccc36922ace4ab95b8a49c6f8cc5, type: 3}
+  - {fileID: 21300000, guid: fdb025da0a6f19a4aa4f3ec8c482a54c, type: 3}
   fusionSounds:
   - {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
   - {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}

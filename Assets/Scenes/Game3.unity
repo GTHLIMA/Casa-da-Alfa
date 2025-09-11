@@ -931,7 +931,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -59}
+  m_AnchoredPosition: {x: 21, y: 646}
   m_SizeDelta: {x: 300, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &477691021
@@ -2621,7 +2621,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -345}
+  m_AnchoredPosition: {x: 21, y: 297}
   m_SizeDelta: {x: 890, y: 275}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1380997455
@@ -3273,56 +3273,56 @@ MonoBehaviour:
   - targetWord: BALA
     finalWordAudio: {fileID: 8300000, guid: 44950199f447f3941a0078ccc35a0267, type: 3}
     finalWordImage: {fileID: 21300000, guid: 1416ed7db0d6e4a4eaef65c6b990c681, type: 3}
-    silabaJuntaFinal: {fileID: 21300000, guid: 15f954872aeba074fb2062dbada0c5c8, type: 3}
+    silabaJuntaFinal: {fileID: 21300000, guid: 819998e234c7573469eded91828e0896, type: 3}
     syllablesInOrder:
-    - syllableTextImage: {fileID: 21300000, guid: 2d7c90b96a7d4e6418fa25132f4199da, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
       syllableDrawingImage: {fileID: 21300000, guid: e630823da395193488033f1cce68cbe8, type: 3}
       syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
-    - syllableTextImage: {fileID: 21300000, guid: 48bba921ad04aed4fadaf468c66c3850, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 6f3b69fa5e38b734985fb2d32992b59e, type: 3}
       syllableDrawingImage: {fileID: 21300000, guid: dcefc9a832818ad4d8b42fdd6cf00623, type: 3}
       syllableAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
   - targetWord: FADA
     finalWordAudio: {fileID: 8300000, guid: 094b05fd1d3c29448a32f5fdb5b2e0bf, type: 3}
     finalWordImage: {fileID: 21300000, guid: 26f99ebe22be5484aaebf8a57c49d2dc, type: 3}
-    silabaJuntaFinal: {fileID: 21300000, guid: b7b86eca2d41a4f4c8c44f840f80e39c, type: 3}
+    silabaJuntaFinal: {fileID: 21300000, guid: b5add49cdaef1ca4e9d56492ceb3e475, type: 3}
     syllablesInOrder:
-    - syllableTextImage: {fileID: 21300000, guid: 03b89fd5eb24bdf44bc11363ff633130, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 3295dc4b1ef57304194bb183a2baf36b, type: 3}
       syllableDrawingImage: {fileID: 21300000, guid: 6c5cbd34b012337429b5de4f70f74f41, type: 3}
       syllableAudio: {fileID: 8300000, guid: 129794c8ee0dc12408c51fd88ac9e2bb, type: 3}
-    - syllableTextImage: {fileID: 21300000, guid: 56b19e9f0db43f346ab09332bd88f755, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: b853cd58663860d4b90beafefbce3e77, type: 3}
       syllableDrawingImage: {fileID: 21300000, guid: e9b6d7e5f0c7df74f809bf086bee1f1a, type: 3}
       syllableAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
   - targetWord: CAPA
     finalWordAudio: {fileID: 8300000, guid: 64016e06e4c860145bf5ca8ad44e146d, type: 3}
     finalWordImage: {fileID: 21300000, guid: ada24ba552e29a442a09b606fcb49dc0, type: 3}
-    silabaJuntaFinal: {fileID: 21300000, guid: 67044a17c20e253409d5615ddb8ec3d0, type: 3}
+    silabaJuntaFinal: {fileID: 21300000, guid: b60043b4033b82c4384ff8971d14e074, type: 3}
     syllablesInOrder:
-    - syllableTextImage: {fileID: 21300000, guid: e25eb2282ad129b4b84238a258d65dcd, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
       syllableDrawingImage: {fileID: 21300000, guid: 48f4db9758b527a428ef0e3b5e796c24, type: 3}
       syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
-    - syllableTextImage: {fileID: 21300000, guid: cb47391074732b74bbe502eca36d9d86, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 3909d92f734a7124ab2a382f1b89eb0f, type: 3}
       syllableDrawingImage: {fileID: 21300000, guid: 8b59a47ee0bd64d4ba24f0f5c469252a, type: 3}
       syllableAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
   - targetWord: PAPA
     finalWordAudio: {fileID: 8300000, guid: 083e1b67d4e2af3478ce4b915dfe9ed8, type: 3}
     finalWordImage: {fileID: 21300000, guid: 0e55b8f5544f3eb418c1d8459f55de7d, type: 3}
-    silabaJuntaFinal: {fileID: 21300000, guid: 9bacac38ff7b478449b24d05dff19694, type: 3}
+    silabaJuntaFinal: {fileID: 21300000, guid: ac7bf562f027e2141b4c3da715344e04, type: 3}
     syllablesInOrder:
-    - syllableTextImage: {fileID: 21300000, guid: cb47391074732b74bbe502eca36d9d86, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 3909d92f734a7124ab2a382f1b89eb0f, type: 3}
       syllableDrawingImage: {fileID: 21300000, guid: e72658e467a3012409db9b2e8d2310b1, type: 3}
       syllableAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
-    - syllableTextImage: {fileID: 21300000, guid: cb47391074732b74bbe502eca36d9d86, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 3909d92f734a7124ab2a382f1b89eb0f, type: 3}
       syllableDrawingImage: {fileID: 21300000, guid: e72658e467a3012409db9b2e8d2310b1, type: 3}
       syllableAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
   - targetWord: LAMA
     finalWordAudio: {fileID: 8300000, guid: 940804cec75cb2e4a9d3e2adc436a81b, type: 3}
     finalWordImage: {fileID: 21300000, guid: 22cf1da0f22e04640b91a44378708d1f, type: 3}
-    silabaJuntaFinal: {fileID: 21300000, guid: a06adf3d9cfa5dd45933d793474f96b9, type: 3}
+    silabaJuntaFinal: {fileID: 21300000, guid: 064ebfdde0e6877428e87fce512ad0dd, type: 3}
     syllablesInOrder:
-    - syllableTextImage: {fileID: 21300000, guid: 48bba921ad04aed4fadaf468c66c3850, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 6f3b69fa5e38b734985fb2d32992b59e, type: 3}
       syllableDrawingImage: {fileID: 21300000, guid: 5ae6e45565994364a80cf6ee8375fcf3, type: 3}
       syllableAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
-    - syllableTextImage: {fileID: 21300000, guid: 52c215ba658955944813b77314c6a7fb, type: 3}
+    - syllableTextImage: {fileID: 21300000, guid: 1e54b1d1330a874409c4a806f05caaba, type: 3}
       syllableDrawingImage: {fileID: 21300000, guid: 67bc93b57360d4046ae9ff4004c6f18e, type: 3}
       syllableAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
   syllableButtonParent: {fileID: 1901301553}
@@ -3802,7 +3802,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1, y: 190}
+  m_AnchoredPosition: {x: 10, y: -396}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1901301554
