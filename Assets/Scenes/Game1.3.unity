@@ -4006,7 +4006,7 @@ MonoBehaviour:
       hintBasicAudio: {fileID: 8300000, guid: 71eac4d154dd1654890ab5adc4880d4e, type: 3}
       hintFinalAudio: {fileID: 8300000, guid: 0e2def001c4290443b21b89877f9b83b, type: 3}
   languageCode: pt-BR
-  similarityThreshold: 0.991
+  similarityThreshold: 0.558
   zacaSimilarityThreshold: 0.718
   micIndicatorImage: {fileID: 1876227425}
   micIndicatorAnimator: {fileID: 0}
