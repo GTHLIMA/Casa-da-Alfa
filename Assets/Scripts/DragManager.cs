@@ -67,11 +67,21 @@ public class DragManager : MonoBehaviour
     void SpawnTargetsAleatorios()
     {
         var shuffled = targetVariants.OrderBy(x => Random.value).ToList();
+        int count = Mathf.Min(4, shuffled.Count); // suporta no máximo 4, mas pode ser 3
 
-        for (int i = 0; i < 4; i++)
+        float[] positionsX;
+        if (count == 3)
         {
-            float xViewport = 0.11f + i * 0.260f;
-            Vector3 viewportPosition = new Vector3(xViewport, targetYViewport, Camera.main.nearClipPlane + 4f);
+            positionsX = new float[] { 0.2f, 0.5f, 0.8f };
+        }
+        else
+        {
+            positionsX = new float[] { 0.11f, 0.37f, 0.63f, 0.89f };
+        }
+
+        for (int i = 0; i < count; i++)
+        {
+            Vector3 viewportPosition = new Vector3(positionsX[i], targetYViewport, Camera.main.nearClipPlane + 4f);
             Vector3 worldPos = Camera.main.ViewportToWorldPoint(viewportPosition);
             worldPos.z = 0f;
 
