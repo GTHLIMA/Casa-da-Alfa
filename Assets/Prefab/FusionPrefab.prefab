@@ -208,7 +208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a14eeb8d2c06f54192f1232a9b2a6ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  preferredWidthPercent: 0.18
+  preferredWidthPercent: 0.2
 --- !u!120 &6856866751557083687
 LineRenderer:
   serializedVersion: 2

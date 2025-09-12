@@ -3304,6 +3304,22 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6085730680519356730, guid: 7559e6bce9f885249a016d22d61e33ad, type: 3}
+      propertyPath: mergedSprites.Array.data[0]
+      value: 
+      objectReference: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
+    - target: {fileID: 6085730680519356730, guid: 7559e6bce9f885249a016d22d61e33ad, type: 3}
+      propertyPath: mergedSprites.Array.data[1]
+      value: 
+      objectReference: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
+    - target: {fileID: 6085730680519356730, guid: 7559e6bce9f885249a016d22d61e33ad, type: 3}
+      propertyPath: mergedSprites.Array.data[2]
+      value: 
+      objectReference: {fileID: 21300000, guid: b853cd58663860d4b90beafefbce3e77, type: 3}
+    - target: {fileID: 6085730680519356730, guid: 7559e6bce9f885249a016d22d61e33ad, type: 3}
+      propertyPath: mergedSprites.Array.data[3]
+      value: 
+      objectReference: {fileID: 21300000, guid: 3295dc4b1ef57304194bb183a2baf36b, type: 3}
+    - target: {fileID: 6085730680519356730, guid: 7559e6bce9f885249a016d22d61e33ad, type: 3}
       propertyPath: targetVariants.Array.data[0]
       value: 
       objectReference: {fileID: 3514156077457054651, guid: 0889e7296a3a4fa42b9635b3d19e2d3c, type: 3}

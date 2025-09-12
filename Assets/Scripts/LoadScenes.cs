@@ -13,6 +13,10 @@ public class LoadScenes : MonoBehaviour
     public void Level2_3() => LoadSceneWithOrientation("Game2.3", false);
     public void Level2_4() => LoadSceneWithOrientation("Game2.4", false);
     public void Level2_5() => LoadSceneWithOrientation("Game2.5", false);
+    public void Level2_6() => LoadSceneWithOrientation("Game2.6", false);
+    public void Level2_7() => LoadSceneWithOrientation("Game2.7", false);
+    public void Level2_8() => LoadSceneWithOrientation("Game2.8", false);
+    public void Level2_9() => LoadSceneWithOrientation("Game2.9", false);
     public void Level3() => LoadSceneWithOrientation("Game3", false);
     public void Level3_1() => LoadSceneWithOrientation("Game3.1", false);
 
