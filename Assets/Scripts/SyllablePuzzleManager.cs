@@ -71,38 +71,44 @@ public class SyllablePuzzleManager : MonoBehaviour
     /// Esta é a função de "REINICIALIZAÇÃO". Ela limpa tudo e carrega os novos dados.
     /// </summary>
     void LoadPuzzle(int puzzleIndex)
+{
+   
+    ClearBoard();
+    
+    if (puzzleIndex >= allPuzzles.Count)
     {
-        // 1. LIMPEZA COMPLETA DO ESTADO ANTERIOR
-        ClearBoard();
-        
-        if (puzzleIndex >= allPuzzles.Count)
-        {
-            Debug.Log("FIM DE JOGO!");
-            finalImageDisplay.gameObject.SetActive(false);
-            return;
-        }
-
-        // 2. CARREGA AS NOVAS INFORMAÇÕES
-        currentPuzzle = allPuzzles[puzzleIndex];
-        
-        // 3. MONTA A NOVA TELA
-        finalImageDisplay.gameObject.SetActive(true);
-        finalImageDisplay.sprite = questionMarkSprite;
-
-        for (int i = 0; i < currentPuzzle.targetSyllableImages.Count; i++)
-        {
-            GameObject slotGO = Instantiate(answerSlotPrefab, answerSlotParent);
-            activeAnswerSlots.Add(slotGO.GetComponent<Image>());
-        }
-
-        foreach (var sourceWord in currentPuzzle.sourceWords)
-        {
-            GameObject buttonGO = Instantiate(sourceButtonPrefab, sourceButtonParent);
-            SyllableSourceButton buttonScript = buttonGO.GetComponent<SyllableSourceButton>();
-            buttonScript.Setup(sourceWord, this);
-            activeSourceButtons.Add(buttonScript);
-        }
+        Debug.Log("FIM DE JOGO!");
+        finalImageDisplay.gameObject.SetActive(false);
+        return;
     }
+
+    currentPuzzle = allPuzzles[puzzleIndex];
+    
+    finalImageDisplay.gameObject.SetActive(true);
+    finalImageDisplay.sprite = questionMarkSprite;
+
+
+    for (int i = 0; i < currentPuzzle.targetSyllableImages.Count; i++)
+    {
+        GameObject slotGO = Instantiate(answerSlotPrefab, answerSlotParent);
+        Image slotImage = slotGO.GetComponent<Image>();
+        
+   
+        slotImage.sprite = questionMarkSprite;
+        
+        activeAnswerSlots.Add(slotImage);
+    }
+
+
+    foreach (var sourceWord in currentPuzzle.sourceWords)
+    {
+        GameObject buttonGO = Instantiate(sourceButtonPrefab, sourceButtonParent);
+        SyllableSourceButton buttonScript = buttonGO.GetComponent<SyllableSourceButton>();
+        buttonScript.Setup(sourceWord, this);
+        activeSourceButtons.Add(buttonScript);
+    }
+}
+
 
     public void PlaySyllableAudio(AudioClip clip)
     {
@@ -181,17 +187,28 @@ public class SyllablePuzzleManager : MonoBehaviour
     }
     
     private void ClearBoard()
+{
+    foreach (var button in activeSourceButtons) 
     {
-        foreach (var button in activeSourceButtons) 
-            if(button != null) Destroy(button.gameObject);
-        activeSourceButtons.Clear();
-        
-        ClearAnswerSlots();
-        
-        finalWordDisplay.gameObject.SetActive(false);
-        clicksMade = 0;
-        isReviewing = false;
+        if(button != null)
+        {
+       
+            var syllableBtn = button.GetComponent<SyllableSourceButton>();
+            if (syllableBtn != null)
+                syllableBtn.SetUsed(false);
+            
+            Destroy(button.gameObject);
+        }
     }
+    activeSourceButtons.Clear();
+    
+    ClearAnswerSlots();
+    
+    finalWordDisplay.gameObject.SetActive(false);
+    clicksMade = 0;
+    isReviewing = false;
+}
+
     
     private void ClearAnswerSlots()
     {
