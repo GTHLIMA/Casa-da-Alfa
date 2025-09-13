@@ -4034,6 +4034,7 @@ MonoBehaviour:
   initialDelay: 0.1
   delayAfterCorrect: 1
   delayAfterHint: 0.2
+  delayAfterPromptBeforeReveal: 2
   trainController: {fileID: 561744981}
   scorePause: {fileID: 846508828}
   scoreEndPhase: {fileID: 1607863755}

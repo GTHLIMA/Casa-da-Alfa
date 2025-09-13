@@ -18,7 +18,6 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         public string word;
         public Sprite image;
         public AudioClip hintBasicAudio;
-        // public AudioClip hintMediumAudio;
         public AudioClip hintFinalAudio;
     }
 
@@ -66,10 +65,9 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     public float initialDelay = 2.0f;
     public float delayAfterCorrect = 1.0f;
     public float delayAfterHint = 1.5f;
-    // Removido os delays antigos que causavam confusão
-    // public float initialPromptDelay = 1.0f;
-    // public float nextPromptDelay = 1.5f;
 
+    [Tooltip("Pausa (em segundos) após a pergunta, ANTES de revelar a imagem do desenho.")]
+    public float delayAfterPromptBeforeReveal = 0.5f;
 
     [Header("Animações")]
     public TrainController trainController;
@@ -147,18 +145,16 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 
         if (trainController != null)
         {
-            // Pega o áudio da primeira pergunta e manda o trem se mover
             AudioClip firstPrompt = GetCurrentPromptAudio();
             yield return StartCoroutine(trainController.AnimateIn(firstPrompt));
         }
 
         for (currentIndex = 0; currentIndex < currentSyllableList.Count; currentIndex++)
         {
-            // Entra na rotina de adivinhação
+           
             yield return StartCoroutine(PlayTurnRoutineForCurrentIndex());
             
-            // --- NOVA LINHA ADICIONADA AQUI ---
-            // Avisa ao trem que o vagão atual foi completado com sucesso.
+        
             if (trainController != null)
             {
                 trainController.MarkWagonAsCompleted(currentIndex);
@@ -186,6 +182,8 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
        
         mistakeCount = 0; 
         
+        // PAUSA ANTES DE REVELAR A IMAGEM
+        yield return new WaitForSeconds(delayAfterPromptBeforeReveal);
         // 1. REVELA A IMAGEM
         if (trainController != null)
         {
