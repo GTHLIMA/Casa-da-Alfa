@@ -28,7 +28,7 @@ public class SyllablePuzzleManager : MonoBehaviour
         public Sprite finalDrawingImage;
         public Sprite finalWordImage;
         public AudioClip finalWordAudio;
-        public List<OnScreenWord> onScreenWords;
+        public List<OnScreenWord> onScreenWords; // Define quais botões aparecem e em que ordem
         public List<AnswerSyllable> answerSequence;
     }
     #endregion
@@ -45,24 +45,20 @@ public class SyllablePuzzleManager : MonoBehaviour
     [Header("Parent Panels")]
     public Transform sourceButtonParent;
     public Transform answerSlotParent;
+    public Image fundoImageDisplay;
 
     [Header("Final Reveal Displays")]
     public Image finalImageDisplay;
     public Image finalWordDisplay;
+    
 
     [Header("Configurações de Animação e Tempo")]
     public float bounceDuration = 0.5f;
     public AnimationCurve bounceCurve;
-    
-    [Tooltip("Pausa após o clique no desenho, ANTES de revelar a sílaba filha.")]
     public float delayAfterClick = 0.3f;
-    [Tooltip("Pausa após todos os desenhos serem clicados, ANTES das interrogações começarem a ser substituídas.")]
     public float delayBeforeReview = 1.0f;
-    [Tooltip("Pausa entre a revelação de cada sílaba na sequência de revisão.")]
     public float delayBetweenSlotReveals = 0.7f;
-    [Tooltip("Pausa após a última sílaba ser revelada, ANTES de se unirem na palavra final.")]
     public float delayBeforeUnification = 1.0f;
-    [Tooltip("Pausa final após a vitória, ANTES de carregar o próximo quebra-cabeça.")]
     public float delayAfterWin = 2.0f;
     #endregion
 
@@ -70,7 +66,7 @@ public class SyllablePuzzleManager : MonoBehaviour
     private List<SyllableSourceButton> activeSourceButtons = new List<SyllableSourceButton>();
     private List<AnswerSlotController> activeAnswerSlots = new List<AnswerSlotController>();
     private PuzzleData currentPuzzle;
-    private int clicksMade = 0;
+    private int nextClickIndex = 0; // CORRIGIDO: Substitui 'clicksMade' por um índice de sequência
     private AudioManager audioManager;
     private int currentPuzzleIndex = 0;
     private bool isReviewing = false;
@@ -91,13 +87,13 @@ public class SyllablePuzzleManager : MonoBehaviour
         ClearBoard();
         if (puzzleIndex >= allPuzzles.Count)
         {
-            // --- LÓGICA DE FIM DE JOGO ATUALIZADA ---
-            EndGame(); // Chama o novo método de finalização
+            EndGame(); 
             return;
         }
         currentPuzzle = allPuzzles[puzzleIndex];
         finalImageDisplay.gameObject.SetActive(true);
         finalImageDisplay.sprite = questionMarkSprite;
+
         for (int i = 0; i < currentPuzzle.answerSequence.Count; i++)
         {
             GameObject slotGO = Instantiate(answerSlotPrefab, answerSlotParent);
@@ -105,6 +101,8 @@ public class SyllablePuzzleManager : MonoBehaviour
             slotController.Setup(this, questionMarkSprite);
             activeAnswerSlots.Add(slotController);
         }
+        
+        // CORRIGIDO: Garante que os botões sejam criados na ordem definida em 'onScreenWords'
         foreach (var sourceWord in currentPuzzle.onScreenWords)
         {
             GameObject buttonGO = Instantiate(sourceButtonPrefab, sourceButtonParent);
@@ -119,23 +117,36 @@ public class SyllablePuzzleManager : MonoBehaviour
         if (audioManager != null && clip != null) audioManager.PlaySFX(clip);
     }
 
+    // --- LÓGICA DE CLIQUE COMPLETAMENTE CORRIGIDA PARA VERIFICAR ORDEM ---
     public void OnSourceButtonClicked(OnScreenWord clickedWord, SyllableSourceButton button)
     {
         if (isReviewing) return;
+
+        // Verifica se o botão clicado é o próximo na sequência esperada.
+        // A sequência é a ordem dos botões na lista 'activeSourceButtons'.
+        if (button != activeSourceButtons[nextClickIndex])
+        {
+            Debug.Log("Clique fora de ordem!");
+            // Pode adicionar um som de erro aqui.
+            return;
+        }
+
+        // Se chegou aqui, o clique foi CERTO e na ORDEM CORRETA
         StartCoroutine(SourceButtonClickSequence(clickedWord, button));
     }
 
     private IEnumerator SourceButtonClickSequence(OnScreenWord clickedWord, SyllableSourceButton button)
     {
         button.SetUsed(true);
+        nextClickIndex++; // Avança para o próximo botão esperado
         
         yield return new WaitForSeconds(delayAfterClick);
 
         button.RevealLocalSyllable();
         PlayAudio(clickedWord.syllableAudio);
 
-        clicksMade++;
-        if (clicksMade >= activeSourceButtons.Count)
+        // Verifica se todos os botões na sequência foram clicados
+        if (nextClickIndex >= activeSourceButtons.Count)
         {
             isReviewing = true;
             StartCoroutine(ReviewAndWinSequence());
@@ -190,7 +201,7 @@ public class SyllablePuzzleManager : MonoBehaviour
         activeSourceButtons.Clear();
         ClearAnswerSlots();
         finalWordDisplay.gameObject.SetActive(false);
-        clicksMade = 0;
+        nextClickIndex = 0; // Reseta o índice de cliques para a nova rodada
         isReviewing = false;
     }
     
@@ -201,7 +212,6 @@ public class SyllablePuzzleManager : MonoBehaviour
         activeAnswerSlots.Clear();
     }
     
-    // --- NOVO MÉTODO PARA FINALIZAR O JOGO ---
     private void EndGame()
     {
         Debug.Log("FIM DE JOGO! Chamando GameManager...");
@@ -211,6 +221,8 @@ public class SyllablePuzzleManager : MonoBehaviour
         sourceButtonParent.gameObject.SetActive(false);
         answerSlotParent.gameObject.SetActive(false);
         finalImageDisplay.gameObject.SetActive(false);
+        fundoImageDisplay.gameObject.SetActive(false);
+        
 
         // Verifica se a instância do GameManager existe antes de chamá-la
         if (GameManager.Instance != null)
