@@ -390,7 +390,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 121588071}
         m_TargetAssemblyTypeName: LoadScenes, Assembly-CSharp
-        m_MethodName: Level3_1
+        m_MethodName: MainMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -420,7 +420,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1fee75a0efce01e4aaa1d1fd071083ef, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d5b0e68280cf3fe4eae76621b053d1d5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -859,6 +859,108 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &308884238
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 308884239}
+  - component: {fileID: 308884242}
+  - component: {fileID: 308884241}
+  - component: {fileID: 308884240}
+  m_Layer: 5
+  m_Name: FundoImageDisplay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &308884239
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 308884238}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2086059457}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 18.71997, y: 636.14996}
+  m_SizeDelta: {x: -635.2, y: -1509.89}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &308884240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 308884238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 4
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 1
+  m_ChildScaleHeight: 1
+  m_ReverseArrangement: 0
+--- !u!114 &308884241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 308884238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 00c0ca11040016143a6bf20b2b9e64c9, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &308884242
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 308884238}
+  m_CullTransparentMesh: 1
 --- !u!1 &477691021
 GameObject:
   m_ObjectHideFlags: 0
@@ -1063,11 +1165,96 @@ MonoBehaviour:
       syllableAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
     - syllableImage: {fileID: 21300000, guid: b853cd58663860d4b90beafefbce3e77, type: 3}
       syllableAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
+  - targetWord: MACACA
+    finalDrawingImage: {fileID: 21300000, guid: e60db5ebf3e0b374797b25045234832b, type: 3}
+    finalWordImage: {fileID: 21300000, guid: b848e4248c448154b80951f2056f6446, type: 3}
+    finalWordAudio: {fileID: 8300000, guid: 2e8876ef382b70749b2991f1df1ac1c3, type: 3}
+    onScreenWords:
+    - drawingImage: {fileID: 21300000, guid: a6c6c9f2360498a43901fd687c983b58, type: 3}
+      syllableImage: {fileID: 21300000, guid: 1e54b1d1330a874409c4a806f05caaba, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
+    - drawingImage: {fileID: 21300000, guid: 48f4db9758b527a428ef0e3b5e796c24, type: 3}
+      syllableImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+    - drawingImage: {fileID: 21300000, guid: 48f4db9758b527a428ef0e3b5e796c24, type: 3}
+      syllableImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+    answerSequence:
+    - syllableImage: {fileID: 21300000, guid: 1e54b1d1330a874409c4a806f05caaba, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
+    - syllableImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+    - syllableImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+  - targetWord: CABANA
+    finalDrawingImage: {fileID: 21300000, guid: 35b423310c254ea49a1dc927227a060b, type: 3}
+    finalWordImage: {fileID: 21300000, guid: b5e71f6c1c162634ab2315df04660ba3, type: 3}
+    finalWordAudio: {fileID: 8300000, guid: ef52d40dea3cec14cbae8e20f8373b62, type: 3}
+    onScreenWords:
+    - drawingImage: {fileID: 21300000, guid: 48f4db9758b527a428ef0e3b5e796c24, type: 3}
+      syllableImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+    - drawingImage: {fileID: 21300000, guid: e630823da395193488033f1cce68cbe8, type: 3}
+      syllableImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+    - drawingImage: {fileID: 21300000, guid: 094d71be7c492054b991319915bed0d2, type: 3}
+      syllableImage: {fileID: 21300000, guid: d7a47787471d29546aaf875379f81f66, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
+    answerSequence:
+    - syllableImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+    - syllableImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+    - syllableImage: {fileID: 21300000, guid: d7a47787471d29546aaf875379f81f66, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
+  - targetWord: BANANA
+    finalDrawingImage: {fileID: 21300000, guid: c0de1342120e5dc4c82754603c271469, type: 3}
+    finalWordImage: {fileID: 21300000, guid: bad9b29ed70f05c4992237dd84e8228d, type: 3}
+    finalWordAudio: {fileID: 8300000, guid: 1c57105621cbdfb4b8b5df237a1ae61d, type: 3}
+    onScreenWords:
+    - drawingImage: {fileID: 21300000, guid: e630823da395193488033f1cce68cbe8, type: 3}
+      syllableImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+    - drawingImage: {fileID: 21300000, guid: 094d71be7c492054b991319915bed0d2, type: 3}
+      syllableImage: {fileID: 21300000, guid: d7a47787471d29546aaf875379f81f66, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
+    - drawingImage: {fileID: 21300000, guid: 094d71be7c492054b991319915bed0d2, type: 3}
+      syllableImage: {fileID: 21300000, guid: d7a47787471d29546aaf875379f81f66, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
+    answerSequence:
+    - syllableImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+    - syllableImage: {fileID: 21300000, guid: d7a47787471d29546aaf875379f81f66, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
+    - syllableImage: {fileID: 21300000, guid: d7a47787471d29546aaf875379f81f66, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
+  - targetWord: BATATA
+    finalDrawingImage: {fileID: 21300000, guid: f3f5f56462a1f70439235e26ac0cfada, type: 3}
+    finalWordImage: {fileID: 21300000, guid: 5214ea80d78bf4349a685aa57d7b8aa4, type: 3}
+    finalWordAudio: {fileID: 8300000, guid: 2979d84f7080bf94385b1d91834491d3, type: 3}
+    onScreenWords:
+    - drawingImage: {fileID: 21300000, guid: e630823da395193488033f1cce68cbe8, type: 3}
+      syllableImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+    - drawingImage: {fileID: 21300000, guid: 0969841bb8447454ea7c8901ad7bcf12, type: 3}
+      syllableImage: {fileID: 21300000, guid: a0d5ab77003a2274f919fcb594be6880, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
+    - drawingImage: {fileID: 21300000, guid: 0969841bb8447454ea7c8901ad7bcf12, type: 3}
+      syllableImage: {fileID: 21300000, guid: a0d5ab77003a2274f919fcb594be6880, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
+    answerSequence:
+    - syllableImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+    - syllableImage: {fileID: 21300000, guid: a0d5ab77003a2274f919fcb594be6880, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
+    - syllableImage: {fileID: 21300000, guid: a0d5ab77003a2274f919fcb594be6880, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
   sourceButtonPrefab: {fileID: 3508561151896846508, guid: 3210351639b0d6945a037441c958beb4, type: 3}
   answerSlotPrefab: {fileID: 8081623427550115127, guid: 1cec63c1a3c0e9b498c99092b5cb68df, type: 3}
   questionMarkSprite: {fileID: 21300000, guid: f92c65be940858b4c8576ba5996a93f2, type: 3}
   sourceButtonParent: {fileID: 950467186}
   answerSlotParent: {fileID: 2046072129}
+  fundoImageDisplay: {fileID: 308884241}
   finalImageDisplay: {fileID: 1419211591}
   finalWordDisplay: {fileID: 1016306052}
   bounceDuration: 0.5
@@ -1224,7 +1411,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 94c97a233eec8b74da9c3b9355cade9b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e5dd21b2bd6e5a046bd7d0e903ee9c51, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1492,7 +1679,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 861237339}
         m_TargetAssemblyTypeName: LoadScenes, Assembly-CSharp
-        m_MethodName: Level2
+        m_MethodName: Level3
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2428,7 +2615,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 247.59003}
+  m_AnchoredPosition: {x: -6.7234, y: 197.33}
   m_SizeDelta: {x: 813.65, y: 287.48}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1016306052
@@ -2763,7 +2950,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1164590917
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2912,7 +3099,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1386159331}
         m_TargetAssemblyTypeName: LoadScenes, Assembly-CSharp
-        m_MethodName: Level3_1
+        m_MethodName: MainMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2942,7 +3129,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1fee75a0efce01e4aaa1d1fd071083ef, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d5b0e68280cf3fe4eae76621b053d1d5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3006,7 +3193,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 30.128, y: 672.68}
+  m_AnchoredPosition: {x: 20.532, y: 636.15}
   m_SizeDelta: {x: 411.32, y: 367.34}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1419211591
@@ -3132,7 +3319,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1492850062}
         m_TargetAssemblyTypeName: LoadScenes, Assembly-CSharp
-        m_MethodName: Level2
+        m_MethodName: Level3
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4214,8 +4401,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 5.1849976, y: 221}
-  m_SizeDelta: {x: -134.14, y: -1509.89}
+  m_AnchoredPosition: {x: 5.1849976, y: 197.33}
+  m_SizeDelta: {x: -134.14, y: -1531.63}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2046072130
 MonoBehaviour:
@@ -4474,13 +4661,14 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 491122259}
-  - {fileID: 1849789897}
-  - {fileID: 985280571}
-  - {fileID: 477691022}
   - {fileID: 950467186}
   - {fileID: 2046072129}
+  - {fileID: 308884239}
   - {fileID: 1419211590}
   - {fileID: 1016306051}
+  - {fileID: 985280571}
+  - {fileID: 477691022}
+  - {fileID: 1849789897}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
