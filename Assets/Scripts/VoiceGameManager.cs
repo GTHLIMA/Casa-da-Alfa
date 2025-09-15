@@ -3,15 +3,12 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System;
 using System.Text;
 using System.Globalization;
 
 public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 {
-    #region Data Structures, Public Variables, Private Variables
-        #region Data Structures
+    #region Data Structures
     [System.Serializable]
     public class SyllableData
     {
@@ -34,11 +31,11 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     public int vowelIndexToPlay = 0;
     public List<VowelDataGroup> allVowelData;
     public string languageCode = "pt-BR";
-    
+
     [Header("Controles de Similaridade")]
     [Range(0f, 1f)] public float similarityThreshold = 0.75f;
     [Range(0f, 1f)] public float zacaSimilarityThreshold = 0.70f;
-    
+
     [Header("Referências da Interface (UI)")]
     public Image micIndicatorImage;
     public Animator micIndicatorAnimator;
@@ -53,7 +50,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     public List<AudioClip> variablePrompts;
     public AudioClip congratulatoryAudio;
     public List<AudioClip> supportAudios;
-    
+
     [Header("Áudios de Feedback Específico")]
     public AudioClip zacaPrompt1;
     public AudioClip zacaPrompt2;
@@ -65,8 +62,6 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     public float initialDelay = 2.0f;
     public float delayAfterCorrect = 1.0f;
     public float delayAfterHint = 1.5f;
-
-    [Tooltip("Pausa (em segundos) após a pergunta, ANTES de revelar a imagem do desenho.")]
     public float delayAfterPromptBeforeReveal = 0.5f;
 
     [Header("Animações")]
@@ -79,6 +74,12 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     public GameObject PauseMenu;
     [SerializeField] private GameObject endPhasePanel;
     [SerializeField] private NumberCounter numberCounter;
+
+    [Header("Controle de Microfone")]
+    [Tooltip("Ativa ou desativa o microfone durante o jogo")]
+    public bool activateMicrophone = true;
+    [Tooltip("Delay em segundos antes do microfone ser ativado")]
+    public float micActivationDelay = 0.5f;
     #endregion
 
     #region Private Variables
@@ -93,9 +94,8 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     private AudioManager audioManager;
     private int score;
     #endregion
-    #endregion
 
-    #region Unity Lifecycle Methods
+    #region Unity Lifecycle
     private void Awake()
     {
         Time.timeScale = 1f;
@@ -107,7 +107,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         score = ScoreTransfer.Instance?.Score ?? 0;
         if (numberCounter != null) numberCounter.Value = score;
         UpdateAllScoreDisplays();
-        
+
         if (allVowelData == null || allVowelData.Count <= vowelIndexToPlay || allVowelData[vowelIndexToPlay].syllables.Count == 0)
         {
             Debug.LogError("ERRO CRÍTICO: 'All Vowel Data' não configurado!");
@@ -151,51 +151,64 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 
         for (currentIndex = 0; currentIndex < currentSyllableList.Count; currentIndex++)
         {
-           
             yield return StartCoroutine(PlayTurnRoutineForCurrentIndex());
-            
-        
+
             if (trainController != null)
             {
                 trainController.MarkWagonAsCompleted(currentIndex);
             }
-            
+
             mistakeCount = 0;
 
-            if (currentIndex < currentSyllableList.Count - 1)
+            if (currentIndex < currentSyllableList.Count - 1 && trainController != null)
             {
-                if (trainController != null)
-                {
-                    AudioClip nextPrompt = GetCurrentPromptAudio(currentIndex + 1);
-                    yield return StartCoroutine(trainController.AdvanceToNextWagon(currentIndex + 1, nextPrompt));
-                }
+                AudioClip nextPrompt = GetCurrentPromptAudio(currentIndex + 1);
+                yield return StartCoroutine(trainController.AdvanceToNextWagon(currentIndex + 1, nextPrompt));
             }
         }
-        
+
         ShowEndPhasePanel();
     }
-    
 
     private IEnumerator PlayTurnRoutineForCurrentIndex()
     {
         isProcessing = true;
-       
-        mistakeCount = 0; 
-        
-        // PAUSA ANTES DE REVELAR A IMAGEM
+        mistakeCount = 0;
+        bool isAndroid = Application.platform == RuntimePlatform.Android && !Application.isEditor;
+
+        if (!SpeechToText.CheckPermission())
+        {
+            Debug.LogWarning("Permissão de microfone não concedida");
+            isProcessing = false;
+            yield break;
+        }
+
+        // Primeira ativação do microfone com delay
+        if (activateMicrophone && isAndroid && STTIsInitialized())
+        {
+            yield return new WaitForSeconds(micActivationDelay);
+            Debug.Log("Microfone ativado: aguardando fala da criança");
+            isListening = true;
+            SpeechToText.Start(this, true, false);
+            SetMicIndicator(listeningColor, true);
+        }
+        else
+        {
+            Debug.Log("STT não disponível ou microfone desativado - simulando input");
+        }
+
         yield return new WaitForSeconds(delayAfterPromptBeforeReveal);
-        // 1. REVELA A IMAGEM
+
         if (trainController != null)
         {
             Sprite currentSprite = currentSyllableList[currentIndex].image;
             yield return StartCoroutine(trainController.RevealCurrentImage(currentSprite));
         }
-        
-        // 2. ATIVA A DETECÇÃO DE VOZ (LOOP DE TENTATIVAS)
+
         bool pularPromptNaProximaTentativa = false;
+
         while (true)
         {
-            // Este bloco agora só toca as DICAS em caso de erro.
             if (pularPromptNaProximaTentativa)
             {
                 AudioClip hintClip = GetCurrentPromptAudio();
@@ -206,88 +219,98 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
                 }
             }
             pularPromptNaProximaTentativa = false;
-            
-            if (!SpeechToText.CheckPermission()) { isProcessing = false; yield break; }
-            receivedResult = false;
-            isListening = true;
-            SpeechToText.Start(this, true, false);
 
-            if (mistakeCount > 0)
+            // Reativação do microfone com delay
+            if (activateMicrophone && isAndroid && !isListening && STTIsInitialized())
             {
+                yield return new WaitForSeconds(micActivationDelay);
+                Debug.Log("Reativando microfone para próxima tentativa");
+                isListening = true;
+                SpeechToText.Start(this, true, false);
                 SetMicIndicator(listeningColor, true);
             }
-            
-            yield return new WaitUntil(() => receivedResult);
-            isListening = false;
-            SetMicIndicator(staticColor);
-            
-            if (lastErrorCode.HasValue && (lastErrorCode.Value == 6 || lastErrorCode.Value == 7))
+
+            float waitTime = 0f;
+            receivedResult = false;
+
+            while (!receivedResult && waitTime < 10f)
             {
+                waitTime += Time.deltaTime;
+                yield return null;
+            }
+
+            if (!receivedResult)
+            {
+                Debug.Log("Timeout: 10 segundos sem fala detectada");
+                isListening = false;
+                SetMicIndicator(staticColor);
+                mistakeCount++;
+                pularPromptNaProximaTentativa = true;
+
+                // Reativação do microfone após timeout com delay
+                if (activateMicrophone && isAndroid && STTIsInitialized())
+                {
+                    yield return new WaitForSeconds(micActivationDelay);
+                    Debug.Log("Reativando microfone após timeout");
+                    isListening = true;
+                    SpeechToText.Start(this, true, false);
+                    SetMicIndicator(listeningColor, true);
+                }
+
                 continue;
             }
 
-            bool isCorrect = false;
-            if (!lastErrorCode.HasValue && !string.IsNullOrEmpty(lastRecognizedText))
-            {
-                if (CheckMatch(currentSyllableList[currentIndex].word, lastRecognizedText))
-                {
-                    isCorrect = true;
-                }
-            }
+            isListening = false;
+            SetMicIndicator(staticColor);
+
+            if (lastErrorCode.HasValue && (lastErrorCode.Value == 6 || lastErrorCode.Value == 7)) continue;
+
+            bool isCorrect = !lastErrorCode.HasValue && !string.IsNullOrEmpty(lastRecognizedText) &&
+                             CheckMatch(currentSyllableList[currentIndex].word, lastRecognizedText);
 
             if (isCorrect)
             {
                 AddScore(10);
-                if (audioManager != null && congratulatoryAudio != null) { audioManager.PlaySFX(congratulatoryAudio); }
+                if (audioManager != null && congratulatoryAudio != null)
+                    audioManager.PlaySFX(congratulatoryAudio);
+
                 yield return new WaitForSeconds(delayAfterCorrect);
-                break; 
+                break;
             }
-            
+
             mistakeCount++;
             pularPromptNaProximaTentativa = true;
         }
+
         isProcessing = false;
     }
+    #endregion
 
+    #region Prompts
     AudioClip GetCurrentPromptAudio(int specificIndex = -1)
     {
         int indexToUse = (specificIndex == -1) ? currentIndex : specificIndex;
         if (indexToUse < 0 || indexToUse >= currentSyllableList.Count) return null;
 
         SyllableData currentSyllable = currentSyllableList[indexToUse];
-        
-        // Pergunta inicial (nenhum erro)
+
         if (mistakeCount == 0)
         {
-            if (currentSyllable.word.ToLower() == "zaca" && zacaPrompt1 != null)
-            {
-                return zacaPrompt1;
-            }
-            
+            if (currentSyllable.word.ToLower() == "zaca" && zacaPrompt1 != null) return zacaPrompt1;
             if (variablePrompts != null && variablePrompts.Count > 0)
-            {
                 return variablePrompts[UnityEngine.Random.Range(0, variablePrompts.Count)];
-            }
-            
             return standardPrompt;
         }
 
-        // --- LÓGICA DE DICAS MODIFICADA ---
         switch (mistakeCount)
         {
-            case 1: // Após o 1º erro: Silêncio.
-                return null; // Retornar null faz com que o AudioManager não toque nada.
-            case 2: // Após o 2º erro: Toca a PRIMEIRA dica.
-                return currentSyllable.hintBasicAudio;
-            case 3: // Retornar null faz com que o AudioManager não toque nada.
-                return null;
-            default: // 4º erro em diante: Toca a dica final.
-                return currentSyllable.hintFinalAudio;
+            case 1: return currentSyllable.hintBasicAudio;
+            default: return currentSyllable.hintFinalAudio;
         }
     }
     #endregion
 
-    #region STT Interface & Utility Methods
+    #region STT Interface
     public void OnResultReceived(string recognizedText, int? errorCode)
     {
         isListening = false;
@@ -314,21 +337,16 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 
         if ((normalizedExpected == "zaca" && normalizedReceived == "vaca") ||
             (normalizedExpected == "pato" && normalizedReceived == "bato") ||
-            (normalizedExpected == "sapo" && normalizedReceived == "zapo"))
-        {
-            return true;
-        }
-        
-        float thresholdToUse = this.similarityThreshold;
-        if (normalizedExpected == "zaca")
-        {
-            thresholdToUse = this.zacaSimilarityThreshold;
-        }
-        
-        float similarity = 1.0f - ((float)LevenshteinDistance(normalizedExpected, normalizedReceived) / Mathf.Max(normalizedExpected.Length, received.Length));
+            (normalizedExpected == "sapo" && normalizedReceived == "zapo")) return true;
+
+        float thresholdToUse = normalizedExpected == "zaca" ? zacaSimilarityThreshold : similarityThreshold;
+
+        float similarity = 1f - ((float)LevenshteinDistance(normalizedExpected, normalizedReceived) /
+                                 Mathf.Max(normalizedExpected.Length, received.Length));
+
         return similarity >= thresholdToUse;
     }
-    
+
     private int LevenshteinDistance(string s, string t)
     {
         int n = s.Length;
@@ -336,8 +354,8 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         int[,] d = new int[n + 1, m + 1];
         if (n == 0) return m;
         if (m == 0) return n;
-        for (int i = 0; i <= n; d[i, 0] = i++);
-        for (int j = 0; j <= m; d[0, j] = j++);
+        for (int i = 0; i <= n; d[i, 0] = i++) ;
+        for (int j = 0; j <= m; d[0, j] = j++) ;
         for (int i = 1; i <= n; i++)
         {
             for (int j = 1; j <= m; j++)
@@ -353,25 +371,21 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     {
         if (string.IsNullOrEmpty(text)) return text;
         text = text.Normalize(NormalizationForm.FormD);
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         foreach (char c in text)
-        {
             if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
-            {
-                stringBuilder.Append(c);
-            }
-        }
-        return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
+                sb.Append(c);
+        return sb.ToString().Normalize(NormalizationForm.FormC);
     }
 
     private void CheckForMicrophonePermission()
     {
-        if (!SpeechToText.CheckPermission()) { SpeechToText.RequestPermissionAsync(); }
+        if (!SpeechToText.CheckPermission()) SpeechToText.RequestPermissionAsync();
     }
 
     private void OnDestroy()
     {
-        if (SpeechToText.IsBusy()) { SpeechToText.Cancel(); }
+        if (SpeechToText.IsBusy()) SpeechToText.Cancel();
     }
     #endregion
 
@@ -413,7 +427,12 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         string formattedScore = score.ToString("000");
         if (scoreHUD != null) scoreHUD.text = formattedScore;
         if (scorePause != null) scorePause.text = "Score: " + formattedScore;
-        if (scoreEndPhase != null) scoreEndPhase.text = "Score: " + formattedScore;
+        if (scoreEndPhase != null) scoreEndPhase.text = formattedScore;
     }
     #endregion
+
+    private bool STTIsInitialized()
+    {
+        return true; 
+    }
 }
