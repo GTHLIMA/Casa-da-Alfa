@@ -4006,7 +4006,7 @@ MonoBehaviour:
       hintBasicAudio: {fileID: 8300000, guid: 71eac4d154dd1654890ab5adc4880d4e, type: 3}
       hintFinalAudio: {fileID: 8300000, guid: 0e2def001c4290443b21b89877f9b83b, type: 3}
   languageCode: pt-BR
-  similarityThreshold: 0.558
+  similarityThreshold: 0.627
   zacaSimilarityThreshold: 0.718
   micIndicatorImage: {fileID: 1876227425}
   micIndicatorAnimator: {fileID: 0}
@@ -4034,7 +4034,7 @@ MonoBehaviour:
   initialDelay: 0.1
   delayAfterCorrect: 1
   delayAfterHint: 0.2
-  delayAfterPromptBeforeReveal: 2
+  delayAfterPromptBeforeReveal: 1
   trainController: {fileID: 561744981}
   scorePause: {fileID: 846508828}
   scoreEndPhase: {fileID: 1607863755}
@@ -4042,6 +4042,8 @@ MonoBehaviour:
   PauseMenu: {fileID: 1028751454}
   endPhasePanel: {fileID: 156379506}
   numberCounter: {fileID: 1743877869}
+  activateMicrophone: 1
+  micActivationDelay: 1
 --- !u!1 &1706186865
 GameObject:
   m_ObjectHideFlags: 0
