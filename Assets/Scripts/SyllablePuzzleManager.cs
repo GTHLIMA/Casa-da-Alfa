@@ -70,6 +70,8 @@ public class SyllablePuzzleManager : MonoBehaviour
     private AudioManager audioManager;
     private int currentPuzzleIndex = 0;
     private bool isReviewing = false;
+
+    private ButtonFloatEffect currentFloatEffect;
     #endregion
 
     private void Awake()
@@ -110,6 +112,9 @@ public class SyllablePuzzleManager : MonoBehaviour
             buttonScript.Setup(sourceWord, this);
             activeSourceButtons.Add(buttonScript);
         }
+
+        // NOVO: Aplica destaque no primeiro botão
+        HighlightNextButton();
     }
 
     public void PlayAudio(AudioClip clip)
@@ -133,12 +138,19 @@ public class SyllablePuzzleManager : MonoBehaviour
     private IEnumerator SourceButtonClickSequence(OnScreenWord clickedWord, SyllableSourceButton button)
     {
         button.SetUsed(true);
+
+        // NOVO: Para o efeito no botão atual
+        StopHighlightOn(button);
+
         nextClickIndex++; 
         
         yield return new WaitForSeconds(delayAfterClick);
 
         button.RevealLocalSyllable();
         PlayAudio(clickedWord.syllableAudio);
+
+        // NOVO: Destaca o próximo botão
+        HighlightNextButton();
 
         if (nextClickIndex >= activeSourceButtons.Count)
         {
@@ -225,5 +237,25 @@ public class SyllablePuzzleManager : MonoBehaviour
         {
             Debug.LogError("GameManager.Instance não encontrado! O painel de fim de fase não será mostrado.");
         }
+    }
+
+    private void HighlightNextButton()
+    {
+    if (nextClickIndex < activeSourceButtons.Count)
+    {
+        var button = activeSourceButtons[nextClickIndex];
+        if (button.GetComponent<ButtonFloatEffect>() == null)
+        {
+            currentFloatEffect = button.gameObject.AddComponent<ButtonFloatEffect>();
+            currentFloatEffect.floatSpeed = 2f;
+            currentFloatEffect.floatHeight = 15f;
+        }
+    }
+    }
+
+    private void StopHighlightOn(SyllableSourceButton button)
+    {
+    var effect = button.GetComponent<ButtonFloatEffect>();
+    if (effect != null) Destroy(effect);
     }
 }
