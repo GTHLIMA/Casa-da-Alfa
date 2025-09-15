@@ -19,12 +19,15 @@ public class AnswerSlotController : MonoBehaviour
     }
 
     public void RevealSyllable(Sprite syllableSprite, AudioClip syllableAudio)
+{
+    if (manager != null)
     {
-        if (manager != null)
-        {
-            manager.PlayAudio(syllableAudio);
-            slotImage.sprite = syllableSprite;
-            StartCoroutine(manager.BounceAnimation(GetComponent<RectTransform>()));
+        manager.PlayAudio(syllableAudio);
+        slotImage.sprite = syllableSprite;
+        StartCoroutine(manager.BounceAnimation(GetComponent<RectTransform>()));
+
+       
+        gameObject.AddComponent<SlotFloatEffect>();
         }
     }
 }
