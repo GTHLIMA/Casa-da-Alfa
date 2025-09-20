@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <<<<<<< Updated upstream
 using UnityEngine;
 using UnityEngine.UI;
@@ -262,8 +261,6 @@ public class SyllablePuzzleManager : MonoBehaviour
     }
 }
 =======
-=======
->>>>>>> parent of 30904145 (plugin)
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
@@ -513,13 +510,8 @@ public class SyllablePuzzleManager : MonoBehaviour
         if (button.GetComponent<ButtonFloatEffect>() == null)
         {
             currentFloatEffect = button.gameObject.AddComponent<ButtonFloatEffect>();
-<<<<<<< HEAD
             currentFloatEffect.floatSpeed = 5f;
             currentFloatEffect.floatHeight = 10f;
-=======
-            currentFloatEffect.floatSpeed = 2f;
-            currentFloatEffect.floatHeight = 15f;
->>>>>>> parent of 30904145 (plugin)
         }
     }
     }
@@ -530,7 +522,4 @@ public class SyllablePuzzleManager : MonoBehaviour
     if (effect != null) Destroy(effect);
     }
 }
-<<<<<<< HEAD
 >>>>>>> Stashed changes
-=======
->>>>>>> parent of 30904145 (plugin)
