@@ -43,7 +43,6 @@ Thumbs.db
 *.swp
 
 # ===== Pasta do projeto e arquivos desnecessários =====
-Packages/
 vscode/
 test/
 Mobile.sln
