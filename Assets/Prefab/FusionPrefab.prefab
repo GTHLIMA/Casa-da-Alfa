@@ -261,7 +261,7 @@ LineRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.44091052
+        time: 0.4788744
         value: 1
         inSlope: 0
         outSlope: 0
@@ -325,7 +325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ef0cb2720078864e982d42751ac4007, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lineHeight: 4
+  lineHeight: 5
   verticalOffset: 0.5
   lineWidth: 0.05
   lineRenderer: {fileID: 6856866751557083687}
