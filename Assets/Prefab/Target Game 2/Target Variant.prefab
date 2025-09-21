@@ -62,7 +62,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8964997140151183222, guid: 1d1f003c5e6ec0c4ea76ad0eea36f3c7, type: 3}
       propertyPath: m_Size.x
-      value: 0.4
+      value: 0.08
       objectReference: {fileID: 0}
     - target: {fileID: 9056698116714107346, guid: 1d1f003c5e6ec0c4ea76ad0eea36f3c7, type: 3}
       propertyPath: preferredWidthPercent
