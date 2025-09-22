@@ -247,7 +247,7 @@ public class SyllablePuzzleManager : MonoBehaviour
         if (button.GetComponent<ButtonFloatEffect>() == null)
         {
             currentFloatEffect = button.gameObject.AddComponent<ButtonFloatEffect>();
-            currentFloatEffect.floatSpeed = 2f;
+            currentFloatEffect.floatSpeed = 13f;
             currentFloatEffect.floatHeight = 15f;
         }
     }
