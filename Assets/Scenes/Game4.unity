@@ -476,23 +476,23 @@ MonoBehaviour:
   cardPrefab: {fileID: 6050314044303457332, guid: 7a78cec83180ebd48bb581debd6fb5a4, type: 3}
   gridTransform: {fileID: 119550160}
   sprites:
-  - {fileID: 21300000, guid: e630823da395193488033f1cce68cbe8, type: 3}
-  - {fileID: 21300000, guid: 02d2b68ba8464d44598496ef5dfbbff9, type: 3}
-  - {fileID: 21300000, guid: 7ac550a7ae2b46b43bc979cb7e82844b, type: 3}
-  - {fileID: 21300000, guid: 39c7aa4f7e0347b4da7ac0d033858aef, type: 3}
-  - {fileID: 21300000, guid: 5620984dad1205742a19abacca77c4ad, type: 3}
-  - {fileID: 21300000, guid: 65007bffd78fcb245a24f247d9ac186b, type: 3}
-  - {fileID: 21300000, guid: 5ae6e45565994364a80cf6ee8375fcf3, type: 3}
-  - {fileID: 21300000, guid: 67bc93b57360d4046ae9ff4004c6f18e, type: 3}
-  - {fileID: 21300000, guid: d9b44c9113a9a9a459db3f5785a23782, type: 3}
-  - {fileID: 21300000, guid: e72658e467a3012409db9b2e8d2310b1, type: 3}
-  - {fileID: 21300000, guid: c1a606cde1025c347a86c65ad287385b, type: 3}
-  - {fileID: 21300000, guid: bc67a66d47394f24a982697e1310f89b, type: 3}
-  - {fileID: 21300000, guid: 9e97978f96f8f9040a9ba3e7b1d6d320, type: 3}
-  - {fileID: 21300000, guid: 82538c4ed3b58134c8d5aeb296b06070, type: 3}
-  - {fileID: 21300000, guid: f77f17b2b8a20464db81e987d7f8b3ce, type: 3}
-  - {fileID: 21300000, guid: 15e737d532375754eadffae8e52c753c, type: 3}
-  - {fileID: 21300000, guid: 3c9c05a6538709b4d8f79e5d423ed52b, type: 3}
+  - {fileID: 21300000, guid: 673cf516224f33743a1a2f45f38d9018, type: 3}
+  - {fileID: 21300000, guid: 99f9cad7ea5238d48a2bc012cb866160, type: 3}
+  - {fileID: 21300000, guid: 1e0f43be4c23cfc4f9fca5b855fc71ec, type: 3}
+  - {fileID: 21300000, guid: de953d39f0330934e9fed6f46c8bf907, type: 3}
+  - {fileID: 21300000, guid: ffae91c8d45619144a3e4c52a8722af9, type: 3}
+  - {fileID: 21300000, guid: 0266e3fe1760287449abb64b812db809, type: 3}
+  - {fileID: 21300000, guid: bab6bfb72b034da40a80821193a986c0, type: 3}
+  - {fileID: 21300000, guid: 309638b5a7a205c4a9bec2b9994a35f4, type: 3}
+  - {fileID: 21300000, guid: 745d2bedd1a56054482275cbc762c332, type: 3}
+  - {fileID: 21300000, guid: ec7c69e23e41ae74581bfca75dfea1ca, type: 3}
+  - {fileID: 21300000, guid: 69998f54626619c4eb1cf53286857718, type: 3}
+  - {fileID: 21300000, guid: 20be0b19537ed5f488c205420ab3df57, type: 3}
+  - {fileID: 21300000, guid: ea2aac56bd557ba4089352541ef2aef3, type: 3}
+  - {fileID: 21300000, guid: 193f73dfcb483c347afd245184c1e2f0, type: 3}
+  - {fileID: 21300000, guid: bc2d639b803270f44b2096af01058c4e, type: 3}
+  - {fileID: 21300000, guid: 56f85e936ae1e614aac80e2b052ddcb7, type: 3}
+  - {fileID: 21300000, guid: 491f199caf5717a49b0cbfa29cff6985, type: 3}
   cardAudios:
   - {fileID: 8300000, guid: 8020c4750fdbb7343924952eebf4ebf1, type: 3}
   - {fileID: 8300000, guid: 6f1cc12a4cf53b64b9d2b29e99322436, type: 3}
