@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using PrimeTween;
 
 public class CardsController : MonoBehaviour
@@ -16,6 +17,14 @@ public class CardsController : MonoBehaviour
     [Header("Config de rounds (pares por round)")]
     [SerializeField] int[] pairsPerRound = { 3, 4, 5, 5 };
 
+    [Header("Sons extras")]
+    [SerializeField] private AudioClip roundTransitionAudio;
+    [SerializeField] private AudioClip roundCompleteAudio;
+
+    [Header("Imagem de transição")]
+    [SerializeField] private Image roundOverlayImage;
+
+    private AudioSource audioSource;
     private List<Sprite> spritePairs;
     private List<AudioClip> audioPairs;
 
@@ -28,6 +37,7 @@ public class CardsController : MonoBehaviour
 
     private void Start()
     {
+        audioSource = gameObject.AddComponent<AudioSource>();
         StartRound();
     }
 
@@ -36,11 +46,33 @@ public class CardsController : MonoBehaviour
         matchCounts = 0;
         firstSelected = null;
         secondSelected = null;
-        canSelect = true;
+        canSelect = false; // bloqueia interação no preview inicial
 
         ClearGrid();
         PrepareSpritesForRound();
         CreateCards();
+
+        // Mostra todas as cartas por 2s
+        StartCoroutine(PreviewCardsCoroutine());
+    }
+
+    private IEnumerator PreviewCardsCoroutine()
+    {
+        foreach (Transform child in gridTransform)
+        {
+            Card c = child.GetComponent<Card>();
+            c.Show();
+        }
+
+        yield return new WaitForSeconds(2f);
+
+        foreach (Transform child in gridTransform)
+        {
+            Card c = child.GetComponent<Card>();
+            c.Hide();
+        }
+
+        canSelect = true;
     }
 
     private void ClearGrid()
@@ -57,7 +89,6 @@ public class CardsController : MonoBehaviour
         audioPairs = new List<AudioClip>();
 
         int pairsThisRound = pairsPerRound[Mathf.Clamp(currentRound, 0, pairsPerRound.Length - 1)];
-
         int startIndex = 0;
         for (int r = 0; r < currentRound; r++) startIndex += pairsPerRound[r];
 
@@ -119,26 +150,14 @@ public class CardsController : MonoBehaviour
 
         if (a.iconSprite == b.iconSprite)
         {
+            // acerto
+            a.CorrectMatch();
+            b.CorrectMatch();
             matchCounts++;
 
             if (matchCounts >= spritePairs.Count / 2)
             {
-                PrimeTween.Sequence.Create()
-                    .Chain(PrimeTween.Tween.Scale(gridTransform, Vector3.one * 1.2f, 0.2f, ease: PrimeTween.Ease.OutBack))
-                    .Chain(PrimeTween.Tween.Scale(gridTransform, Vector3.one, 0.1f));
-
-                yield return new WaitForSeconds(0.5f);
-
-                currentRound++;
-                if (currentRound < pairsPerRound.Length)
-                {
-                    StartRound();
-                    yield break;
-                }
-                else
-                {
-                    Debug.Log("CardsController: todos os rounds concluídos!");
-                }
+                yield return StartCoroutine(HandleRoundComplete());
             }
         }
         else
@@ -150,6 +169,41 @@ public class CardsController : MonoBehaviour
         firstSelected = null;
         secondSelected = null;
         canSelect = true;
+    }
+
+    private IEnumerator HandleRoundComplete()
+    {
+        // toca som de round completo
+        if (roundCompleteAudio != null) audioSource.PlayOneShot(roundCompleteAudio);
+
+        // mostra overlay (se houver)
+        if (roundOverlayImage != null)
+        {
+            roundOverlayImage.gameObject.SetActive(true);
+            roundOverlayImage.canvasRenderer.SetAlpha(0f);
+            roundOverlayImage.CrossFadeAlpha(1f, 0.5f, false); // fade in
+
+            yield return new WaitForSeconds(2f);
+
+            roundOverlayImage.CrossFadeAlpha(0f, 0.5f, false); // fade out
+            yield return new WaitForSeconds(0.5f);
+            roundOverlayImage.gameObject.SetActive(false);
+        }
+        else
+        {
+            yield return new WaitForSeconds(2f);
+        }
+
+        // avança de round
+        currentRound++;
+        if (currentRound < pairsPerRound.Length)
+        {
+            StartRound();
+        }
+        else
+        {
+            Debug.Log("CardsController: todos os rounds concluídos!");
+        }
     }
 
     private void ShufflePairs(List<Sprite> spritesList, List<AudioClip> audiosList)

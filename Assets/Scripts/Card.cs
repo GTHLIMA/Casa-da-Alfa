@@ -23,7 +23,6 @@ public class Card : MonoBehaviour
         audioSource.playOnAwake = false;
     }
 
-
     public void Initialize(Sprite sp, AudioClip clip, CardsController ctrl)
     {
         iconSprite = sp;
@@ -34,7 +33,6 @@ public class Card : MonoBehaviour
             iconImage.sprite = hiddenIconSprite;
 
         isSelected = true;
-
         transform.localEulerAngles = Vector3.zero;
 
         var btn = GetComponent<Button>();
@@ -63,8 +61,19 @@ public class Card : MonoBehaviour
         Tween.Delay(0.1f, () =>
         {
             if (iconImage != null && hiddenIconSprite != null) iconImage.sprite = hiddenIconSprite;
-            isSelected = true; 
+            isSelected = true;
         });
+    }
+
+    /// <summary>
+    /// Anima a carta quando é acertada: sobe e desaparece.
+    /// </summary>
+    public void CorrectMatch()
+    {
+        // Flutua para cima
+        Tween.LocalPositionY(transform, transform.localPosition.y + 100f, 0.5f, ease: Ease.OutCubic);
+        // Fade out
+        Tween.Alpha(iconImage, 0f, 0.5f).OnComplete(() => Destroy(gameObject));
     }
 
     public void SetAudio(AudioClip clip) => cardAudio = clip;
