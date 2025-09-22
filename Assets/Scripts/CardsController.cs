@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UI; // IMPORTANTE para GridLayoutGroup
 using PrimeTween;
 
 public class CardsController : MonoBehaviour
@@ -9,6 +9,7 @@ public class CardsController : MonoBehaviour
     [Header("Prefab / Grid")]
     [SerializeField] Card cardPrefab;
     [SerializeField] Transform gridTransform;
+    [SerializeField] GridLayoutGroup gridLayout; // <<--- arrasta no Inspector
 
     [Header("Assets (sprite[i] <-> cardAudios[i])")]
     [SerializeField] Sprite[] sprites;
@@ -46,34 +47,43 @@ public class CardsController : MonoBehaviour
         matchCounts = 0;
         firstSelected = null;
         secondSelected = null;
-        canSelect = false; // bloqueia interação no preview inicial
+        canSelect = false;
 
         ClearGrid();
+
+        // Ativa o GridLayoutGroup para organizar o round novo
+        if (gridLayout != null)
+            gridLayout.enabled = true;
+
         PrepareSpritesForRound();
         CreateCards();
 
-        // Mostra todas as cartas por 2s
+        // Desliga o Grid depois que tudo foi criado
+        if (gridLayout != null)
+            gridLayout.enabled = false;
+
         StartCoroutine(PreviewCardsCoroutine());
     }
 
-    private IEnumerator PreviewCardsCoroutine()
+private IEnumerator PreviewCardsCoroutine()
+{
+    // Mostra todas as cartas por 2s
+    foreach (Transform child in gridTransform)
     {
-        foreach (Transform child in gridTransform)
-        {
-            Card c = child.GetComponent<Card>();
-            c.Show();
-        }
-
-        yield return new WaitForSeconds(2f);
-
-        foreach (Transform child in gridTransform)
-        {
-            Card c = child.GetComponent<Card>();
-            c.Hide();
-        }
-
-        canSelect = true;
+        Card c = child.GetComponent<Card>();
+        c.Show();
     }
+
+    yield return new WaitForSeconds(3f);
+
+    foreach (Transform child in gridTransform)
+    {
+        Card c = child.GetComponent<Card>();
+        c.Hide();
+    }
+
+    canSelect = true;
+}
 
     private void ClearGrid()
     {
