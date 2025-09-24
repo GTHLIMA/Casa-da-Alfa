@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; // IMPORTANTE para GridLayoutGroup
+using UnityEngine.UI;
 using PrimeTween;
 
 public class CardsController : MonoBehaviour
@@ -9,7 +9,7 @@ public class CardsController : MonoBehaviour
     [Header("Prefab / Grid")]
     [SerializeField] Card cardPrefab;
     [SerializeField] Transform gridTransform;
-    [SerializeField] GridLayoutGroup gridLayout; // <<--- arrasta no Inspector
+    [SerializeField] GridLayoutGroup gridLayout;
 
     [Header("Assets (sprite[i] <-> cardAudios[i])")]
     [SerializeField] Sprite[] sprites;
@@ -21,6 +21,19 @@ public class CardsController : MonoBehaviour
     [Header("Sons extras")]
     [SerializeField] private AudioClip roundTransitionAudio;
     [SerializeField] private AudioClip roundCompleteAudio;
+    [SerializeField] private AudioClip endGameAudio;
+
+    [Header("UI Panels")]
+    [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private GameObject endPhasePanel;
+
+    [Header("UI Texts")]
+    [SerializeField] private Text scoreHUD;
+    [SerializeField] private Text scorePause;
+    [SerializeField] private Text scoreEndPhase;
+
+    [Header("Confetti FX")]
+    [SerializeField] private ParticleSystem endOfLevelConfetti;
 
     [Header("Imagem de transição")]
     [SerializeField] private Image roundOverlayImage;
@@ -36,10 +49,13 @@ public class CardsController : MonoBehaviour
     private int currentRound = 0;
     private bool canSelect = true;
 
+    private int score = 0;
+
     private void Start()
     {
         audioSource = gameObject.AddComponent<AudioSource>();
         StartRound();
+        UpdateAllScoreDisplays();
     }
 
     private void StartRound()
@@ -51,39 +67,36 @@ public class CardsController : MonoBehaviour
 
         ClearGrid();
 
-        // Ativa o GridLayoutGroup para organizar o round novo
         if (gridLayout != null)
             gridLayout.enabled = true;
 
         PrepareSpritesForRound();
         CreateCards();
 
-        // Desliga o Grid depois que tudo foi criado
         if (gridLayout != null)
             gridLayout.enabled = false;
 
         StartCoroutine(PreviewCardsCoroutine());
     }
 
-private IEnumerator PreviewCardsCoroutine()
-{
-    // Mostra todas as cartas por 2s
-    foreach (Transform child in gridTransform)
+    private IEnumerator PreviewCardsCoroutine()
     {
-        Card c = child.GetComponent<Card>();
-        c.Show();
+        foreach (Transform child in gridTransform)
+        {
+            Card c = child.GetComponent<Card>();
+            c.Show();
+        }
+
+        yield return new WaitForSeconds(3f);
+
+        foreach (Transform child in gridTransform)
+        {
+            Card c = child.GetComponent<Card>();
+            c.Hide();
+        }
+
+        canSelect = true;
     }
-
-    yield return new WaitForSeconds(3f);
-
-    foreach (Transform child in gridTransform)
-    {
-        Card c = child.GetComponent<Card>();
-        c.Hide();
-    }
-
-    canSelect = true;
-}
 
     private void ClearGrid()
     {
@@ -160,10 +173,11 @@ private IEnumerator PreviewCardsCoroutine()
 
         if (a.iconSprite == b.iconSprite)
         {
-            // acerto
             a.CorrectMatch();
             b.CorrectMatch();
             matchCounts++;
+
+            AddScore(10);
 
             if (matchCounts >= spritePairs.Count / 2)
             {
@@ -183,19 +197,17 @@ private IEnumerator PreviewCardsCoroutine()
 
     private IEnumerator HandleRoundComplete()
     {
-        // toca som de round completo
         if (roundCompleteAudio != null) audioSource.PlayOneShot(roundCompleteAudio);
 
-        // mostra overlay (se houver)
         if (roundOverlayImage != null)
         {
             roundOverlayImage.gameObject.SetActive(true);
             roundOverlayImage.canvasRenderer.SetAlpha(0f);
-            roundOverlayImage.CrossFadeAlpha(1f, 0.5f, false); // fade in
+            roundOverlayImage.CrossFadeAlpha(1f, 0.5f, false);
 
             yield return new WaitForSeconds(2f);
 
-            roundOverlayImage.CrossFadeAlpha(0f, 0.5f, false); // fade out
+            roundOverlayImage.CrossFadeAlpha(0f, 0.5f, false);
             yield return new WaitForSeconds(0.5f);
             roundOverlayImage.gameObject.SetActive(false);
         }
@@ -204,7 +216,6 @@ private IEnumerator PreviewCardsCoroutine()
             yield return new WaitForSeconds(2f);
         }
 
-        // avança de round
         currentRound++;
         if (currentRound < pairsPerRound.Length)
         {
@@ -212,7 +223,7 @@ private IEnumerator PreviewCardsCoroutine()
         }
         else
         {
-            Debug.Log("CardsController: todos os rounds concluídos!");
+            ShowEndPhasePanel();
         }
     }
 
@@ -233,5 +244,43 @@ private IEnumerator PreviewCardsCoroutine()
                 audiosList[randomIndex] = ta;
             }
         }
+    }
+
+    // ==== SCORE & UI ====
+    public void AddScore(int amount)
+    {
+        score += amount;
+        if (score < 0) score = 0;
+        UpdateAllScoreDisplays();
+    }
+
+    private void UpdateAllScoreDisplays()
+    {
+        string formattedScore = score.ToString("000");
+        if (scoreHUD != null) scoreHUD.text = formattedScore;
+        if (scorePause != null) scorePause.text = "Score: " + formattedScore;
+        if (scoreEndPhase != null) scoreEndPhase.text = formattedScore;
+    }
+
+    public void OpenPauseMenu()
+    {
+        if (scorePause != null) scorePause.text = "Score: " + score.ToString();
+        if (pauseMenu != null) pauseMenu.SetActive(true);
+        Time.timeScale = 0;
+    }
+
+    public void ClosePauseMenu()
+    {
+        if (pauseMenu != null) pauseMenu.SetActive(false);
+        Time.timeScale = 1f;
+    }
+
+    public void ShowEndPhasePanel()
+    {
+        Debug.Log("== [ShowEndPhasePanel] - FIM DE JOGO! ==");
+        if (endPhasePanel != null) endPhasePanel.SetActive(true);
+        if (endGameAudio != null) audioSource.PlayOneShot(endGameAudio);
+        if (endOfLevelConfetti != null) endOfLevelConfetti.Play();
+        UpdateAllScoreDisplays();
     }
 }
