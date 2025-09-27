@@ -285,9 +285,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1925811960}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: ClosePauseMenuLvl1
+        m_MethodName: OpenPauseMenuLvl1
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2881,9 +2881,9 @@ MonoBehaviour:
   numberCounter: {fileID: 0}
   scorePause: {fileID: 0}
   scoreEndPhase: {fileID: 0}
-  endPhasePanel: {fileID: 0}
+  endPhasePanel: {fileID: 1575878401}
   confettiEffect: {fileID: 0}
-  PauseMenu: {fileID: 0}
+  PauseMenu: {fileID: 773761997}
 --- !u!4 &1925811961
 Transform:
   m_ObjectHideFlags: 0
