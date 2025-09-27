@@ -70,10 +70,15 @@ public class Card : MonoBehaviour
     /// </summary>
     public void CorrectMatch()
     {
-        // Flutua para cima
-        Tween.LocalPositionY(transform, transform.localPosition.y + 100f, 0.5f, ease: Ease.OutCubic);
-        // Fade out
-        Tween.Alpha(iconImage, 0f, 0.5f).OnComplete(() => Destroy(gameObject));
+   // Flutua para cima
+    Tween.LocalPositionY(transform, transform.localPosition.y + 100f, 0.5f, ease: Ease.OutCubic);
+
+    // Faz fade out em todos os elementos gráficos do prefab
+    Graphic[] graphics = GetComponentsInChildren<Graphic>();
+    foreach (var g in graphics)
+    {
+        Tween.Alpha(g, 0f, 0.5f);
+    }
     }
 
     public void SetAudio(AudioClip clip) => cardAudio = clip;
