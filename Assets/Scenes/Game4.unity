@@ -255,9 +255,9 @@ MonoBehaviour:
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 200, y: 210}
-  m_Spacing: {x: 60, y: 60}
+  m_Spacing: {x: 90, y: 60}
   m_Constraint: 1
-  m_ConstraintCount: 3
+  m_ConstraintCount: 2
 --- !u!1 &240331273
 GameObject:
   m_ObjectHideFlags: 0
@@ -1511,7 +1511,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1115834153}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: ClosePauseMenuLvl1
+        m_MethodName: OpenPauseMenuLvl1
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
