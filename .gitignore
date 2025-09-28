@@ -45,6 +45,7 @@ Thumbs.db
 # ===== Pasta do projeto e arquivos desnecessários =====
 vscode/
 test/
+Firebase/
 Mobile.sln
 .gitignore
 *.sln
