@@ -2260,9 +2260,9 @@ MonoBehaviour:
   numberCounter: {fileID: 0}
   scorePause: {fileID: 0}
   scoreEndPhase: {fileID: 0}
-  endPhasePanel: {fileID: 0}
+  endPhasePanel: {fileID: 1174435671}
   confettiEffect: {fileID: 0}
-  PauseMenu: {fileID: 0}
+  PauseMenu: {fileID: 98752080}
 --- !u!4 &1115834154
 Transform:
   m_ObjectHideFlags: 0
