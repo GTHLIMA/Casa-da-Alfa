@@ -351,8 +351,8 @@ MonoBehaviour:
   icon: {fileID: 7394797984873421029}
   feedback: {fileID: 1532479289440969123}
   syllableLabel: {fileID: 600209021912439725}
-  fadeDuration: 0.28
-  bounceScale: 1.18
+  fadeDuration: 0.5
+  bounceScale: 1.5
   feedbackDuration: 1
 --- !u!225 &6722989818122970168
 CanvasGroup:
