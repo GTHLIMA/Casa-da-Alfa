@@ -37,6 +37,13 @@ public class RoundController : MonoBehaviour
     public Sprite checkSprite;
     public Sprite wrongSprite;
 
+    [Header("End Phase Settings")]
+    public GameObject endPhasePanel;     // painel de fim de fase
+    public Text scoreEndPhase;           // texto de pontuação final (se quiser)
+    public ParticleSystem confettiEffect; // partículas de comemoração
+    public Transform spawnPoint;         // se houver spawner de balões
+    public int score = 0;                // contador de acertos
+
     private List<OptionButton> currentOptionButtons = new List<OptionButton>();
     private int currentRound = 0;
     private SyllableData currentSyllable;
@@ -202,7 +209,16 @@ public class RoundController : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
 
         currentRound++;
+    score++; // incrementa score a cada acerto
+
+        if (currentRound >= syllables.Count)
+        {
+        ShowEndPhasePanel();
+        }
+        else
+        {
         StartCoroutine(StartRoundCoroutine());
+        }
     }
     else
     {
@@ -247,5 +263,47 @@ public class RoundController : MonoBehaviour
         gm.PlaySyllable(currentSyllable.syllableAudio);
     }
 }
+
+public void ShowEndPhasePanel()
+{
+    StartCoroutine(ShowEndPhasePanelCoroutine());
+}
+
+private IEnumerator ShowEndPhasePanelCoroutine()
+{
+    yield return new WaitForSeconds(0.5f);
+
+    if (scoreEndPhase != null)
+        scoreEndPhase.text = "Score: " + score.ToString();
+
+    if (endPhasePanel != null)
+        endPhasePanel.SetActive(true);
+
+    if (spawnPoint != null)
+        spawnPoint.gameObject.SetActive(false);
+
+    if (confettiEffect != null)
+    {
+        confettiEffect.Play();
+        Debug.Log("Efeito de confete ativado!");
+    }
+
+    Debug.Log("Fim dos rounds! Painel final exibido.");
+
+    // Pausar música e tocar som de fim
+    if (gm != null)
+    {
+        gm.StopMusic(); // pausa música
+        if (gm.sfxSource != null && gm.correctSfx != null)
+        {
+            gm.sfxSource.PlayOneShot(gm.correctSfx, gm.sfxVolume);
+        }
+    }
+
+    // Se houver integração de ScoreTransfer (como em outros jogos)
+    if (ScoreTransfer.Instance != null)
+        ScoreTransfer.Instance.SetScore(score);
+}
+
 
 }
