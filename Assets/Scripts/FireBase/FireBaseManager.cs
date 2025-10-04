@@ -1,80 +1,120 @@
-using System.Collections;
 using UnityEngine;
 using Firebase;
 using Firebase.Database;
-using Firebase.Auth;
-using TMPro; // Para interagir com elementos de texto/input da UI
+using TMPro;
+using UnityEngine.SceneManagement;
+
 
 public class FireBaseManager : MonoBehaviour
 {
-    private DatabaseReference databaseReference;
-    private FirebaseAuth auth;
-    public TMP_InputField usernameInputField;
+    private DatabaseReference dbRef;
+
+    [Header("UI Campos")]
+    public TMP_InputField usernameField;
+    public TMP_InputField passwordField;
+
+    // private string loggedUser = null;
 
     void Start()
     {
-        InitializeFirebase();
-    }
-
-    void InitializeFirebase()
-    {
-        // Verifica se todas as dependências do Firebase estão resolvidas
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
-            var dependencyStatus = task.Result;
-            if (dependencyStatus == DependencyStatus.Available)
+        // Inicializa o Firebase
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
+        {
+            if (task.Result == DependencyStatus.Available)
             {
-                // Tá checando se a conexão tá correta, e um debug pra ficar fácil de saber o que tá acontecendo
-                auth = FirebaseAuth.DefaultInstance;
-                databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
-                Debug.Log("Firebase inicializado com sucesso");
+                dbRef = FirebaseDatabase.DefaultInstance.RootReference;
+                Debug.Log("Firebase Database inicializado!");
             }
             else
             {
-                Debug.LogError($"Could not resolve all Firebase dependencies: {dependencyStatus}");
+                Debug.LogError("Erro Firebase: " + task.Result);
             }
         });
     }
 
-    public void SaveUsername()
+    // ===== CADASTRAR =====
+    public void RegisterUser()
     {
-        // É o label pra colocar o nome, vai dar erro se não tive
-        string username = usernameInputField.text;
+        string username = usernameField.text.Trim();
+        string password = passwordField.text.Trim();
 
-        if (string.IsNullOrEmpty(username))
+        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
         {
-            Debug.LogWarning("O campo de nome de usuário está vazio.");
+            Debug.LogWarning("Preencha usuário e senha");
             return;
         }
 
-        
-        StartCoroutine(SaveUsernameToDatabase(username));
-    }
+        // Dados básicos do usuário
+        var userData = new UserData(username, password);
+        string json = JsonUtility.ToJson(userData);
 
-    private IEnumerator SaveUsernameToDatabase(string username)
-    {
-        // Isso tá gerando um id único pra um usuário
-        string userId = System.Guid.NewGuid().ToString();
-
-        DatabaseReference userRef = databaseReference.Child("users").Child(userId);
-
-        var saveTask = userRef.Child("username").SetValueAsync(username);
-        yield return new WaitUntil(() => saveTask.IsCompleted);
-
-        if (saveTask.Exception != null)
+        dbRef.Child("users").Child(username).SetRawJsonValueAsync(json).ContinueWith(task =>
         {
-            Debug.LogError($"Falha ao salvar o nome: {saveTask.Exception}");
-            
-            // Um log mais específico pro erro
-            FirebaseException firebaseEx = saveTask.Exception.GetBaseException() as FirebaseException;
-            if (firebaseEx != null)
+            if (task.IsFaulted) Debug.LogError("Erro cadastro: " + task.Exception);
+            else
             {
-                Debug.LogError($"Código de erro do Firebase: {firebaseEx.ErrorCode}");
+                Debug.Log("Usuário cadastrado: " + username);
+                dbRef.Child("users").Child(username).Child("createdAt")
+                .SetValueAsync(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             }
-        }
-        else
-        {
-            Debug.Log("Nome de usuário salvo com sucesso no Firebase!");
-        }
+        });
     }
 
+    // ===== LOGIN =====
+    public void LoginUser()
+    {
+        Debug.Log("Botão de Login clicado");
+
+        string username = usernameField.text.Trim();
+        string password = passwordField.text.Trim();
+
+        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+        {
+            Debug.LogWarning("Preencha usuário e senha");
+            return;
+        }
+
+        dbRef.Child("users").Child(username).Child("password").GetValueAsync().ContinueWith(task =>
+        {
+            if (task.IsFaulted || task.Result == null || !task.Result.Exists)
+            {
+                Debug.LogError("Usuário não existe");
+                return;
+            }
+
+            string savedPass = task.Result.Value.ToString();
+
+            if (savedPass == password)
+            {
+                Debug.Log("Login OK: " + username);
+
+                FirebaseUserSession.Instance.SetUser(username);
+
+                Debug.Log("Tentando carregar cena: Game1");
+
+               UnityMainThreadDispatcher.Enqueue(() =>
+                {
+                    LoadScenes.LoadSceneByIndex(1); // Call the static method directly
+                });
+            }
+            else
+            {
+                Debug.LogError("Senha incorreta");
+            }
+        });
+    }
+}
+
+// Classe auxiliar para converter em JSON
+[System.Serializable]
+public class UserData
+{
+    public string username;
+    public string password;
+
+    public UserData(string u, string p)
+    {
+        username = u;
+        password = p;
+    }
 }

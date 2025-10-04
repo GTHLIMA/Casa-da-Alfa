@@ -73,10 +73,21 @@ public class Balloon : MonoBehaviour
 
     private void PopBalloon()
     {
-        if (isPopping) return; 
+        if (isPopping) return;
 
-        PopBalloonAnimation(); 
+        var logger = FindObjectOfType<BalloonGameLogger>();
+        if (logger != null)
+        {
+            Vector2 worldPos = transform.position;
+
+            logger.LogTouch(worldPos.y);
+            logger.LogBalloon();
+        }
+
+        PopBalloonAnimation();
     }
+
+
     
     private void PopBalloonAnimation()
     {

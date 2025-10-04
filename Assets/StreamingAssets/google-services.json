@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "287936227101",
+    "firebase_url": "https://game-casa-alfa-default-rtdb.firebaseio.com",
+    "project_id": "game-casa-alfa",
+    "storage_bucket": "game-casa-alfa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:287936227101:android:3ce2f4ea59ed63f5a963f4",
+        "android_client_info": {
+          "package_name": "com.DefaultCompany.CasadaAlfa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdIUZCEtvrKmR05bsCLuSG4reBydCG-rY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
