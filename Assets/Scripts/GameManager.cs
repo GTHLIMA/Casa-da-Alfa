@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
 
     [Header("======= Game Settings =======")]
     [SerializeField] private GameObject endPhasePanel;
-    public ParticleSystem confettiEffect; // A referência para o efeito visual de confete
+    public ParticleSystem confettiEffect; 
     public static bool GameStarted = false;
     private bool gameStarted = false;
     public GameObject PauseMenu;
@@ -177,7 +177,6 @@ public class GameManager : MonoBehaviour
         {
             
             audioManager.PauseAudio(audioManager.background);
-            // Toca o som de fim de fase já existente
             audioManager.PlaySFX(audioManager.end2);
         }
 
