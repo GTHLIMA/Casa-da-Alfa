@@ -101,23 +101,55 @@ public class GameManager : MonoBehaviour
     }
 
     public void OpenPauseMenuLvl1()
+{
+    // Atualiza o score no painel
+    if (scorePause != null)
+        scorePause.text = "Score: " + score.ToString();
+
+    // Ativa o painel de pausa
+    if (PauseMenu != null)
     {
-        if (scorePause != null) scorePause.text = "Score: " + score.ToString();
         PauseMenu.SetActive(true);
-        // CORRIGIDO: Passa o parâmetro que seu AudioManager espera
-        if (audioManager != null) audioManager.PauseAudio(audioManager.background);
-        Time.timeScale = 0;
-        if (ScoreTransfer.Instance != null) ScoreTransfer.Instance.SetScore(score);
+
+        // Garante que o painel da UI continue recebendo cliques
+        CanvasGroup cg = PauseMenu.GetComponent<CanvasGroup>();
+        if (cg == null) cg = PauseMenu.AddComponent<CanvasGroup>();
+        cg.interactable = true;
+        cg.blocksRaycasts = true;
     }
 
+    // Pausa música e áudio ambiente
+    if (audioManager != null && audioManager.background != null)
+        audioManager.PauseAudio(audioManager.background);
+
+    // Pausa o tempo do jogo (animações, físicas, coroutines baseadas em deltaTime)
+    Time.timeScale = 0f;
+
+    // (Opcional) Pausa outros sistemas de som
+    AudioListener.pause = true;
+
+    // Salva score se houver sistema de transferência
+    if (ScoreTransfer.Instance != null)
+        ScoreTransfer.Instance.SetScore(score);
+
+    Debug.Log("Jogo pausado: tempo parado e painel ativo.");
+}
     public void ClosePauseMenuLvl1()
-    {
-        Time.timeScale = 1f;
-        PauseMenu.SetActive(false);
-        // CORRIGIDO: Passa o parâmetro que seu AudioManager espera
-        if (audioManager != null) audioManager.ResumeAudio(audioManager.background);
-    }
+{
+    // Retoma o tempo do jogo
+    Time.timeScale = 1f;
 
+    // Retoma todos os áudios pausados
+    AudioListener.pause = false;
+    if (audioManager != null && audioManager.background != null)
+        audioManager.ResumeAudio(audioManager.background);
+
+    // Desativa o painel de pausa
+    if (PauseMenu != null)
+        PauseMenu.SetActive(false);
+
+    Debug.Log("Jogo retomado.");
+}
     public void ShowEndPhasePanel()
     {
         StartCoroutine(ShowEndPhasePanelCoroutine());
