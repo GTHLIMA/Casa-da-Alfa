@@ -1,55 +1,125 @@
+using System.Collections;
 using UnityEngine;
 
 public class GameManager5 : MonoBehaviour
 {
     [Header("Audio Sources")]
-    public AudioSource syllableSource;   // Para os sons das sílabas
-    public AudioSource optionSource;     // Para os sons das figuras/opções
-    public AudioSource sfxSource;        // Para efeitos sonoros (acerto/erro)
+    public AudioSource syllableSource;
+    public AudioSource optionSource;
+    public AudioSource sfxSource;
+    public AudioSource musicSource;
 
-    [Header("Audio Clips de Feedback")]
-    public AudioClip correctSfx;         
-    public AudioClip wrongSfx;           
+    [Header("Music Settings")]
+    public AudioClip backgroundMusic;
+    [Range(0f, 1f)] public float musicVolume = 0.5f;
 
-    /// Toca o áudio da sílaba ("CA de...")
+    [Header("Individual Volumes")]
+    [Range(0f, 1f)] public float syllableVolume = 1f;
+    [Range(0f, 1f)] public float optionVolume = 1f;
+    [Range(0f, 1f)] public float sfxVolume = 0.7f;
+
+    [Header("SFX Clips")]
+    public AudioClip correctSfx;
+    public AudioClip wrongSfx;
+
+    void Start()
+    {
+        if (musicSource != null && backgroundMusic != null)
+        {
+            musicSource.clip = backgroundMusic;
+            musicSource.loop = true;
+            musicSource.volume = musicVolume;
+            musicSource.Play();
+        }
+    }
+
+    // Toca o som da sílaba (pergunta)
     public void PlaySyllable(AudioClip clip)
     {
-        if (syllableSource.isPlaying) syllableSource.Stop();
+        if (syllableSource == null || clip == null) return;
+        syllableSource.Stop();
+        syllableSource.volume = syllableVolume;
         syllableSource.clip = clip;
         syllableSource.Play();
     }
 
-    /// Toca o áudio da opção clicada ("Casa", "Bola")
+    // Toca o som do desenho clicado (option)
     public void PlayOption(AudioClip clip)
     {
-        if (optionSource.isPlaying) optionSource.Stop();
+        if (optionSource == null || clip == null) return;
+        optionSource.Stop();
+        optionSource.volume = optionVolume;
         optionSource.clip = clip;
         optionSource.Play();
     }
 
-    /// Toca o som de acerto
+    // Som de acerto
     public void PlayCorrect()
     {
+        if (sfxSource == null) return;
         if (correctSfx != null)
-            sfxSource.PlayOneShot(correctSfx);
+            sfxSource.PlayOneShot(correctSfx, sfxVolume);
     }
 
-    /// Toca o som de erro
+    // Som de erro
     public void PlayWrong()
     {
+        if (sfxSource == null) return;
         if (wrongSfx != null)
-            sfxSource.PlayOneShot(wrongSfx);
+            sfxSource.PlayOneShot(wrongSfx, sfxVolume);
     }
 
-    /// Verifica se o áudio de sílaba terminou
-    public bool IsSyllablePlaying()
+    public bool IsSyllablePlaying() => syllableSource != null && syllableSource.isPlaying;
+    public bool IsOptionPlaying() => optionSource != null && optionSource.isPlaying;
+
+    public void PlayMusic()
     {
-        return syllableSource.isPlaying;
+        if (musicSource == null || backgroundMusic == null) return;
+        if (!musicSource.isPlaying)
+        {
+            musicSource.clip = backgroundMusic;
+            musicSource.loop = true;
+            musicSource.volume = musicVolume;
+            musicSource.Play();
+        }
     }
 
-    /// Verifica se o áudio de opção terminou
-    public bool IsOptionPlaying()
+    public void StopMusic()
     {
-        return optionSource.isPlaying;
+        if (musicSource == null) return;
+        musicSource.Stop();
+    }
+
+    public void SetMusicVolume(float vol)
+    {
+        musicVolume = Mathf.Clamp01(vol);
+        if (musicSource != null) musicSource.volume = musicVolume;
+    }
+
+    // Shake simples de câmera
+    public void ShakeCamera(float duration = 0.35f, float magnitude = 10f)
+    {
+        if (Camera.main == null) return;
+        StopCoroutine("ShakeCameraCoroutine");
+        StartCoroutine(ShakeCameraCoroutine(Camera.main.transform, duration, magnitude));
+    }
+
+    private IEnumerator ShakeCameraCoroutine(Transform target, float duration, float magnitude)
+    {
+        Vector3 originalPos = target.localPosition;
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            float percentComplete = elapsed / duration;
+            float damper = 1.0f - Mathf.Clamp01(percentComplete);
+
+            float x = (Random.value * 2f - 1f) * magnitude * 0.01f * damper;
+            float y = (Random.value * 2f - 1f) * magnitude * 0.01f * damper;
+            target.localPosition = new Vector3(originalPos.x + x, originalPos.y + y, originalPos.z);
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        target.localPosition = originalPos;
     }
 }
