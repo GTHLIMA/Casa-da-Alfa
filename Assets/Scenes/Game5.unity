@@ -2964,7 +2964,7 @@ MonoBehaviour:
       optionAudio: {fileID: 8300000, guid: c0f08c0de90ade74798a4e3f9cce578e, type: 3}
       syllableSprite: {fileID: 21300000, guid: 75f92c228e90a4940a05cfdabe258eb8, type: 3}
   - syllableName: JA DE
-    syllableImage: {fileID: 21300000, guid: 65007bffd78fcb245a24f247d9ac186b, type: 3}
+    syllableImage: {fileID: 21300000, guid: 86ce0ec77a9934d4d9eaa62049c4e0bf, type: 3}
     syllableAudio: {fileID: 8300000, guid: 6f420dfcab6261f439549899ff880b81, type: 3}
     correctOption:
       optionName: JACA
