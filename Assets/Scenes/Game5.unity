@@ -297,7 +297,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.071
+  m_Volume: 0.216
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -2892,6 +2892,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1753677464}
   - {fileID: 1935800146}
   - {fileID: 1198437929}
   - {fileID: 1775477999}
@@ -3145,7 +3146,7 @@ GameObject:
   - component: {fileID: 1753677464}
   - component: {fileID: 1753677466}
   - component: {fileID: 1753677465}
-  m_Layer: 8
+  m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3159,16 +3160,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1753677463}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1715173767}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 503.66364, y: 1131.5952}
+  m_AnchoredPosition: {x: -36.336365, y: -68.404785}
   m_SizeDelta: {x: 1445.6396, y: 2781.4788}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1753677465
@@ -4443,7 +4444,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 1014480975}
   - {fileID: 1715173767}
-  - {fileID: 1753677464}
   - {fileID: 2071518849}
   - {fileID: 868681516}
   - {fileID: 55980329}
