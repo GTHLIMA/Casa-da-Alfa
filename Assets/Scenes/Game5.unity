@@ -1322,7 +1322,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3387917037352678404, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 224
+      value: 0.0366142
       objectReference: {fileID: 0}
     - target: {fileID: 3387917037352678404, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1362,7 +1362,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9119119621151358673, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
       propertyPath: ShapeModule.radius.value
-      value: 1.5480975
+      value: 2.065776
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1548,17 +1548,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b76fbda0cd5c648418b34ad92eb673e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioManager: {fileID: 0}
   syllableSource: {fileID: 1879931140}
   optionSource: {fileID: 1787665807}
   sfxSource: {fileID: 2003650166}
   musicSource: {fileID: 55980328}
   backgroundMusic: {fileID: 8300000, guid: a13344ac26ae22f40ae0160a0a8c756e, type: 3}
-  correctSFX: {fileID: 8300000, guid: f4318f53195abcc4a9b70cffd9efe49f, type: 3}
-  syllableVolume: 1
+  musicVolume: 0.075
+  syllableVolume: 0.67
   optionVolume: 1
-  sfxVolume: 1
-  musicVolume: 0.031
+  sfxVolume: 0.115
+  correctSfx: {fileID: 8300000, guid: f4318f53195abcc4a9b70cffd9efe49f, type: 3}
+  wrongSfx: {fileID: 0}
 --- !u!4 &868681516
 Transform:
   m_ObjectHideFlags: 0
@@ -2892,7 +2892,6 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1753677464}
   - {fileID: 1935800146}
   - {fileID: 1198437929}
   - {fileID: 1775477999}
@@ -3165,11 +3164,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1715173767}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -36.336304, y: -68.404785}
+  m_AnchoredPosition: {x: 503.66364, y: 1131.5952}
   m_SizeDelta: {x: 1445.6396, y: 2781.4788}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1753677465
@@ -4444,6 +4443,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 1014480975}
   - {fileID: 1715173767}
+  - {fileID: 1753677464}
   - {fileID: 2071518849}
   - {fileID: 868681516}
   - {fileID: 55980329}

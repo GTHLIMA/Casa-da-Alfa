@@ -766,7 +766,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 459020142}
         m_TargetAssemblyTypeName: LoadScenes, Assembly-CSharp
-        m_MethodName: Level5
+        m_MethodName: Level2_5
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1148,10 +1148,10 @@ MonoBehaviour:
   musicSource: {fileID: 1437169980}
   sfxSource: {fileID: 0}
   voiceSource: {fileID: 0}
-  background: {fileID: 8300000, guid: 1634df1390fe68e448ae1cdf4ac3e7bd, type: 3}
-  end1: {fileID: 8300000, guid: 74d5dc0c5fa7f7144b6923e39a624b64, type: 3}
-  end2: {fileID: 8300000, guid: 74d5dc0c5fa7f7144b6923e39a624b64, type: 3}
-  end3: {fileID: 8300000, guid: 74d5dc0c5fa7f7144b6923e39a624b64, type: 3}
+  background: {fileID: 0}
+  end1: {fileID: 0}
+  end2: {fileID: 0}
+  end3: {fileID: 0}
   VoiceRecognition: {fileID: 0}
   ballonPop: {fileID: 0}
   musicVolume: 0.015
@@ -1339,11 +1339,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2730006628571099094, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
       propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 2730006628571099094, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
-      propertyPath: m_TagString
-      value: teste
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3387917037352678404, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
       propertyPath: m_LocalScale.x
@@ -1359,43 +1355,43 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3387917037352678404, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 14
+      value: 4.099979
       objectReference: {fileID: 0}
     - target: {fileID: 3387917037352678404, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -849
+      value: -994.6
       objectReference: {fileID: 0}
     - target: {fileID: 3387917037352678404, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.7
+      value: 0.036629673
       objectReference: {fileID: 0}
     - target: {fileID: 3387917037352678404, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.7042797
+      value: -0.70426035
       objectReference: {fileID: 0}
     - target: {fileID: 3387917037352678404, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.70991725
+      value: 0.70993197
       objectReference: {fileID: 0}
     - target: {fileID: 3387917037352678404, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.0023690148
+      value: 0.000049418763
       objectReference: {fileID: 0}
     - target: {fileID: 3387917037352678404, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0014040028
+      value: -0.0037423298
       objectReference: {fileID: 0}
     - target: {fileID: 3387917037352678404, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -89.45
+      value: -89.448
       objectReference: {fileID: 0}
     - target: {fileID: 3387917037352678404, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -506.246
+      value: -506.086
       objectReference: {fileID: 0}
     - target: {fileID: 3387917037352678404, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 146.168
+      value: 146.385
       objectReference: {fileID: 0}
     - target: {fileID: 9119119621151358673, guid: c8a14c3f775356f4baf9ce3e883cd068, type: 3}
       propertyPath: lengthInSec
@@ -1580,8 +1576,8 @@ RectTransform:
   - {fileID: 119550160}
   - {fileID: 2104408930}
   - {fileID: 785273158}
-  - {fileID: 1174435672}
   - {fileID: 98752081}
+  - {fileID: 1174435672}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2247,7 +2243,7 @@ MonoBehaviour:
   scorePause: {fileID: 0}
   scoreEndPhase: {fileID: 0}
   endPhasePanel: {fileID: 1174435671}
-  confettiEffect: {fileID: 1678193258}
+  confettiEffect: {fileID: 0}
   PauseMenu: {fileID: 98752080}
 --- !u!4 &1115834154
 Transform:
@@ -2600,7 +2596,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 1634df1390fe68e448ae1cdf4ac3e7bd, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -3543,7 +3539,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2144835112}
         m_TargetAssemblyTypeName: LoadScenes, Assembly-CSharp
-        m_MethodName: Level5
+        m_MethodName: Level2_5
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3597,9 +3593,9 @@ SceneRoots:
   m_Roots:
   - {fileID: 2083773316}
   - {fileID: 975024521}
+  - {fileID: 1613346109}
   - {fileID: 1911107482}
   - {fileID: 2086876177}
   - {fileID: 1115834154}
   - {fileID: 583166722}
   - {fileID: 1437169981}
-  - {fileID: 1613346109}

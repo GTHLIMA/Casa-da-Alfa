@@ -1794,9 +1794,9 @@ MonoBehaviour:
   sfxSource: {fileID: 0}
   voiceSource: {fileID: 0}
   background: {fileID: 0}
-  end1: {fileID: 8300000, guid: 74d5dc0c5fa7f7144b6923e39a624b64, type: 3}
-  end2: {fileID: 8300000, guid: 74d5dc0c5fa7f7144b6923e39a624b64, type: 3}
-  end3: {fileID: 8300000, guid: 74d5dc0c5fa7f7144b6923e39a624b64, type: 3}
+  end1: {fileID: 0}
+  end2: {fileID: 0}
+  end3: {fileID: 0}
   VoiceRecognition: {fileID: 0}
   ballonPop: {fileID: 0}
   musicVolume: 0.015
