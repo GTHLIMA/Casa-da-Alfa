@@ -3,131 +3,104 @@ using UnityEngine;
 
 public class GameManager5 : MonoBehaviour
 {
-    [Header("Audio Manager Global")]
-    public AudioManager audioManager; // se quiser linkar manualmente
-    private bool useGlobalAudio = false;
+    [Header("Audio Sources")]
+    public AudioSource syllableSource;
+    public AudioSource optionSource;
+    public AudioSource sfxSource;
+    public AudioSource musicSource;
 
-    [Header("Local Audio Sources")]
-    public AudioSource syllableSource; // som das sílabas ("BA de...")
-    public AudioSource optionSource;   // som das figuras (bala, casa...)
-    public AudioSource sfxSource;      // sons de acerto, erro, etc.
-    public AudioSource musicSource;    // música de fundo
-
-    [Header("Audio Clips")]
+    [Header("Music Settings")]
     public AudioClip backgroundMusic;
-    public AudioClip correctSFX;
+    [Range(0f, 1f)] public float musicVolume = 0.5f;
 
     [Header("Individual Volumes")]
     [Range(0f, 1f)] public float syllableVolume = 1f;
     [Range(0f, 1f)] public float optionVolume = 1f;
     [Range(0f, 1f)] public float sfxVolume = 0.7f;
-    [Range(0f, 1f)] public float musicVolume = 0.5f;
 
-    void Awake()
-    {
-        // tenta pegar o AudioManager global, se houver
-        audioManager = FindObjectOfType<AudioManager>();
-        useGlobalAudio = audioManager != null;
-
-        ApplyVolumes();
-    }
+    [Header("SFX Clips")]
+    public AudioClip correctSfx;
+    public AudioClip wrongSfx;
 
     void Start()
     {
-        if (backgroundMusic != null)
+        if (musicSource != null && backgroundMusic != null)
         {
-            if (musicSource != null)
-            {
-                musicSource.clip = backgroundMusic;
-                musicSource.loop = true;
-                musicSource.volume = musicVolume;
-                musicSource.Play();
-            }
-            else if (useGlobalAudio)
-            {
-                audioManager.PlayMusic(backgroundMusic, true);
-            }
+            musicSource.clip = backgroundMusic;
+            musicSource.loop = true;
+            musicSource.volume = musicVolume;
+            musicSource.Play();
         }
     }
 
-    // ===============================
-    // 🔊 CONTROLE DE ÁUDIO
-    // ===============================
-
-    public void ApplyVolumes()
+    // Toca o som da sílaba (pergunta)
+    public void PlaySyllable(AudioClip clip)
     {
-        if (syllableSource != null) syllableSource.volume = syllableVolume;
-        if (optionSource != null) optionSource.volume = optionVolume;
-        if (sfxSource != null) sfxSource.volume = sfxVolume;
+        if (syllableSource == null || clip == null) return;
+        syllableSource.Stop();
+        syllableSource.volume = syllableVolume;
+        syllableSource.clip = clip;
+        syllableSource.Play();
+    }
+
+    // Toca o som do desenho clicado (option)
+    public void PlayOption(AudioClip clip)
+    {
+        if (optionSource == null || clip == null) return;
+        optionSource.Stop();
+        optionSource.volume = optionVolume;
+        optionSource.clip = clip;
+        optionSource.Play();
+    }
+
+    // Som de acerto
+    public void PlayCorrect()
+    {
+        if (sfxSource == null) return;
+        if (correctSfx != null)
+            sfxSource.PlayOneShot(correctSfx, sfxVolume);
+    }
+
+    // Som de erro
+    public void PlayWrong()
+    {
+        if (sfxSource == null) return;
+        if (wrongSfx != null)
+            sfxSource.PlayOneShot(wrongSfx, sfxVolume);
+    }
+
+    public bool IsSyllablePlaying() => syllableSource != null && syllableSource.isPlaying;
+    public bool IsOptionPlaying() => optionSource != null && optionSource.isPlaying;
+
+    public void PlayMusic()
+    {
+        if (musicSource == null || backgroundMusic == null) return;
+        if (!musicSource.isPlaying)
+        {
+            musicSource.clip = backgroundMusic;
+            musicSource.loop = true;
+            musicSource.volume = musicVolume;
+            musicSource.Play();
+        }
+    }
+
+    public void StopMusic()
+    {
+        if (musicSource == null) return;
+        musicSource.Stop();
+    }
+
+    public void SetMusicVolume(float vol)
+    {
+        musicVolume = Mathf.Clamp01(vol);
         if (musicSource != null) musicSource.volume = musicVolume;
     }
 
-    public void PlaySyllable(AudioClip clip)
-    {
-        if (clip == null) return;
-
-        if (syllableSource != null)
-        {
-            syllableSource.Stop();
-            syllableSource.clip = clip;
-            syllableSource.volume = syllableVolume;
-            syllableSource.Play();
-        }
-        else if (useGlobalAudio)
-        {
-            audioManager.PlayVoice(clip);
-        }
-    }
-
-    public void PlayOption(AudioClip clip)
-    {
-        if (clip == null) return;
-
-        if (optionSource != null)
-        {
-            optionSource.Stop();
-            optionSource.clip = clip;
-            optionSource.volume = optionVolume;
-            optionSource.Play();
-        }
-        else if (useGlobalAudio)
-        {
-            audioManager.PlayVoice(clip);
-        }
-    }
-
-    public void PlayCorrect()
-    {
-        if (correctSFX == null) return;
-
-        if (sfxSource != null)
-        {
-            sfxSource.volume = sfxVolume;
-            sfxSource.PlayOneShot(correctSFX);
-        }
-        else if (useGlobalAudio)
-        {
-            audioManager.PlaySFX(correctSFX);
-        }
-    }
-
-    public bool IsSyllablePlaying()
-    {
-        return syllableSource != null && syllableSource.isPlaying;
-    }
-
-    public bool IsOptionPlaying()
-    {
-        return optionSource != null && optionSource.isPlaying;
-    }
-
-    // ===============================
-    // 🎥 TREMER A CÂMERA
-    // ===============================
+    // Shake simples de câmera
     public void ShakeCamera(float duration = 0.35f, float magnitude = 10f)
     {
         if (Camera.main == null) return;
-        StopCoroutine(nameof(ShakeCameraCoroutine));
+        StopCoroutine("ShakeCameraCoroutine");
         StartCoroutine(ShakeCameraCoroutine(Camera.main.transform, duration, magnitude));
     }
 
@@ -139,6 +112,7 @@ public class GameManager5 : MonoBehaviour
         {
             float percentComplete = elapsed / duration;
             float damper = 1.0f - Mathf.Clamp01(percentComplete);
+
             float x = (Random.value * 2f - 1f) * magnitude * 0.01f * damper;
             float y = (Random.value * 2f - 1f) * magnitude * 0.01f * damper;
             target.localPosition = new Vector3(originalPos.x + x, originalPos.y + y, originalPos.z);

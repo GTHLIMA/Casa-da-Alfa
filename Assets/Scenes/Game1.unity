@@ -151,20 +151,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fea4dc7475e7ba43a5eb9754e19cb5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  musicSource: {fileID: 121733377}
-  sfxSource: {fileID: 44034172}
-  voiceSource: {fileID: 0}
+  audioSource: {fileID: 121733377}
+  SFXSource: {fileID: 44034172}
   background: {fileID: 8300000, guid: 1634df1390fe68e448ae1cdf4ac3e7bd, type: 3}
-  end1: {fileID: 8300000, guid: 74d5dc0c5fa7f7144b6923e39a624b64, type: 3}
-  end2: {fileID: 8300000, guid: 74d5dc0c5fa7f7144b6923e39a624b64, type: 3}
-  end3: {fileID: 8300000, guid: 74d5dc0c5fa7f7144b6923e39a624b64, type: 3}
+  end1: {fileID: 8300000, guid: 0b834cbd0f0b6334f8d428a79a527202, type: 3}
+  end2: {fileID: 8300000, guid: 0b834cbd0f0b6334f8d428a79a527202, type: 3}
+  end3: {fileID: 8300000, guid: 0b834cbd0f0b6334f8d428a79a527202, type: 3}
   VoiceRecognition: {fileID: 0}
   ballonPop: {fileID: 8300000, guid: b94f048cab48bd346bc322c3e7ee9606, type: 3}
-  musicVolume: 0.015
-  sfxVolume: 0.742
-  voiceVolume: 1
-  playBackgroundOnStart: 1
-  dontDestroyOnLoad: 1
+  initialSFXVolume: 0.2
 --- !u!4 &18487021
 Transform:
   m_ObjectHideFlags: 0
