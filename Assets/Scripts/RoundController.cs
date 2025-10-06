@@ -62,7 +62,7 @@ public class RoundController : MonoBehaviour
 
         if (currentRound >= syllables.Count)
         {
-            Debug.Log("Fim dos rounds!");
+            ShowEndPhasePanel();
             yield break;
         }
 
@@ -85,96 +85,84 @@ public class RoundController : MonoBehaviour
         // gera opções
         GenerateOptions(currentSyllable);
 
-        // small delay then enable
+        // pequeno delay e libera input
         yield return new WaitForSeconds(0.18f);
         inputLocked = false;
         foreach (var b in currentOptionButtons) b.SetInteractable(true);
     }
 
     void GenerateOptions(SyllableData correctData)
-{
-    // build pool and remove any option that matches by name or sprite (evita duplicatas mesmo que instâncias sejam diferentes)
-    List<OptionData> pool = new List<OptionData>(allOptions);
-    pool.RemoveAll(o => o == null ? true :
-        (o.optionName == correctData.correctOption.optionName || o.optionImage == correctData.correctOption.optionImage)
-    );
-
-    // pick 3 distractors
-    List<OptionData> chosen = new List<OptionData>();
-    int pickCount = Mathf.Min(3, pool.Count);
-    for (int i = 0; i < pickCount; i++)
     {
-        int r = Random.Range(0, pool.Count);
-        chosen.Add(pool[r]);
-        pool.RemoveAt(r);
-    }
-
-    // fallback: if not enough distractors, pick from allOptions excluding items that match the correct option by name/image
-    if (chosen.Count < 3)
-    {
-        List<OptionData> fallback = new List<OptionData>(allOptions);
-        fallback.RemoveAll(o => o == null ? true :
+        List<OptionData> pool = new List<OptionData>(allOptions);
+        pool.RemoveAll(o => o == null ? true :
             (o.optionName == correctData.correctOption.optionName || o.optionImage == correctData.correctOption.optionImage)
         );
-        while (chosen.Count < 3 && fallback.Count > 0)
+
+        List<OptionData> chosen = new List<OptionData>();
+        int pickCount = Mathf.Min(3, pool.Count);
+        for (int i = 0; i < pickCount; i++)
         {
-            int r = Random.Range(0, fallback.Count);
-            if (!chosen.Contains(fallback[r])) chosen.Add(fallback[r]);
-            fallback.RemoveAt(r);
-        }
-    }
-
-    // ensure 3 distractors (worst-case, duplicate the first distractor to avoid crash — but ideally your allOptions has 17 unique)
-    while (chosen.Count < 3)
-    {
-        if (allOptions.Count > 0) chosen.Add(allOptions[0]);
-        else break;
-    }
-
-    // Now get the correct OPTION instance from allOptions if exists (match by name or image), otherwise use correctData.correctOption
-    OptionData correctInstance = allOptions.Find(o => o != null &&
-        (o.optionName == correctData.correctOption.optionName || o.optionImage == correctData.correctOption.optionImage)
-    );
-    if (correctInstance == null) correctInstance = correctData.correctOption;
-
-    // add the correct and shuffle
-    chosen.Add(correctInstance);
-    Shuffle(chosen);
-
-    // DEBUG: lista de escolhidos (ajuda a ver duplicatas)
-    string debugNames = "";
-    foreach (var c in chosen) debugNames += (c != null ? c.optionName : "NULL") + ", ";
-    Debug.Log($"Round {currentRound} options: {debugNames}");
-
-    // instantiate and setup
-    foreach (var opt in chosen)
-    {
-        GameObject go = Instantiate(optionPrefab, optionsParent);
-        // ensure CanvasGroup present for fade
-        CanvasGroup cg = go.GetComponent<CanvasGroup>();
-        if (cg == null) cg = go.AddComponent<CanvasGroup>();
-        cg.alpha = 0f;
-
-        OptionButton ob = go.GetComponent<OptionButton>();
-        if (ob == null)
-        {
-            Debug.LogError("OptionPrefab precisa do componente OptionButton.");
-            continue;
+            int r = Random.Range(0, pool.Count);
+            chosen.Add(pool[r]);
+            pool.RemoveAt(r);
         }
 
-        currentOptionButtons.Add(ob);
+        if (chosen.Count < 3)
+        {
+            List<OptionData> fallback = new List<OptionData>(allOptions);
+            fallback.RemoveAll(o => o == null ? true :
+                (o.optionName == correctData.correctOption.optionName || o.optionImage == correctData.correctOption.optionImage)
+            );
+            while (chosen.Count < 3 && fallback.Count > 0)
+            {
+                int r = Random.Range(0, fallback.Count);
+                if (!chosen.Contains(fallback[r])) chosen.Add(fallback[r]);
+                fallback.RemoveAt(r);
+            }
+        }
 
-        // local copy to avoid closure issue
-        OptionData localOpt = opt;
-        OptionButton localOb = ob;
-        localOb.Setup(localOpt.optionImage, localOpt.syllableSprite, () => OnOptionPressed(localOb, localOpt));
-        localOb.SetInteractable(false);
+        while (chosen.Count < 3)
+        {
+            if (allOptions.Count > 0) chosen.Add(allOptions[0]);
+            else break;
+        }
 
-        // fade-in the button's CanvasGroup
-        Tween.Alpha(cg, 1f, 0.45f, Ease.OutQuad);
+        OptionData correctInstance = allOptions.Find(o => o != null &&
+            (o.optionName == correctData.correctOption.optionName || o.optionImage == correctData.correctOption.optionImage)
+        );
+        if (correctInstance == null) correctInstance = correctData.correctOption;
+
+        chosen.Add(correctInstance);
+        Shuffle(chosen);
+
+        string debugNames = "";
+        foreach (var c in chosen) debugNames += (c != null ? c.optionName : "NULL") + ", ";
+        Debug.Log($"Round {currentRound} options: {debugNames}");
+
+        foreach (var opt in chosen)
+        {
+            GameObject go = Instantiate(optionPrefab, optionsParent);
+            CanvasGroup cg = go.GetComponent<CanvasGroup>();
+            if (cg == null) cg = go.AddComponent<CanvasGroup>();
+            cg.alpha = 0f;
+
+            OptionButton ob = go.GetComponent<OptionButton>();
+            if (ob == null)
+            {
+                Debug.LogError("OptionPrefab precisa do componente OptionButton.");
+                continue;
+            }
+
+            currentOptionButtons.Add(ob);
+
+            OptionData localOpt = opt;
+            OptionButton localOb = ob;
+            localOb.Setup(localOpt.optionImage, localOpt.syllableSprite, () => OnOptionPressed(localOb, localOpt));
+            localOb.SetInteractable(false);
+
+            Tween.Alpha(cg, 1f, 0.45f, Ease.OutQuad);
+        }
     }
-}
-
 
     private void OnOptionPressed(OptionButton button, OptionData clicked)
     {
@@ -182,11 +170,12 @@ public class RoundController : MonoBehaviour
         StartCoroutine(HandleSelection(button, clicked));
     }
 
-   IEnumerator HandleSelection(OptionButton button, OptionData clicked)
+    IEnumerator HandleSelection(OptionButton button, OptionData clicked)
 {
     inputLocked = true;
     foreach (var b in currentOptionButtons) b.SetInteractable(false);
 
+    // Mostra a sílaba do botão clicado
     button.ShowSyllable();
 
     bool isCorrect = (clicked != null && currentSyllable != null &&
@@ -195,51 +184,48 @@ public class RoundController : MonoBehaviour
 
     if (isCorrect)
     {
-        button.ShowFeedback(true, checkSprite);
-
-        // toca som do desenho + som de acerto
-        if (gm != null)
+        // 🔊 Toca o som do desenho correto
+        if (gm != null && clicked.optionAudio != null)
         {
-            if (clicked.optionAudio != null)
-                gm.PlayOption(clicked.optionAudio); // som da figura
-            gm.PlayCorrect(); // efeito de acerto
+            gm.PlayOption(clicked.optionAudio);
+            yield return new WaitWhile(() => gm.IsOptionPlaying());
         }
 
+        // ✅ Feedback de acerto visual e som
+        button.ShowFeedback(true, checkSprite);
+        if (gm != null) gm.PlayCorrect();
+
+        // Aguarda o feedback e avança pro próximo round
         float waitTime = button.feedbackDuration + button.fadeDuration + 0.25f;
         yield return new WaitForSeconds(waitTime);
 
         currentRound++;
-    score++; // incrementa score a cada acerto
-
-        if (currentRound >= syllables.Count)
-        {
-        ShowEndPhasePanel();
-        }
-        else
-        {
         StartCoroutine(StartRoundCoroutine());
-        }
     }
     else
     {
+        // ❌ Feedback de erro visual
         button.ShowFeedback(false, wrongSprite);
 
-        if (gm != null)
+        // Efeito de tremer a tela
+        if (gm != null) gm.ShakeCamera(0.35f, 12f);
+
+        // Espera o efeito de erro aparecer
+        yield return new WaitForSeconds(0.25f);
+
+        // 🔁 Repete o som da sílaba (pergunta)
+        if (gm != null && currentSyllable != null && currentSyllable.syllableAudio != null)
         {
-            gm.ShakeCamera(0.35f, 12f);
-            gm.PlayWrong(); // efeito sonoro opcional de erro
-            // toca novamente o som da sílaba atual
-            if (currentSyllable != null && currentSyllable.syllableAudio != null)
-                gm.PlaySyllable(currentSyllable.syllableAudio);
+            gm.PlaySyllable(currentSyllable.syllableAudio);
+            yield return new WaitWhile(() => gm.IsSyllablePlaying());
         }
 
-        float waitTime = button.feedbackDuration + button.fadeDuration + 0.25f;
-        yield return new WaitForSeconds(waitTime);
-
+        // Libera novamente os botões pra tentar de novo
         inputLocked = false;
         foreach (var b in currentOptionButtons) b.SetInteractable(true);
     }
 }
+
 
     void ClearOptions()
     {
@@ -258,52 +244,49 @@ public class RoundController : MonoBehaviour
 
     public void RepeatQuestion()
     {
-    if (gm != null && currentSyllable != null && currentSyllable.syllableAudio != null)
-    {
-        gm.PlaySyllable(currentSyllable.syllableAudio);
-    }
-}
-
-public void ShowEndPhasePanel()
-{
-    StartCoroutine(ShowEndPhasePanelCoroutine());
-}
-
-private IEnumerator ShowEndPhasePanelCoroutine()
-{
-    yield return new WaitForSeconds(0.5f);
-
-    if (scoreEndPhase != null)
-        scoreEndPhase.text = "Score: " + score.ToString();
-
-    if (endPhasePanel != null)
-        endPhasePanel.SetActive(true);
-
-    if (spawnPoint != null)
-        spawnPoint.gameObject.SetActive(false);
-
-    if (confettiEffect != null)
-    {
-        confettiEffect.Play();
-        Debug.Log("Efeito de confete ativado!");
-    }
-
-    Debug.Log("Fim dos rounds! Painel final exibido.");
-
-    // Pausar música e tocar som de fim
-    if (gm != null)
-    {
-        gm.StopMusic(); // pausa música
-        if (gm.sfxSource != null && gm.correctSfx != null)
+        if (gm != null && currentSyllable != null && currentSyllable.syllableAudio != null)
         {
-            gm.sfxSource.PlayOneShot(gm.correctSfx, gm.sfxVolume);
+            gm.PlaySyllable(currentSyllable.syllableAudio);
         }
     }
 
-    // Se houver integração de ScoreTransfer (como em outros jogos)
-    if (ScoreTransfer.Instance != null)
-        ScoreTransfer.Instance.SetScore(score);
-}
+    public void ShowEndPhasePanel()
+    {
+        StartCoroutine(ShowEndPhasePanelCoroutine());
+    }
 
+    private IEnumerator ShowEndPhasePanelCoroutine()
+    {
+        yield return new WaitForSeconds(0.5f);
 
+        if (scoreEndPhase != null)
+            scoreEndPhase.text = "Score: " + score.ToString();
+
+        if (endPhasePanel != null)
+            endPhasePanel.SetActive(true);
+
+        if (spawnPoint != null)
+            spawnPoint.gameObject.SetActive(false);
+
+        if (confettiEffect != null)
+        {
+            confettiEffect.Play();
+            Debug.Log("Efeito de confete ativado!");
+        }
+
+        Debug.Log("Fim dos rounds! Painel final exibido.");
+
+        // Pausar música e tocar som de fim
+        if (gm != null)
+        {
+            if (gm.musicSource != null) gm.musicSource.Stop();
+            if (gm.sfxSource != null && gm.correctSFX != null)
+            {
+                gm.sfxSource.PlayOneShot(gm.correctSFX, gm.sfxVolume);
+            }
+        }
+
+        if (ScoreTransfer.Instance != null)
+            ScoreTransfer.Instance.SetScore(score);
+    }
 }
