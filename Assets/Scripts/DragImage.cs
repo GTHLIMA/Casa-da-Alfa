@@ -16,6 +16,10 @@ public class DragImage : MonoBehaviour
     private Vector2 dragStartPosition;
     private Vector2 previousMousePosition;
 
+    private float dragStartTime;
+    private float totalDragTime;
+    private bool isCurrentlyDragging;
+
     private AudioSource audioSource;
 
     [Header("Sons")]
@@ -59,6 +63,9 @@ public class DragImage : MonoBehaviour
         isDragging = true;
         dragStartPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         previousMousePosition = dragStartPosition;
+        isCurrentlyDragging = true;
+        dragStartTime = Time.time;
+        totalDragTime = 0f;
 
         rb.constraints = RigidbodyConstraints2D.FreezeAll;
         rb.velocity = Vector2.zero;
@@ -77,6 +84,12 @@ public class DragImage : MonoBehaviour
         }
         else
         {
+            if (isCurrentlyDragging)
+            {
+                totalDragTime = Time.time - dragStartTime;
+                isCurrentlyDragging = false;
+            }
+
             rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
             isDragging = false;
         }
@@ -96,6 +109,14 @@ public class DragImage : MonoBehaviour
         rb.velocity = new Vector2(0f, -2f);
 
         DisableLineRenderer();
+    }
+
+    void OnMouseDrag()
+    {
+        if (isCurrentlyDragging)    
+        {
+            totalDragTime = Time.time - dragStartTime;
+        }
     }
 
     void CheckForFall()
@@ -172,5 +193,6 @@ public class DragImage : MonoBehaviour
         var lineToBottom = GetComponent<LineToBottom>();
         if (lineToBottom != null && lineToBottom.lineRenderer != null)
             lineToBottom.lineRenderer.enabled = true;
+        isCurrentlyDragging = false;
     }
 }

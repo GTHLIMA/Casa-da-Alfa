@@ -11,7 +11,7 @@ public class OptionButton : MonoBehaviour
     public Image background;
     public Image icon;
     public Image feedback;      // overlay X or CHECK
-    public Image syllableLabel; // image da sílaba (ex: "BA") - começa invisível
+    public Image syllableLabel; // imagem da sílaba (ex: "BA") - começa invisível
 
     [Header("Animation Settings")]
     public float fadeDuration = 0.25f;
@@ -20,10 +20,13 @@ public class OptionButton : MonoBehaviour
 
     private Button btn;
     private Action onClickCallback;
+    private Color originalBgColor;
 
     void Awake()
     {
         btn = GetComponent<Button>();
+        if (background != null)
+            originalBgColor = background.color;
         ResetVisuals();
     }
 
@@ -33,6 +36,7 @@ public class OptionButton : MonoBehaviour
         if (syllableLabel != null) SetAlpha(syllableLabel, 0f);
         if (feedback != null) feedback.transform.localScale = Vector3.one;
         if (syllableLabel != null) syllableLabel.transform.localScale = Vector3.one;
+        if (background != null) background.color = originalBgColor;
     }
 
     void SetAlpha(Image img, float a)
@@ -43,14 +47,12 @@ public class OptionButton : MonoBehaviour
         img.color = c;
     }
 
-    // Setup chamado pelo RoundController -> agora recebe a sprite da sílaba também
     public void Setup(Sprite iconSprite, Sprite syllableSprite, Action onClick)
     {
         if (icon != null) icon.sprite = iconSprite;
         if (syllableLabel != null && syllableSprite != null) syllableLabel.sprite = syllableSprite;
 
         onClickCallback = onClick;
-
         btn.onClick.RemoveAllListeners();
         btn.onClick.AddListener(() => { onClickCallback?.Invoke(); });
 
@@ -60,17 +62,22 @@ public class OptionButton : MonoBehaviour
 
     public void SetInteractable(bool state)
     {
-        if (btn != null) btn.interactable = state;
-        if (background != null)
-            background.color = state ? Color.white : new Color(1f, 1f, 1f, 0.6f);
+    if (btn != null) btn.interactable = state;
     }
 
-    // Mostra a sílaba referente ao desenho (fade + bounce)
+   
+    public void SetPressedVisual(bool pressed)
+    {
+        if (background != null)
+        {
+        background.color = pressed ? new Color(1f, 1f, 1f, 0.85f) : originalBgColor;
+        }
+    }
+   
     public void ShowSyllable()
     {
         if (syllableLabel == null) return;
 
-        // garante que alpha começa em 0
         syllableLabel.color = new Color(syllableLabel.color.r, syllableLabel.color.g, syllableLabel.color.b, 0f);
         syllableLabel.transform.localScale = Vector3.one * 0.9f;
 
@@ -80,7 +87,7 @@ public class OptionButton : MonoBehaviour
             .Chain(Tween.Scale(syllableLabel.transform, 1f, 0.18f, Ease.OutBack));
     }
 
-    // Mostra feedback (check ou X) com fade+bounce e fade out depois de feedbackDuration
+    
     public void ShowFeedback(bool isCorrect, Sprite sprite)
     {
         if (feedback == null) return;

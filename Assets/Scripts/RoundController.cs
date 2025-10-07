@@ -177,11 +177,19 @@ public class RoundController : MonoBehaviour
         StartCoroutine(HandleSelection(button, clicked));
     }
 
-  IEnumerator HandleSelection(OptionButton button, OptionData clicked)
+ IEnumerator HandleSelection(OptionButton button, OptionData clicked)
 {
     inputLocked = true;
-    foreach (var b in currentOptionButtons) b.SetInteractable(false);
 
+    // bloqueia todos, mas reseta o visual
+    foreach (var b in currentOptionButtons)
+    {
+        b.SetInteractable(false);
+        b.SetPressedVisual(false);
+    }
+
+    // destaca apenas o botão clicado
+    button.SetPressedVisual(true);
     button.ShowSyllable();
 
     bool isCorrect = (clicked != null && currentSyllable != null &&
@@ -192,35 +200,28 @@ public class RoundController : MonoBehaviour
     {
         button.ShowFeedback(true, checkSprite);
 
-        // 🔊 Toca primeiro o som do desenho
+        // toca som do desenho primeiro
         if (gm != null && clicked.optionAudio != null)
         {
             gm.PlayOption(clicked.optionAudio);
-            // Espera até o áudio do desenho terminar antes de continuar
             yield return new WaitWhile(() => gm.IsOptionPlaying());
         }
 
-        // 🔊 Depois toca o som de acerto
-        if (gm != null)
         yield return new WaitForSeconds(0.15f);
-            gm.PlayCorrect();
+        if (gm != null) gm.PlayCorrect();
 
-        // Espera o tempo da animação de feedback
         float waitTime = button.feedbackDuration + button.fadeDuration + 0.25f;
         yield return new WaitForSeconds(waitTime);
 
-        // Incrementa pontuação e passa para o próximo round
         currentRound++;
         score++;
 
+        foreach (var b in currentOptionButtons) b.SetPressedVisual(false);
+
         if (currentRound >= syllables.Count)
-        {
             ShowEndPhasePanel();
-        }
         else
-        {
             StartCoroutine(StartRoundCoroutine());
-        }
     }
     else
     {
@@ -229,9 +230,7 @@ public class RoundController : MonoBehaviour
         if (gm != null)
         {
             gm.ShakeCamera(0.35f, 12f);
-            gm.PlayWrong(); // som de erro, se existir
-
-            // 🔁 toca novamente o som da sílaba atual (reforço)
+            gm.PlayWrong();
             if (currentSyllable != null && currentSyllable.syllableAudio != null)
                 gm.PlaySyllable(currentSyllable.syllableAudio);
         }
@@ -240,7 +239,11 @@ public class RoundController : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
 
         inputLocked = false;
-        foreach (var b in currentOptionButtons) b.SetInteractable(true);
+        foreach (var b in currentOptionButtons)
+        {
+            b.SetInteractable(true);
+            b.SetPressedVisual(false);
+        }
     }
 }
 
