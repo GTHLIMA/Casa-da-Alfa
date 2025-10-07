@@ -1,8 +1,12 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI; // Necessário para CanvasGroup
 
 public class GameManager5 : MonoBehaviour
 {
+    // Variável para salvar o tempo de reprodução da música, migrada do AudioManager
+    private float savedTime;
+
     [Header("Audio Sources")]
     public AudioSource syllableSource;
     public AudioSource optionSource;
@@ -21,6 +25,20 @@ public class GameManager5 : MonoBehaviour
     [Header("SFX Clips")]
     public AudioClip correctSfx;
     public AudioClip wrongSfx;
+    public AudioClip confettiSfx;
+    
+    [Header("--- Efeitos Visuais e UI de Controle ---")]
+    [Tooltip("Sistema de Partículas de Confete para ser ativado na vitória/fim de fase.")]
+    public ParticleSystem confettiEffect;
+    
+    // Variáveis de UI e Painel de Controle, conforme o GameManager original
+    [Tooltip("Painel da UI de Pausa.")]
+    public GameObject PauseMenu;
+    [Tooltip("Painel da UI de Fim de Fase.")]
+    public GameObject endPhasePanel;
+    [Tooltip("O ponto de spawn original (se existir).")]
+    public Transform spawnPoint;
+
 
     void Start()
     {
@@ -95,6 +113,130 @@ public class GameManager5 : MonoBehaviour
         musicVolume = Mathf.Clamp01(vol);
         if (musicSource != null) musicSource.volume = musicVolume;
     }
+    
+    // --- FUNÇÕES DE ÁUDIO DE PAUSA MIGRARADAS ---
+    
+    // Pausa o áudio na posição atual e salva o tempo (usa musicSource)
+    public void PauseAudio(AudioClip clip)
+    {
+        if (musicSource != null && musicSource.clip == clip)
+        {
+            savedTime = musicSource.time;
+            musicSource.Stop();
+        }
+    }
+
+    // Retoma o áudio a partir do tempo salvo (usa musicSource)
+    public void ResumeAudio(AudioClip clip)
+    {
+        if (musicSource != null && musicSource.clip == clip)
+        {
+            musicSource.time = savedTime;
+            musicSource.Play();
+        }
+    }
+    
+    // --- FUNÇÕES DE CONTROLE DE PAUSA MIGRARADAS ---
+
+    public void OpenPauseMenuLvl1()
+    {
+        // NOTE: Atualização de score (REMOVIDA)
+
+        // Ativa o painel de pausa
+        if (PauseMenu != null)
+        {
+            PauseMenu.SetActive(true);
+
+            // Garante que o painel da UI continue recebendo cliques
+            CanvasGroup cg = PauseMenu.GetComponent<CanvasGroup>();
+            if (cg == null) cg = PauseMenu.AddComponent<CanvasGroup>();
+            cg.interactable = true;
+            cg.blocksRaycasts = true;
+        }
+
+        // Pausa música e áudio ambiente
+        if (musicSource != null && backgroundMusic != null)
+            PauseAudio(backgroundMusic);
+
+        // Pausa o tempo do jogo
+        Time.timeScale = 0f;
+
+        // Pausa todos os AudioListeners no jogo
+        AudioListener.pause = true;
+
+        // NOTE: Salva score se houver sistema de transferência (REMOVIDA)
+
+        Debug.Log("Jogo pausado: tempo parado e painel ativo.");
+    }
+
+    public void ClosePauseMenuLvl1()
+    {
+        // Retoma o tempo do jogo
+        Time.timeScale = 1f;
+
+        // Retoma todos os áudios pausados
+        AudioListener.pause = false;
+        if (musicSource != null && backgroundMusic != null)
+            ResumeAudio(backgroundMusic);
+
+        // Desativa o painel de pausa
+        if (PauseMenu != null)
+            PauseMenu.SetActive(false);
+
+        Debug.Log("Jogo retomado.");
+    }
+    
+    // --- FUNÇÕES DE FIM DE FASE MIGRARADAS ---
+
+    public void ShowEndPhasePanel()
+    {
+        StartCoroutine(ShowEndPhasePanelCoroutine());
+    }
+
+    private IEnumerator ShowEndPhasePanelCoroutine()
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        // NOTE: Atualização de score (REMOVIDA)
+
+        if (endPhasePanel != null) endPhasePanel.SetActive(true);
+        
+        // Desativa o ponto de spawn (lógica de balões/spawn)
+        if (spawnPoint != null) spawnPoint.gameObject.SetActive(false);
+        
+        // Ativa o confete
+        if (confettiEffect != null)
+        {
+            confettiEffect.Play();
+            Debug.Log("Efeito de confete ativado!");
+        }
+
+        // NOTE: CancelInvoke(nameof(SpawnPrefab)) (REMOVIDA)
+
+        if (musicSource != null && sfxSource != null)
+        {
+            // Pausa a música de fundo
+            PauseAudio(backgroundMusic);
+            
+            // Toca o SFX de fim de fase (confettiSfx/end2)
+            if (confettiSfx != null)
+            {
+                 sfxSource.PlayOneShot(confettiSfx, sfxVolume);
+            }
+        }
+
+        // NOTE: ScoreTransfer (REMOVIDA)
+    }
+
+    // --- FUNÇÃO PARA ATIVAR O CONFETE ---
+    public void PlayConfetti()
+    {
+        if (confettiEffect != null)
+        {
+            confettiEffect.Play();
+        }
+    }
+    // ------------------------------------
 
     // Shake simples de câmera
     public void ShakeCamera(float duration = 0.35f, float magnitude = 10f)

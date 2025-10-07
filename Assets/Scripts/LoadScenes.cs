@@ -25,6 +25,10 @@ public class LoadScenes : MonoBehaviour
 
     private void LoadSceneWithOrientation(string sceneName, bool isLandscape)
     {
+
+        Time.timeScale = 1f;
+        AudioListener.pause = false;
+        
         // Definir orientação antes de carregar
         if (isLandscape)
         {

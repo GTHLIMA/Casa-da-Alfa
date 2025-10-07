@@ -37,8 +37,16 @@ public class CardsController : MonoBehaviour
 
     [Header("Imagem de transição")]
     [SerializeField] private Image roundOverlayImage;
+    
+    // --- NOVO HEADER PARA ÁUDIO SFX ---
+    [Header("--- ÁUDIO (SFX Controller) ---")]
+    [Tooltip("AudioSource dedicado para tocar efeitos sonoros (SFX).")]
+    [SerializeField] private AudioSource SFXSource;
+    [Tooltip("Define o volume inicial para os efeitos sonoros (SFX) nesta cena.")]
+    [SerializeField] private float initialSFXVolume = 1.0f; 
+    // ---------------------------------
 
-    private AudioSource audioSource;
+    private AudioSource audioSource; // Áudio principal (eventos e música de fundo se for o caso)
     private List<Sprite> spritePairs;
     private List<AudioClip> audioPairs;
 
@@ -53,11 +61,18 @@ public class CardsController : MonoBehaviour
 
     private void Start()
     {
+        // Cria e anexa o AudioSource principal (para eventos)
         audioSource = gameObject.AddComponent<AudioSource>();
+        
+        // Aplica a configuração inicial de volume SFX
+        SetSFXVolume(initialSFXVolume);
+        
         StartRound();
         UpdateAllScoreDisplays();
     }
 
+    // ... (Métodos StartRound, PreviewCardsCoroutine, ClearGrid, PrepareSpritesForRound, CreateCards, ShufflePairs permanecem inalterados)
+    
     private void StartRound()
     {
         matchCounts = 0;
@@ -245,6 +260,35 @@ public class CardsController : MonoBehaviour
             }
         }
     }
+    
+    // ==== FUNÇÕES DE ÁUDIO MIGRARADAS ====
+    
+    // Função para tocar SFX (usa o SFXSource dedicado)
+    public void PlaySFX(AudioClip clip)
+    {
+        if (SFXSource != null && clip != null)
+        {
+            SFXSource.PlayOneShot(clip);
+        }
+    }
+    
+    // Função para definir o volume do SFX
+    public void SetSFXVolume(float volume)
+    {
+        if (SFXSource != null)
+        {
+            SFXSource.volume = Mathf.Clamp01(volume);
+        }
+    }
+
+    // Função para definir o volume do áudio principal (background/eventos)
+    public void SetBackgroundVolume(float volume)
+    {
+        if (audioSource != null)
+        {
+            audioSource.volume = Mathf.Clamp01(volume);
+        }
+    }
 
     // ==== SCORE & UI ====
     public void AddScore(int amount)
@@ -254,6 +298,15 @@ public class CardsController : MonoBehaviour
         UpdateAllScoreDisplays();
     }
 
+    public void ShowEndPhasePanel()
+    {
+        Debug.Log("== [ShowEndPhasePanel] - FIM DE JOGO! ==");
+        if (endPhasePanel != null) endPhasePanel.SetActive(true);
+        if (endGameAudio != null) audioSource.PlayOneShot(endGameAudio);
+        if (endOfLevelConfetti != null) endOfLevelConfetti.Play();
+        UpdateAllScoreDisplays();
+    }
+    
     private void UpdateAllScoreDisplays()
     {
         string formattedScore = score.ToString("000");
@@ -266,6 +319,7 @@ public class CardsController : MonoBehaviour
     {
         if (scorePause != null) scorePause.text = "Score: " + score.ToString();
         if (pauseMenu != null) pauseMenu.SetActive(true);
+        audioSource.Pause();
         Time.timeScale = 0;
     }
 
@@ -273,14 +327,6 @@ public class CardsController : MonoBehaviour
     {
         if (pauseMenu != null) pauseMenu.SetActive(false);
         Time.timeScale = 1f;
-    }
-
-    public void ShowEndPhasePanel()
-    {
-        Debug.Log("== [ShowEndPhasePanel] - FIM DE JOGO! ==");
-        if (endPhasePanel != null) endPhasePanel.SetActive(true);
-        if (endGameAudio != null) audioSource.PlayOneShot(endGameAudio);
-        if (endOfLevelConfetti != null) endOfLevelConfetti.Play();
-        UpdateAllScoreDisplays();
+        audioSource.UnPause();
     }
 }

@@ -285,9 +285,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1925811960}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: OpenPauseMenuLvl1
+      - m_Target: {fileID: 2086876176}
+        m_TargetAssemblyTypeName: CardsController, Assembly-CSharp
+        m_MethodName: OpenPauseMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1116,9 +1116,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1925811960}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: ClosePauseMenuLvl1
+      - m_Target: {fileID: 2086876176}
+        m_TargetAssemblyTypeName: CardsController, Assembly-CSharp
+        m_MethodName: ClosePauseMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2845,60 +2845,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1925811959
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1925811961}
-  - component: {fileID: 1925811960}
-  m_Layer: 0
-  m_Name: GameManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1925811960
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1925811959}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 233da6c7570f99d4d8bed29402bbe5c1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnnablePrefabs: []
-  horizontalSpawnPadding: 1
-  spawnPoint: {fileID: 0}
-  spawnRate: 0
-  numberCounter: {fileID: 0}
-  scorePause: {fileID: 0}
-  scoreEndPhase: {fileID: 0}
-  endPhasePanel: {fileID: 1575878401}
-  confettiEffect: {fileID: 0}
-  PauseMenu: {fileID: 773761997}
---- !u!4 &1925811961
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1925811959}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 562.86707, y: 1993.752, z: -12.350993}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1967611181
 GameObject:
   m_ObjectHideFlags: 0
@@ -3352,7 +3298,7 @@ MonoBehaviour:
   pairsPerRound: 03000000040000000500000005000000
   roundTransitionAudio: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
   roundCompleteAudio: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
-  endGameAudio: {fileID: 0}
+  endGameAudio: {fileID: 8300000, guid: 74d5dc0c5fa7f7144b6923e39a624b64, type: 3}
   pauseMenu: {fileID: 773761997}
   endPhasePanel: {fileID: 1575878401}
   scoreHUD: {fileID: 0}
@@ -3360,6 +3306,8 @@ MonoBehaviour:
   scoreEndPhase: {fileID: 0}
   endOfLevelConfetti: {fileID: 858460499}
   roundOverlayImage: {fileID: 809686779}
+  SFXSource: {fileID: 0}
+  initialSFXVolume: 1
 --- !u!4 &2086876177
 Transform:
   m_ObjectHideFlags: 0
@@ -3383,4 +3331,3 @@ SceneRoots:
   - {fileID: 975024521}
   - {fileID: 1911107482}
   - {fileID: 2086876177}
-  - {fileID: 1925811961}
