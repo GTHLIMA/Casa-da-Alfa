@@ -3441,7 +3441,7 @@ MonoBehaviour:
   background: {fileID: 8300000, guid: 1634df1390fe68e448ae1cdf4ac3e7bd, type: 3}
   end1: {fileID: 0}
   end2: {fileID: 0}
-  end3: {fileID: 8300000, guid: 0b834cbd0f0b6334f8d428a79a527202, type: 3}
+  end3: {fileID: 8300000, guid: 74d5dc0c5fa7f7144b6923e39a624b64, type: 3}
   VoiceRecognition: {fileID: 8300000, guid: 5b5fb2daeb0e21446821345f5f36df23, type: 3}
   ballonPop: {fileID: 0}
   initialSFXVolume: 1
@@ -4006,7 +4006,7 @@ MonoBehaviour:
       hintBasicAudio: {fileID: 8300000, guid: 71eac4d154dd1654890ab5adc4880d4e, type: 3}
       hintFinalAudio: {fileID: 8300000, guid: 0e2def001c4290443b21b89877f9b83b, type: 3}
   languageCode: pt-BR
-  similarityThreshold: 0.627
+  similarityThreshold: 0.747
   zacaSimilarityThreshold: 0.718
   micIndicatorImage: {fileID: 1876227425}
   micIndicatorAnimator: {fileID: 0}

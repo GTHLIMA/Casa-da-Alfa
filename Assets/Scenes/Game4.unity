@@ -894,7 +894,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 459020142}
         m_TargetAssemblyTypeName: LoadScenes, Assembly-CSharp
-        m_MethodName: Level2_5
+        m_MethodName: Level5
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3442,7 +3442,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2144835112}
         m_TargetAssemblyTypeName: LoadScenes, Assembly-CSharp
-        m_MethodName: Level2_5
+        m_MethodName: Level5
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
