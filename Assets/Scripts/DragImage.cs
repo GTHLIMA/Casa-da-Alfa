@@ -15,6 +15,9 @@ public class DragImage : MonoBehaviour
 
     private Vector2 dragStartPosition;
     private Vector2 previousMousePosition;
+    private float dragStartTime;
+    private float totalDragTime;
+    private bool isCurrentlyDragging;
 
     private AudioSource audioSource;
 
@@ -53,10 +56,16 @@ public class DragImage : MonoBehaviour
     {
         if (hasFallen) return;
 
+        var logger = FindObjectOfType<DragGameLogger>();
+        logger?.LogDragStart(GetComponent<SpriteRenderer>().sprite.name, transform.position);
+
         if (audioSource != null && popDownClip != null)
             audioSource.PlayOneShot(popDownClip);
 
         isDragging = true;
+        isCurrentlyDragging = true;
+        dragStartTime = Time.time;
+        totalDragTime = 0f;    
         dragStartPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         previousMousePosition = dragStartPosition;
 
@@ -68,8 +77,28 @@ public class DragImage : MonoBehaviour
     {
         if (!isDragging || hasFallen) return;
 
+        var logger = FindObjectOfType<DragGameLogger>();
         Vector2 currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
         float dragDistance = Vector2.Distance(currentMousePosition, dragStartPosition);
+        bool wasDropped = dragDistance > dragThreshold;
+
+        // Calcula o tempo total de arrasto
+        if (isCurrentlyDragging)
+        {
+            totalDragTime = Time.time - dragStartTime;
+            isCurrentlyDragging = false;
+        }
+
+        // Log com informações detalhadas do arrasto
+        logger?.LogDragEnd(
+            GetComponent<SpriteRenderer>().sprite.name, 
+            dragStartPosition, 
+            currentMousePosition, 
+            wasDropped,
+            totalDragTime,
+            dragDistance
+        );
 
         if (dragDistance > dragThreshold)
         {
@@ -82,17 +111,24 @@ public class DragImage : MonoBehaviour
         }
     }
 
+    void OnMouseDrag()
+    {
+        if (isCurrentlyDragging)
+        {
+            totalDragTime = Time.time - dragStartTime;
+        }
+    }
+
     void ReleaseObject()
     {
         if (audioSource != null && popUpClip != null)
             audioSource.PlayOneShot(popUpClip);
 
         isDragging = false;
+        isCurrentlyDragging = false;
 
-        rb.constraints = RigidbodyConstraints2D.FreezeRotation; // libera queda mantendo rotação travada
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         rb.velocity = Vector2.zero;
-
-        // 👇 Empurrãozinho para garantir que o objeto descole da parede
         rb.velocity = new Vector2(0f, -2f);
 
         DisableLineRenderer();
@@ -108,8 +144,6 @@ public class DragImage : MonoBehaviour
                 Debug.Log("Objeto caiu de verdade! Velocidade Y: " + rb.velocity.y);
 
                 DisableLineRenderer();
-
-                // NÃO congela totalmente, só impede rotação
                 rb.constraints = RigidbodyConstraints2D.FreezeRotation;
             }
         }
@@ -164,6 +198,7 @@ public class DragImage : MonoBehaviour
     {
         hasFallen = false;
         isDragging = false;
+        isCurrentlyDragging = false;
 
         rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
         rb.velocity = Vector2.zero;

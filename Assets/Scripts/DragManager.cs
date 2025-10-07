@@ -101,6 +101,9 @@ public class DragManager : MonoBehaviour
 
         currentBalloon = Instantiate(fusionPrefab, spawnPoint.position, Quaternion.identity);
 
+        // var logger = FindObjectOfType<DragGameLogger>();
+        // logger?.LogImageSpawn(prefabSprites[currentIndex].name, spawnPoint.position);
+
         var fusionScript = currentBalloon.GetComponent<ImageFusion>();
         fusionScript.manager = this;
 
@@ -210,6 +213,7 @@ public class DragManager : MonoBehaviour
 
     public void RespawnAfterFall(GameObject fallingObject)
     {
+        var logger = FindObjectOfType<DragGameLogger>();
         StartCoroutine(HandleFall(fallingObject));
     }
 
@@ -259,6 +263,9 @@ public class DragManager : MonoBehaviour
     public void ShowEndPhasePanel()
     {
         StartCoroutine(ShowEndPhasePanelCoroutine());
+
+        var logger = FindObjectOfType<DragGameLogger>();
+        logger?.CompleteCurrentLevel(true, currentIndex, "level_completed");
     }
 
     private IEnumerator ShowEndPhasePanelCoroutine()

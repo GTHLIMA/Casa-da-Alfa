@@ -94,7 +94,7 @@ public class FireBaseManager : MonoBehaviour
 
                UnityMainThreadDispatcher.Enqueue(() =>
                 {
-                    LoadScenes.LoadSceneByIndex(1); // Call the static method directly
+                    LoadScenes.LoadSceneByIndex(3); // Call the static method directly
                 });
             }
             else
