@@ -124,33 +124,28 @@ public class RoundController : MonoBehaviour
         }
     }
 
-    // ensure 3 distractors (worst-case, duplicate the first distractor to avoid crash — but ideally your allOptions has 17 unique)
     while (chosen.Count < 3)
     {
         if (allOptions.Count > 0) chosen.Add(allOptions[0]);
         else break;
     }
 
-    // Now get the correct OPTION instance from allOptions if exists (match by name or image), otherwise use correctData.correctOption
     OptionData correctInstance = allOptions.Find(o => o != null &&
         (o.optionName == correctData.correctOption.optionName || o.optionImage == correctData.correctOption.optionImage)
     );
     if (correctInstance == null) correctInstance = correctData.correctOption;
 
-    // add the correct and shuffle
     chosen.Add(correctInstance);
     Shuffle(chosen);
 
-    // DEBUG: lista de escolhidos (ajuda a ver duplicatas)
     string debugNames = "";
     foreach (var c in chosen) debugNames += (c != null ? c.optionName : "NULL") + ", ";
     Debug.Log($"Round {currentRound} options: {debugNames}");
 
-    // instantiate and setup
     foreach (var opt in chosen)
     {
         GameObject go = Instantiate(optionPrefab, optionsParent);
-        // ensure CanvasGroup present for fade
+
         CanvasGroup cg = go.GetComponent<CanvasGroup>();
         if (cg == null) cg = go.AddComponent<CanvasGroup>();
         cg.alpha = 0f;
@@ -182,7 +177,7 @@ public class RoundController : MonoBehaviour
         StartCoroutine(HandleSelection(button, clicked));
     }
 
-   IEnumerator HandleSelection(OptionButton button, OptionData clicked)
+  IEnumerator HandleSelection(OptionButton button, OptionData clicked)
 {
     inputLocked = true;
     foreach (var b in currentOptionButtons) b.SetInteractable(false);
@@ -197,27 +192,34 @@ public class RoundController : MonoBehaviour
     {
         button.ShowFeedback(true, checkSprite);
 
-        // toca som do desenho + som de acerto
-        if (gm != null)
+        // 🔊 Toca primeiro o som do desenho
+        if (gm != null && clicked.optionAudio != null)
         {
-            if (clicked.optionAudio != null)
-                gm.PlayOption(clicked.optionAudio); // som da figura
-            gm.PlayCorrect(); // efeito de acerto
+            gm.PlayOption(clicked.optionAudio);
+            // Espera até o áudio do desenho terminar antes de continuar
+            yield return new WaitWhile(() => gm.IsOptionPlaying());
         }
 
+        // 🔊 Depois toca o som de acerto
+        if (gm != null)
+        yield return new WaitForSeconds(0.15f);
+            gm.PlayCorrect();
+
+        // Espera o tempo da animação de feedback
         float waitTime = button.feedbackDuration + button.fadeDuration + 0.25f;
         yield return new WaitForSeconds(waitTime);
 
+        // Incrementa pontuação e passa para o próximo round
         currentRound++;
-    score++; // incrementa score a cada acerto
+        score++;
 
         if (currentRound >= syllables.Count)
         {
-        ShowEndPhasePanel();
+            ShowEndPhasePanel();
         }
         else
         {
-        StartCoroutine(StartRoundCoroutine());
+            StartCoroutine(StartRoundCoroutine());
         }
     }
     else
@@ -227,8 +229,9 @@ public class RoundController : MonoBehaviour
         if (gm != null)
         {
             gm.ShakeCamera(0.35f, 12f);
-            gm.PlayWrong(); // efeito sonoro opcional de erro
-            // toca novamente o som da sílaba atual
+            gm.PlayWrong(); // som de erro, se existir
+
+            // 🔁 toca novamente o som da sílaba atual (reforço)
             if (currentSyllable != null && currentSyllable.syllableAudio != null)
                 gm.PlaySyllable(currentSyllable.syllableAudio);
         }
