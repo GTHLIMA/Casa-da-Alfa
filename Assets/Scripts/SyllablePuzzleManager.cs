@@ -51,6 +51,26 @@ public class SyllablePuzzleManager : MonoBehaviour
     public Image finalImageDisplay;
     public Image finalWordDisplay;
     
+    [Header("--- CONTROLE DE CENA E ÁUDIO ---")]
+    [Tooltip("Painel da UI de Pausa.")]
+    public GameObject PauseMenu;
+    [Tooltip("Painel da UI de Fim de Fase.")]
+    [SerializeField] private GameObject endPhasePanel;
+
+    [Tooltip("Efeito de Confete a ser ativado no final.")]
+    [SerializeField] private ParticleSystem confettiEffect;
+    
+    [Tooltip("AudioSource principal para música/voz de fundo.")]
+    [SerializeField] private AudioSource audioSource;
+    [Tooltip("AudioSource dedicado para tocar efeitos sonoros (SFX).")]
+    [SerializeField] private AudioSource SFXSource;
+    [Tooltip("Clip de áudio para a música de fundo/ambiente.")]
+    [SerializeField] private AudioClip backgroundMusicClip; 
+    [Tooltip("Clip de áudio para o som de Fim de Fase (end2 no AudioManager antigo).")]
+    [SerializeField] private AudioClip endPhaseSFXClip; 
+    
+    [Tooltip("Define o volume inicial para os efeitos sonoros (SFX) nesta cena.")]
+    [SerializeField] private float initialSFXVolume = 1.0f; 
 
     [Header("Configurações de Animação e Tempo")]
     public float bounceDuration = 0.5f;
@@ -67,20 +87,24 @@ public class SyllablePuzzleManager : MonoBehaviour
     private List<AnswerSlotController> activeAnswerSlots = new List<AnswerSlotController>();
     private PuzzleData currentPuzzle;
     private int nextClickIndex = 0; 
-    private AudioManager audioManager;
     private int currentPuzzleIndex = 0;
     private bool isReviewing = false;
 
     private ButtonFloatEffect currentFloatEffect;
+    
+    private float savedTime; 
     #endregion
 
     private void Awake()
     {
-        audioManager = FindObjectOfType<AudioManager>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+        if (SFXSource == null) SFXSource = gameObject.AddComponent<AudioSource>();
     }
 
     private void Start()
     {
+
+        SetSFXVolume(initialSFXVolume);
         LoadPuzzle(currentPuzzleIndex);
     }
 
@@ -104,7 +128,6 @@ public class SyllablePuzzleManager : MonoBehaviour
             activeAnswerSlots.Add(slotController);
         }
         
-        // CORRIGIDO: Garante que os botões sejam criados na ordem definida em 'onScreenWords'
         foreach (var sourceWord in currentPuzzle.onScreenWords)
         {
             GameObject buttonGO = Instantiate(sourceButtonPrefab, sourceButtonParent);
@@ -113,14 +136,127 @@ public class SyllablePuzzleManager : MonoBehaviour
             activeSourceButtons.Add(buttonScript);
         }
 
-        // NOVO: Aplica destaque no primeiro botão
         HighlightNextButton();
     }
 
+    public void PauseAudio(AudioClip clip)
+    {
+        if (audioSource != null && audioSource.clip == clip)
+        {
+            savedTime = audioSource.time;
+            audioSource.Stop();
+        }
+    }
+
+    // Retoma o áudio a partir do tempo salvo
+    public void ResumeAudio(AudioClip clip)
+    {
+        if (audioSource != null && audioSource.clip == clip)
+        {
+            audioSource.time = savedTime;
+            audioSource.Play();
+        }
+    }
+    
+    public void PlaySFX(AudioClip clip)
+    {
+        if (SFXSource != null && clip != null)
+        {
+            SFXSource.PlayOneShot(clip);
+        }
+    }
+    
     public void PlayAudio(AudioClip clip)
     {
-        if (audioManager != null && clip != null) audioManager.PlaySFX(clip);
+        PlaySFX(clip); 
     }
+    
+    // Função para definir o volume do SFX
+    public void SetSFXVolume(float volume)
+    {
+        if (SFXSource != null)
+        {
+            SFXSource.volume = Mathf.Clamp01(volume);
+        }
+    }
+
+    
+    public void OpenPauseMenuLvl1()
+    {
+    
+
+        // Ativa o painel de pausa
+        if (PauseMenu != null)
+        {
+            PauseMenu.SetActive(true);
+
+            CanvasGroup cg = PauseMenu.GetComponent<CanvasGroup>();
+            if (cg == null) cg = PauseMenu.AddComponent<CanvasGroup>();
+            cg.interactable = true;
+            cg.blocksRaycasts = true;
+        }
+
+       
+        if (audioSource != null && backgroundMusicClip != null)
+            PauseAudio(backgroundMusicClip);
+
+      
+        Time.timeScale = 0f;
+
+        AudioListener.pause = true;
+
+
+        Debug.Log("Jogo pausado: tempo parado e painel ativo.");
+    }
+
+    public void ClosePauseMenuLvl1()
+    {
+        // Retoma o tempo do jogo
+        Time.timeScale = 1f;
+
+        AudioListener.pause = false;
+        if (audioSource != null && backgroundMusicClip != null)
+            ResumeAudio(backgroundMusicClip);
+
+      
+        if (PauseMenu != null)
+            PauseMenu.SetActive(false);
+
+        Debug.Log("Jogo retomado.");
+    }
+    
+
+    
+    public void ShowEndPhasePanel()
+    {
+        StartCoroutine(ShowEndPhasePanelCoroutine());
+    }
+
+    private IEnumerator ShowEndPhasePanelCoroutine()
+    {
+        yield return new WaitForSeconds(0.5f);
+
+
+        if (endPhasePanel != null) endPhasePanel.SetActive(true);
+        
+        if (confettiEffect != null)
+    {
+        confettiEffect.Play();
+        Debug.Log("Efeito de confete ativado!");
+    }
+
+        Debug.Log("Lógica de spawner de balões e confete foi removida.");
+
+        if (audioSource != null && SFXSource != null)
+        {
+
+            PauseAudio(backgroundMusicClip);
+            
+            PlaySFX(endPhaseSFXClip);
+        }
+
+    }
+
 
     public void OnSourceButtonClicked(OnScreenWord clickedWord, SyllableSourceButton button)
     {
@@ -139,7 +275,6 @@ public class SyllablePuzzleManager : MonoBehaviour
     {
         button.SetUsed(true);
 
-        // NOVO: Para o efeito no botão atual
         StopHighlightOn(button);
 
         nextClickIndex++; 
@@ -149,7 +284,6 @@ public class SyllablePuzzleManager : MonoBehaviour
         button.RevealLocalSyllable();
         PlayAudio(clickedWord.syllableAudio);
 
-        // NOVO: Destaca o próximo botão
         HighlightNextButton();
 
         if (nextClickIndex >= activeSourceButtons.Count)
@@ -220,23 +354,17 @@ public class SyllablePuzzleManager : MonoBehaviour
     
     private void EndGame()
     {
-        Debug.Log("FIM DE JOGO! Chamando GameManager...");
-
+        Debug.Log("FIM DE JOGO! Acionando painel de fim de fase local.");
+        
+        // Oculta todos os elementos do quebra-cabeça
         finalWordDisplay.gameObject.SetActive(false);
         sourceButtonParent.gameObject.SetActive(false);
         answerSlotParent.gameObject.SetActive(false);
         finalImageDisplay.gameObject.SetActive(false);
         fundoImageDisplay.gameObject.SetActive(false);
         
-
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.ShowEndPhasePanel();
-        }
-        else
-        {
-            Debug.LogError("GameManager.Instance não encontrado! O painel de fim de fase não será mostrado.");
-        }
+        // Chama a função local
+        ShowEndPhasePanel(); 
     }
 
     private void HighlightNextButton()

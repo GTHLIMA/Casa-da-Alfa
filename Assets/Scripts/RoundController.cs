@@ -288,22 +288,21 @@ private IEnumerator ShowEndPhasePanelCoroutine()
         Debug.Log("Efeito de confete ativado!");
     }
 
-    Debug.Log("Fim dos rounds! Painel final exibido.");
-
-    // Pausar música e tocar som de fim
     if (gm != null)
     {
-        gm.StopMusic(); // pausa música
-        if (gm.sfxSource != null && gm.correctSfx != null)
+
+        if (gm.sfxSource != null && gm.confettiSfx != null)
         {
-            gm.sfxSource.PlayOneShot(gm.correctSfx, gm.sfxVolume);
+            gm.sfxSource.PlayOneShot(gm.confettiSfx, gm.sfxVolume);
         }
+        
+        gm.StopMusic(); 
+        
+        
     }
 
-    // Se houver integração de ScoreTransfer (como em outros jogos)
-    if (ScoreTransfer.Instance != null)
-        ScoreTransfer.Instance.SetScore(score);
-}
+    Debug.Log("Fim dos rounds! Painel final exibido.");
 
+}
 
 }
