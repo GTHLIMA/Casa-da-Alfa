@@ -27,6 +27,7 @@ public class CardsController : MonoBehaviour
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject endPhasePanel;
 
+
     [Header("UI Texts")]
     [SerializeField] private Text scoreHUD;
     [SerializeField] private Text scorePause;
@@ -317,6 +318,7 @@ public class CardsController : MonoBehaviour
 
     public void OpenPauseMenu()
     {
+        pauseMenu.SetActive(true);
         if (scorePause != null) scorePause.text = "Score: " + score.ToString();
         if (pauseMenu != null) pauseMenu.SetActive(true);
         audioSource.Pause();

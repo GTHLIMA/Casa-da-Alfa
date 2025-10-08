@@ -93,6 +93,8 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
     private bool isListening = false;
     private AudioManager audioManager;
     private int score;
+
+    private VoiceGameLogger logger; //Firebase
     #endregion
 
     #region Unity Lifecycle
@@ -104,6 +106,8 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
 
     private void Start()
     {
+        logger = FindObjectOfType<VoiceGameLogger>(); //Firebase
+
         score = ScoreTransfer.Instance?.Score ?? 0;
         if (numberCounter != null) numberCounter.Value = score;
         UpdateAllScoreDisplays();
@@ -202,6 +206,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
         if (trainController != null)
         {
             Sprite currentSprite = currentSyllableList[currentIndex].image;
+            logger?.LogImageProgress(currentSyllableList[currentIndex].word, currentIndex); //Firebase
             yield return StartCoroutine(trainController.RevealCurrentImage(currentSprite));
         }
 
@@ -215,6 +220,8 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
                 if (audioManager != null && hintClip != null)
                 {
                     audioManager.PlaySFX(hintClip);
+                    logger?.LogHint(currentSyllableList[currentIndex].word, mistakeCount); //Firebase
+
                     yield return new WaitForSeconds(hintClip.length + delayAfterHint);
                 }
             }
@@ -271,6 +278,9 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
             if (isCorrect)
             {
                 AddScore(10);
+
+                logger?.LogCorrect(currentSyllableList[currentIndex].word); //Firebase
+
                 if (audioManager != null && congratulatoryAudio != null)
                     audioManager.PlaySFX(congratulatoryAudio);
 
@@ -279,6 +289,7 @@ public class ImageVoiceMatcher : MonoBehaviour, ISpeechToTextListener
             }
 
             mistakeCount++;
+            logger?.LogError(currentSyllableList[currentIndex].word, lastRecognizedText); //Firebase
             pularPromptNaProximaTentativa = true;
         }
 

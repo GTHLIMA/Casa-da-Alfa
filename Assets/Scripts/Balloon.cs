@@ -67,16 +67,24 @@ public class Balloon : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // O balão sobe se o jogo começou
         if (GameManager.GameStarted) transform.Translate(0, upSpeed, 0);
     }
 
     private void PopBalloon()
     {
-        if (isPopping) return; 
+        if (isPopping) return;
 
-        PopBalloonAnimation(); 
+        var logger = FindObjectOfType<BalloonGameLogger>();
+        if (logger != null)
+        {
+            Vector2 worldPos = transform.position;
+            logger.LogTouch(worldPos.y);
+            logger.LogBalloon();
+        }
+
+        PopBalloonAnimation();
     }
+
     
     private void PopBalloonAnimation()
     {

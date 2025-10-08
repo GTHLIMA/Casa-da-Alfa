@@ -8,41 +8,43 @@ public class ImageFusion : MonoBehaviour
 
     void Start()
     {
-        // Define o limite com base na posição Y do target (para cair abaixo)
         if (currentTarget != null)
-            fallLimitY = currentTarget.transform.position.y - 0.5f; // margem de tolerância
+            fallLimitY = currentTarget.transform.position.y - 0.5f;
     }
 
     void Update()
     {
         if (transform.position.y < fallLimitY)
         {
-            // Evita múltiplas chamadas
             if (manager != null)
             {
+                var logger = FindObjectOfType<DragGameLogger>();
+                logger?.LogError("target", GetComponent<SpriteRenderer>().sprite.name, "object_fell");
+                
                 manager.RespawnAfterFall(gameObject);
-                manager = null; // Impede chamadas duplicadas
+                manager = null;
             }
         }
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        // Confirma que encostou no target
         if (other.gameObject == currentTarget)
         {
             var playerSprite = GetComponent<SpriteRenderer>().sprite;
-            var targetSprite = currentTarget.GetComponent<SpriteRenderer>().sprite;
+            var targetSprite = currentTarget.GetComponent<SpriteRenderer>().sprite; 
+
+            var logger = FindObjectOfType<DragGameLogger>();
 
             if (playerSprite == targetSprite)
             {
-                manager.HandleFusion(); 
+                logger?.LogCorrectMatch(playerSprite.name, targetSprite.name);
+                manager.HandleFusion();
             }
             else
             {
-                Debug.Log("Sprites diferentes: fusão cancelada.");
+                logger?.LogError(targetSprite.name, playerSprite.name, "wrong_match");
             }
         }
     }
-
 }

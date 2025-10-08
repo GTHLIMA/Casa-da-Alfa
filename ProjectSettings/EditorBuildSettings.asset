@@ -30,12 +30,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Game2.4.unity
     guid: cb571d1e86858e746ad8af819a0457e3
   - enabled: 1
-    path: Assets/Scenes/Game4.unity
-    guid: f265daae2e29072408aa51d2e0459406
-  - enabled: 1
-    path: Assets/Scenes/Game2.5.unity
-    guid: 5365ef16f673cd24eb235bc96a3921f1
-  - enabled: 1
     path: Assets/Scenes/Game2.5.unity
     guid: 5365ef16f673cd24eb235bc96a3921f1
   - enabled: 1
@@ -51,14 +45,17 @@ EditorBuildSettings:
     path: Assets/Scenes/Game2.9.unity
     guid: 3a675bf410e6d3541a01e927fc91e3ac
   - enabled: 1
-    path: Assets/Scenes/Game4.1.unity
-    guid: 7776884f03bd26246bab52b9dfa0c5ff
-  - enabled: 1
     path: Assets/Scenes/Game3.unity
     guid: aaea9f2ab229007458d2dfc8fa8a4687
   - enabled: 1
     path: Assets/Scenes/Game3.1.unity
     guid: ed5942f707405844ca191b1d8899caaf
+  - enabled: 1
+    path: Assets/Scenes/Game4.unity
+    guid: f265daae2e29072408aa51d2e0459406
+  - enabled: 1
+    path: Assets/Scenes/Game4.1.unity
+    guid: 7776884f03bd26246bab52b9dfa0c5ff
   - enabled: 1
     path: Assets/Scenes/Game5.unity
     guid: 1b4f7a742a3abfe4288fd12f813b5dc5
