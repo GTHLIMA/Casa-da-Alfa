@@ -7634,13 +7634,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syllablePanel: {fileID: 1198437930}
   optionsParent: {fileID: 1936055223}
-  optionPrefab: {fileID: 4082163324305313816, guid: 85ff83c95834a6943b0835591f91a432, type: 3}
+  optionPrefab: {fileID: 4082163324305313816, guid: 6d8dbdab331f99e4cb1a709dbe00d712, type: 3}
   syllables:
-  - syllableName: BA DE
-    syllableImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
-    syllableAudio: {fileID: 8300000, guid: a70c326af141a75458db42719348da2f, type: 3}
+  - syllableName: BA
+    syllableImage: {fileID: 21300000, guid: d1278dd73a45ef24683ff24ba30a71f6, type: 3}
+    syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
     correctOption:
-      optionName: BALAO
+      optionName: BA
       optionImage: {fileID: 21300000, guid: 41cd00b389c65354ab8cf489d22fee87, type: 3}
       optionAudio: {fileID: 8300000, guid: 49c50922760da3f40899a2e990a84f5e, type: 3}
       syllableSprite: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
@@ -7883,7 +7883,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0.4, y: 0.1}
   m_SizeDelta: {x: 1445.6396, y: 2781.4788}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1753677466
@@ -7935,8 +7935,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
-  m_Sprite: {fileID: 21300000, guid: 6ce371cf245d4594f9d0e2b753dacf39, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 651d5e3d4d432a54ca9382df116be9c4, type: 3}
+  m_Color: {r: 0.09803924, g: 0.972549, b: 0.60599416, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -7958,7 +7958,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84946a9ddeab225498a314dab8d153a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isAspectRatio: 1
+  isAspectRatio: 0
 --- !u!1 &1775477998
 GameObject:
   m_ObjectHideFlags: 0
