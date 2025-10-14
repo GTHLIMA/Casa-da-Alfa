@@ -225,7 +225,7 @@ Transform:
   m_GameObject: {fileID: 99774438}
   serializedVersion: 2
   m_LocalRotation: {x: 0.70993197, y: 0.000049418763, z: -0.0037423298, w: -0.70426035}
-  m_LocalPosition: {x: -445.17, y: -848.75995, z: -148}
+  m_LocalPosition: {x: -33, y: -907, z: -148}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5279,8 +5279,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00036526, y: 256}
-  m_SizeDelta: {x: 129.3361, y: 112.6522}
+  m_AnchoredPosition: {x: -3, y: 585.09}
+  m_SizeDelta: {x: 484.38, y: 322.65}
   m_Pivot: {x: 0.49999997, y: 0.49999994}
 --- !u!114 &270939288
 MonoBehaviour:
@@ -5327,7 +5327,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1715173768}
-        m_TargetAssemblyTypeName: RoundController, Assembly-CSharp
+        m_TargetAssemblyTypeName: RoundController_V2, Assembly-CSharp
         m_MethodName: RepeatQuestion
         m_Mode: 1
         m_Arguments:
@@ -6487,9 +6487,9 @@ MonoBehaviour:
   correctSfx: {fileID: 8300000, guid: f4318f53195abcc4a9b70cffd9efe49f, type: 3}
   wrongSfx: {fileID: 0}
   confettiSfx: {fileID: 8300000, guid: 74d5dc0c5fa7f7144b6923e39a624b64, type: 3}
-  confettiEffect: {fileID: 0}
-  PauseMenu: {fileID: 0}
-  endPhasePanel: {fileID: 0}
+  confettiEffect: {fileID: 99774441}
+  PauseMenu: {fileID: 132933640}
+  endPhasePanel: {fileID: 834097410}
   spawnPoint: {fileID: 0}
 --- !u!4 &868681516
 Transform:
@@ -7629,223 +7629,43 @@ MonoBehaviour:
   m_GameObject: {fileID: 1715173763}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1cd5b8c240eaadd4b9edefda2a77ce2a, type: 3}
+  m_Script: {fileID: 11500000, guid: 8c16c0715ea8f534bb1e9d2b304ca280, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syllablePanel: {fileID: 1198437930}
+  soundIcon: {fileID: 1198437930}
   optionsParent: {fileID: 1936055223}
   optionPrefab: {fileID: 4082163324305313816, guid: 6d8dbdab331f99e4cb1a709dbe00d712, type: 3}
   syllables:
   - syllableName: BA
-    syllableImage: {fileID: 21300000, guid: d1278dd73a45ef24683ff24ba30a71f6, type: 3}
+    syllableImage: {fileID: 0}
     syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
     correctOption:
       optionName: BA
-      optionImage: {fileID: 21300000, guid: 41cd00b389c65354ab8cf489d22fee87, type: 3}
-      optionAudio: {fileID: 8300000, guid: 49c50922760da3f40899a2e990a84f5e, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
-  - syllableName: CA DE
-    syllableImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
-    syllableAudio: {fileID: 8300000, guid: 99df1e10793da7344bcc1c47bb622d33, type: 3}
-    correctOption:
-      optionName: CASA
-      optionImage: {fileID: 21300000, guid: 02d2b68ba8464d44598496ef5dfbbff9, type: 3}
-      optionAudio: {fileID: 8300000, guid: 244ec0e7d759d014d81b9b776f55eb66, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
-  - syllableName: DA DE
-    syllableImage: {fileID: 21300000, guid: b853cd58663860d4b90beafefbce3e77, type: 3}
-    syllableAudio: {fileID: 8300000, guid: f931341914255604181422c61fb72929, type: 3}
-    correctOption:
-      optionName: DADO
-      optionImage: {fileID: 21300000, guid: 7ac550a7ae2b46b43bc979cb7e82844b, type: 3}
-      optionAudio: {fileID: 8300000, guid: 7db016608aaf4634eaaed4c230b3bfe2, type: 3}
-      syllableSprite: {fileID: 21300000, guid: b853cd58663860d4b90beafefbce3e77, type: 3}
-  - syllableName: FA DE
-    syllableImage: {fileID: 21300000, guid: 3295dc4b1ef57304194bb183a2baf36b, type: 3}
-    syllableAudio: {fileID: 8300000, guid: f4a3cfced78e4bf4db7f410ef1d0aab0, type: 3}
-    correctOption:
-      optionName: FACA
-      optionImage: {fileID: 21300000, guid: 39c7aa4f7e0347b4da7ac0d033858aef, type: 3}
-      optionAudio: {fileID: 8300000, guid: 9ea799873f704ea48a8705f6f381f437, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 3295dc4b1ef57304194bb183a2baf36b, type: 3}
-  - syllableName: GA DE
-    syllableImage: {fileID: 21300000, guid: 75f92c228e90a4940a05cfdabe258eb8, type: 3}
-    syllableAudio: {fileID: 8300000, guid: 8b0103426b4aa04428a15eb3a13658c9, type: 3}
-    correctOption:
-      optionName: GATO
-      optionImage: {fileID: 21300000, guid: 86e346b794b2ad24bb9d38c5c984f938, type: 3}
-      optionAudio: {fileID: 8300000, guid: c0f08c0de90ade74798a4e3f9cce578e, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 75f92c228e90a4940a05cfdabe258eb8, type: 3}
-  - syllableName: JA DE
-    syllableImage: {fileID: 21300000, guid: 86ce0ec77a9934d4d9eaa62049c4e0bf, type: 3}
-    syllableAudio: {fileID: 8300000, guid: 6f420dfcab6261f439549899ff880b81, type: 3}
-    correctOption:
-      optionName: JACA
-      optionImage: {fileID: 21300000, guid: 65007bffd78fcb245a24f247d9ac186b, type: 3}
-      optionAudio: {fileID: 8300000, guid: e9ff4b2ef4bf1b9448ff77caa77ac4fb, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 86ce0ec77a9934d4d9eaa62049c4e0bf, type: 3}
-  - syllableName: LA DE
-    syllableImage: {fileID: 21300000, guid: 6f3b69fa5e38b734985fb2d32992b59e, type: 3}
-    syllableAudio: {fileID: 8300000, guid: 3483326003c829447b6ec30c58797337, type: 3}
-    correctOption:
-      optionName: LATA
-      optionImage: {fileID: 21300000, guid: 5ae6e45565994364a80cf6ee8375fcf3, type: 3}
-      optionAudio: {fileID: 8300000, guid: ff0fb7f55def5ec4cbaa402e1d580434, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 6f3b69fa5e38b734985fb2d32992b59e, type: 3}
-  - syllableName: MA DE
-    syllableImage: {fileID: 21300000, guid: 1e54b1d1330a874409c4a806f05caaba, type: 3}
-    syllableAudio: {fileID: 8300000, guid: eb43b42d4e245c74190f918ad50d7704, type: 3}
-    correctOption:
-      optionName: 'MALA '
-      optionImage: {fileID: 21300000, guid: 67bc93b57360d4046ae9ff4004c6f18e, type: 3}
-      optionAudio: {fileID: 8300000, guid: 83f6be1643b176b4ba29dd5c89f325d2, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 1e54b1d1330a874409c4a806f05caaba, type: 3}
-  - syllableName: NA DE
-    syllableImage: {fileID: 21300000, guid: d7a47787471d29546aaf875379f81f66, type: 3}
-    syllableAudio: {fileID: 8300000, guid: c56651ab72fda8043b1509e20e4f0375, type: 3}
-    correctOption:
-      optionName: NAVIO
-      optionImage: {fileID: 21300000, guid: d9b44c9113a9a9a459db3f5785a23782, type: 3}
-      optionAudio: {fileID: 8300000, guid: 091d771cb4f1c8348982de701f633ad7, type: 3}
-      syllableSprite: {fileID: 21300000, guid: d7a47787471d29546aaf875379f81f66, type: 3}
-  - syllableName: PA DE
-    syllableImage: {fileID: 21300000, guid: 3909d92f734a7124ab2a382f1b89eb0f, type: 3}
-    syllableAudio: {fileID: 8300000, guid: ee3addfed59558042aa347b2fe5fa6dd, type: 3}
-    correctOption:
-      optionName: PATO
-      optionImage: {fileID: 21300000, guid: e72658e467a3012409db9b2e8d2310b1, type: 3}
-      optionAudio: {fileID: 8300000, guid: d63d894cc12010248be7547bf8fbd6a9, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 3909d92f734a7124ab2a382f1b89eb0f, type: 3}
-  - syllableName: QUA DE
-    syllableImage: {fileID: 21300000, guid: 5b113c9dc01f631409a5dfc5efb923b6, type: 3}
-    syllableAudio: {fileID: 8300000, guid: 6fb96b839ba5c534d9e2d013c3a1e442, type: 3}
-    correctOption:
-      optionName: QUADRO
-      optionImage: {fileID: 21300000, guid: c1a606cde1025c347a86c65ad287385b, type: 3}
-      optionAudio: {fileID: 8300000, guid: 35c43b3f55b0edf45814b64385ffb950, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 5b113c9dc01f631409a5dfc5efb923b6, type: 3}
-  - syllableName: RA DE
-    syllableImage: {fileID: 21300000, guid: e9d7e26ef4bf8034e8d107a29042169f, type: 3}
-    syllableAudio: {fileID: 8300000, guid: aa1ecb0b8e65d254181394ed734dfa45, type: 3}
-    correctOption:
-      optionName: RATO
-      optionImage: {fileID: 21300000, guid: bc67a66d47394f24a982697e1310f89b, type: 3}
-      optionAudio: {fileID: 8300000, guid: dedd63e60ac8a22419fa4a47a12a8fdd, type: 3}
-      syllableSprite: {fileID: 21300000, guid: e9d7e26ef4bf8034e8d107a29042169f, type: 3}
-  - syllableName: SA DE
-    syllableImage: {fileID: 21300000, guid: c612877ee004d9a44ba84459bd5d28c2, type: 3}
-    syllableAudio: {fileID: 8300000, guid: 8b18610b50e17ff4eaaedaca0fce7350, type: 3}
-    correctOption:
-      optionName: 'SAPO '
-      optionImage: {fileID: 21300000, guid: 9e97978f96f8f9040a9ba3e7b1d6d320, type: 3}
-      optionAudio: {fileID: 8300000, guid: 43bfb1d330b47a747b3fff4bb565d56c, type: 3}
-      syllableSprite: {fileID: 21300000, guid: c612877ee004d9a44ba84459bd5d28c2, type: 3}
-  - syllableName: 'TA DE '
-    syllableImage: {fileID: 21300000, guid: a0d5ab77003a2274f919fcb594be6880, type: 3}
-    syllableAudio: {fileID: 8300000, guid: c831d8c1bf9309a44bdae24ff80f2b09, type: 3}
-    correctOption:
-      optionName: TATU
-      optionImage: {fileID: 21300000, guid: 82538c4ed3b58134c8d5aeb296b06070, type: 3}
-      optionAudio: {fileID: 8300000, guid: c4658fe7efbb7be45b8978f4f8c84318, type: 3}
-      syllableSprite: {fileID: 21300000, guid: a0d5ab77003a2274f919fcb594be6880, type: 3}
-  - syllableName: VA DE
-    syllableImage: {fileID: 21300000, guid: 8be7ecac8a15308408b8952e08dadf76, type: 3}
-    syllableAudio: {fileID: 8300000, guid: f75ca22aa2d06244cb252bb3609a9681, type: 3}
-    correctOption:
-      optionName: VACA
-      optionImage: {fileID: 21300000, guid: f77f17b2b8a20464db81e987d7f8b3ce, type: 3}
-      optionAudio: {fileID: 8300000, guid: 0d318a2ba40107b469f9caa3f8da4ab2, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 8be7ecac8a15308408b8952e08dadf76, type: 3}
-  - syllableName: XA DE
-    syllableImage: {fileID: 21300000, guid: adedc79b222239a438d7f3d1835e7c01, type: 3}
-    syllableAudio: {fileID: 8300000, guid: 1db75415d11f0334b9b4a1fa2fec232f, type: 3}
-    correctOption:
-      optionName: XADREZ
-      optionImage: {fileID: 21300000, guid: 15e737d532375754eadffae8e52c753c, type: 3}
-      optionAudio: {fileID: 8300000, guid: 2161babc62d593e47a04797cc1cfcad4, type: 3}
-      syllableSprite: {fileID: 21300000, guid: adedc79b222239a438d7f3d1835e7c01, type: 3}
-  - syllableName: ZA DE
-    syllableImage: {fileID: 21300000, guid: 957602da4b4339a4a8e3ad74f1fbf88c, type: 3}
-    syllableAudio: {fileID: 8300000, guid: e75174289fd9a7f4992493623b20f978, type: 3}
-    correctOption:
-      optionName: ZACA
-      optionImage: {fileID: 21300000, guid: 3c9c05a6538709b4d8f79e5d423ed52b, type: 3}
-      optionAudio: {fileID: 8300000, guid: dfda4b12eaaff3b45a0e3401a12c14b3, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 957602da4b4339a4a8e3ad74f1fbf88c, type: 3}
+      optionImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
+      optionAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+      syllableSprite: {fileID: 0}
   allOptions:
-  - optionName: BALAO
-    optionImage: {fileID: 21300000, guid: 41cd00b389c65354ab8cf489d22fee87, type: 3}
-    optionAudio: {fileID: 8300000, guid: 49c50922760da3f40899a2e990a84f5e, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
-  - optionName: CASA
-    optionImage: {fileID: 21300000, guid: 02d2b68ba8464d44598496ef5dfbbff9, type: 3}
-    optionAudio: {fileID: 8300000, guid: 244ec0e7d759d014d81b9b776f55eb66, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
-  - optionName: DADO
-    optionImage: {fileID: 21300000, guid: 7ac550a7ae2b46b43bc979cb7e82844b, type: 3}
-    optionAudio: {fileID: 8300000, guid: 7db016608aaf4634eaaed4c230b3bfe2, type: 3}
-    syllableSprite: {fileID: 21300000, guid: b853cd58663860d4b90beafefbce3e77, type: 3}
-  - optionName: FACA
-    optionImage: {fileID: 21300000, guid: 39c7aa4f7e0347b4da7ac0d033858aef, type: 3}
-    optionAudio: {fileID: 8300000, guid: 9ea799873f704ea48a8705f6f381f437, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 3295dc4b1ef57304194bb183a2baf36b, type: 3}
-  - optionName: GATO
-    optionImage: {fileID: 21300000, guid: 86e346b794b2ad24bb9d38c5c984f938, type: 3}
-    optionAudio: {fileID: 8300000, guid: c0f08c0de90ade74798a4e3f9cce578e, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 75f92c228e90a4940a05cfdabe258eb8, type: 3}
-  - optionName: 'JACA '
-    optionImage: {fileID: 21300000, guid: 65007bffd78fcb245a24f247d9ac186b, type: 3}
-    optionAudio: {fileID: 8300000, guid: e9ff4b2ef4bf1b9448ff77caa77ac4fb, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 86ce0ec77a9934d4d9eaa62049c4e0bf, type: 3}
-  - optionName: LATA
-    optionImage: {fileID: 21300000, guid: 5ae6e45565994364a80cf6ee8375fcf3, type: 3}
-    optionAudio: {fileID: 8300000, guid: ff0fb7f55def5ec4cbaa402e1d580434, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 6f3b69fa5e38b734985fb2d32992b59e, type: 3}
-  - optionName: MALA
-    optionImage: {fileID: 21300000, guid: 67bc93b57360d4046ae9ff4004c6f18e, type: 3}
-    optionAudio: {fileID: 8300000, guid: 83f6be1643b176b4ba29dd5c89f325d2, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 1e54b1d1330a874409c4a806f05caaba, type: 3}
-  - optionName: NAVIO
-    optionImage: {fileID: 21300000, guid: d9b44c9113a9a9a459db3f5785a23782, type: 3}
-    optionAudio: {fileID: 8300000, guid: 091d771cb4f1c8348982de701f633ad7, type: 3}
-    syllableSprite: {fileID: 21300000, guid: d7a47787471d29546aaf875379f81f66, type: 3}
-  - optionName: PATO
-    optionImage: {fileID: 21300000, guid: e72658e467a3012409db9b2e8d2310b1, type: 3}
-    optionAudio: {fileID: 8300000, guid: d63d894cc12010248be7547bf8fbd6a9, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 3909d92f734a7124ab2a382f1b89eb0f, type: 3}
-  - optionName: QUADRO
-    optionImage: {fileID: 21300000, guid: c1a606cde1025c347a86c65ad287385b, type: 3}
-    optionAudio: {fileID: 8300000, guid: 35c43b3f55b0edf45814b64385ffb950, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 5b113c9dc01f631409a5dfc5efb923b6, type: 3}
-  - optionName: RATO
-    optionImage: {fileID: 21300000, guid: bc67a66d47394f24a982697e1310f89b, type: 3}
-    optionAudio: {fileID: 8300000, guid: dedd63e60ac8a22419fa4a47a12a8fdd, type: 3}
-    syllableSprite: {fileID: 21300000, guid: e9d7e26ef4bf8034e8d107a29042169f, type: 3}
-  - optionName: SAPO
-    optionImage: {fileID: 21300000, guid: 9e97978f96f8f9040a9ba3e7b1d6d320, type: 3}
-    optionAudio: {fileID: 8300000, guid: 43bfb1d330b47a747b3fff4bb565d56c, type: 3}
-    syllableSprite: {fileID: 21300000, guid: c612877ee004d9a44ba84459bd5d28c2, type: 3}
-  - optionName: TATU
-    optionImage: {fileID: 21300000, guid: 82538c4ed3b58134c8d5aeb296b06070, type: 3}
-    optionAudio: {fileID: 8300000, guid: c4658fe7efbb7be45b8978f4f8c84318, type: 3}
-    syllableSprite: {fileID: 21300000, guid: a0d5ab77003a2274f919fcb594be6880, type: 3}
-  - optionName: VACA
-    optionImage: {fileID: 21300000, guid: f77f17b2b8a20464db81e987d7f8b3ce, type: 3}
-    optionAudio: {fileID: 8300000, guid: 0d318a2ba40107b469f9caa3f8da4ab2, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 8be7ecac8a15308408b8952e08dadf76, type: 3}
-  - optionName: XADREZ
-    optionImage: {fileID: 21300000, guid: 15e737d532375754eadffae8e52c753c, type: 3}
-    optionAudio: {fileID: 8300000, guid: 2161babc62d593e47a04797cc1cfcad4, type: 3}
-    syllableSprite: {fileID: 21300000, guid: adedc79b222239a438d7f3d1835e7c01, type: 3}
-  - optionName: ZACA
-    optionImage: {fileID: 21300000, guid: 3c9c05a6538709b4d8f79e5d423ed52b, type: 3}
-    optionAudio: {fileID: 8300000, guid: dfda4b12eaaff3b45a0e3401a12c14b3, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 957602da4b4339a4a8e3ad74f1fbf88c, type: 3}
+  - optionName: BA
+    optionImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
+    optionAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: CA
+    optionImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
+    optionAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: DA
+    optionImage: {fileID: 21300000, guid: b853cd58663860d4b90beafefbce3e77, type: 3}
+    optionAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: FA
+    optionImage: {fileID: 21300000, guid: 3295dc4b1ef57304194bb183a2baf36b, type: 3}
+    optionAudio: {fileID: 8300000, guid: 129794c8ee0dc12408c51fd88ac9e2bb, type: 3}
+    syllableSprite: {fileID: 0}
   checkSprite: {fileID: 21300000, guid: 0368b0a537dbc3c4487019267ac006d0, type: 3}
   wrongSprite: {fileID: 21300000, guid: 78df9938d99e7114ea7121ce34909898, type: 3}
-  endPhasePanel: {fileID: 0}
+  endPhasePanel: {fileID: 834097410}
   scoreEndPhase: {fileID: 0}
-  confettiEffect: {fileID: 0}
+  confettiEffect: {fileID: 99774441}
   spawnPoint: {fileID: 0}
   score: 0
 --- !u!1 &1753677463
@@ -7994,7 +7814,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -40.695007, y: -36.651}
+  m_AnchoredPosition: {x: -40.69507, y: -36.65088}
   m_SizeDelta: {x: 19.3148, y: 29.5024}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1775478000
@@ -8457,8 +8277,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -3, y: 585.09}
-  m_SizeDelta: {x: 517.3982, y: 356.52}
+  m_AnchoredPosition: {x: 9, y: 585.09}
+  m_SizeDelta: {x: 601.83, y: 516.52}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1935800147
 MonoBehaviour:
