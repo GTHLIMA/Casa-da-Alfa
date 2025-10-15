@@ -1,6 +1,7 @@
 using UnityEngine;
 using Firebase.Database;
 using System;
+using System.Collections.Generic;
 
 public class BalloonGameLogger : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class BalloonGameLogger : MonoBehaviour
     private string username;
     private string currentSessionId;
 
+    private float sessionStartTime;
     private float lastTouchTime;
     private int loadCount = 0;
 
@@ -18,6 +20,24 @@ public class BalloonGameLogger : MonoBehaviour
     };
 
     private int currentSyllableIndex = 0;
+
+    // SINGLETON INSTANCE
+    public static BalloonGameLogger Instance { get; private set; }
+
+    private void Awake()
+    {
+        // Configura o Singleton
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+    }
 
     private void Start()
     {
@@ -53,13 +73,35 @@ public class BalloonGameLogger : MonoBehaviour
     private void StartNewSession()
     {
         currentSessionId = Guid.NewGuid().ToString();
+        sessionStartTime = Time.time;
 
         string path = $"users/{username}/balloonGame/sessions/{currentSessionId}";
         dbRef.Child(path).Child("startedAt")
-             .SetValueAsync(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            .SetValueAsync(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
         currentSyllableIndex = 0;
-        Debug.Log("Sessão iniciada: " + currentSessionId);
+        Debug.Log("Sessão iniciada: " + currentSessionId + " | Tempo: " + sessionStartTime);
+    }
+
+    public float EndSession()
+    {
+        float sessionEndTime = Time.time;
+        float sessionDuration = sessionEndTime - sessionStartTime;
+
+        string path = $"users/{username}/balloonGame/sessions/{currentSessionId}";
+        
+        // Salva os dados de término e duração
+        dbRef.Child(path).Child("endedAt")
+            .SetValueAsync(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        
+        dbRef.Child(path).Child("sessionDuration")
+            .SetValueAsync(sessionDuration);
+
+        Debug.Log($"Sessão finalizada: {currentSessionId}");
+        Debug.Log($"Duração da sessão: {sessionDuration:F2} segundos");
+        Debug.Log($"Início: {sessionStartTime:F2} | Fim: {sessionEndTime:F2}");
+
+        return sessionDuration; 
     }
 
     public void LogTouch(float yPos)
@@ -68,8 +110,18 @@ public class BalloonGameLogger : MonoBehaviour
         lastTouchTime = Time.time;
 
         string path = $"users/{username}/balloonGame/sessions/{currentSessionId}/touches";
+        string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+        
         dbRef.Child(path).Child("reactionTimes").Push().SetValueAsync(reaction);
-        dbRef.Child(path).Child("yPositions").Push().SetValueAsync(yPos);
+        
+        var positionData = new Dictionary<string, object>
+        {
+            { "value", yPos },
+            { "timestamp", timestamp }
+        };
+        dbRef.Child(path).Child("yPositions").Push().SetValueAsync(positionData);
+        
+        Debug.Log($"Toque registrado | Y: {yPos:F2} | Reação: {reaction:F2}s | {timestamp}");
     }
 
     public void LogBalloon()

@@ -157,6 +157,8 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator ShowEndPhasePanelCoroutine()
     {
+        float totalTime = BalloonGameLogger.Instance.EndSession();
+        Debug.Log($"O jogador ficou {totalTime:F2} segundos no jogo");
         yield return new WaitForSeconds(0.5f);
 
         if (scoreEndPhase != null)
