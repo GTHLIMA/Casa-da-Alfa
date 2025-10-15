@@ -16,6 +16,8 @@ public class FireBaseManager : MonoBehaviour
 
     private bool isFirebaseReady = false;
 
+    public int index;
+
     void Start()
     {
         // Inicializa o Firebase
@@ -152,7 +154,7 @@ public class FireBaseManager : MonoBehaviour
             }
 
             // yield return new WaitForSeconds(1f);
-            LoadScenes.LoadSceneByIndex(13);
+            LoadScenes.LoadSceneByIndex(index);
         }
         else
         {

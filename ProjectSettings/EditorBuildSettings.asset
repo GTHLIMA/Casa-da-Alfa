@@ -62,4 +62,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Game5.1.unity
     guid: a0e25088a63e64341b99944896cdadbb
+  - enabled: 1
+    path: Assets/Scenes/Game3 teste.unity
+    guid: 22bff8197dac0d945b7fbc40a67fb2b1
   m_configObjects: {}
