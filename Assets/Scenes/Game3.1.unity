@@ -892,6 +892,7 @@ MonoBehaviour:
   fundoImageDisplay: {fileID: 308884241}
   finalImageDisplay: {fileID: 1419211591}
   finalWordDisplay: {fileID: 1016306052}
+  gameLogger: {fileID: 0}
   PauseMenu: {fileID: 477691021}
   endPhasePanel: {fileID: 985280570}
   confettiEffect: {fileID: 1950047155}
@@ -1237,6 +1238,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da134511be4156845a8f274fc478d10d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &814851664
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 814851666}
+  - component: {fileID: 814851665}
+  m_Layer: 0
+  m_Name: SyllableGameLogger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &814851665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 814851664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 505815b27314c504eaef255d2e62c554, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &814851666
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 814851664}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -5.392388, y: -2.599156, z: 0.38226777}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &861237334
 GameObject:
   m_ObjectHideFlags: 0
@@ -4231,3 +4276,4 @@ SceneRoots:
   - {fileID: 1669652412}
   - {fileID: 1125635933}
   - {fileID: 692153929}
+  - {fileID: 814851666}

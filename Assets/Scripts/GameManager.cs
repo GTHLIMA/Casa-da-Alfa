@@ -38,6 +38,8 @@ public class GameManager : MonoBehaviour
     public GameObject PauseMenu;
     private AudioManager audioManager;
 
+    private BalloonGameLogger balloonGameLogger;
+
     #endregion
 
     private void Awake()
@@ -52,6 +54,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        balloonGameLogger = FindObjectOfType<BalloonGameLogger>();
         if (ScoreTransfer.Instance != null) score = ScoreTransfer.Instance.Score;
         if (numberCounter != null) numberCounter.Value = score;
     }
@@ -157,7 +160,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator ShowEndPhasePanelCoroutine()
     {
-        float totalTime = BalloonGameLogger.Instance.EndSession();
+        float totalTime = balloonGameLogger.EndSession();
         Debug.Log($"O jogador ficou {totalTime:F2} segundos no jogo");
         yield return new WaitForSeconds(0.5f);
 

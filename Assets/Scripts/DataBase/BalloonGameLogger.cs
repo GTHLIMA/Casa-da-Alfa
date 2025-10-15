@@ -21,29 +21,12 @@ public class BalloonGameLogger : MonoBehaviour
 
     private int currentSyllableIndex = 0;
 
-    // SINGLETON INSTANCE
-    public static BalloonGameLogger Instance { get; private set; }
-
-    private void Awake()
-    {
-        // Configura o Singleton
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
-    }
-
     private void Start()
     {
         username = FirebaseUserSession.Instance.LoggedUser;
         dbRef = FirebaseDatabase.DefaultInstance.RootReference;
 
+        // Inicia a contagem de carregamentos e sessão
         LoadAndIncrementLoadCount();
     }
 
@@ -59,14 +42,14 @@ public class BalloonGameLogger : MonoBehaviour
             }
             else
             {
-                loadCount = 0; 
+                loadCount = 0;
             }
 
             loadCount++;
             dbRef.Child(path).SetValueAsync(loadCount);
 
             Debug.Log("LoadCount atualizado -> " + loadCount);
-            UnityMainThreadDispatcher.Enqueue(() => StartNewSession());
+            UnityMainThreadDispatcher.Enqueue(StartNewSession);
         });
     }
 
@@ -90,18 +73,15 @@ public class BalloonGameLogger : MonoBehaviour
 
         string path = $"users/{username}/balloonGame/sessions/{currentSessionId}";
         
-        // Salva os dados de término e duração
         dbRef.Child(path).Child("endedAt")
             .SetValueAsync(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-        
         dbRef.Child(path).Child("sessionDuration")
             .SetValueAsync(sessionDuration);
 
         Debug.Log($"Sessão finalizada: {currentSessionId}");
         Debug.Log($"Duração da sessão: {sessionDuration:F2} segundos");
-        Debug.Log($"Início: {sessionStartTime:F2} | Fim: {sessionEndTime:F2}");
 
-        return sessionDuration; 
+        return sessionDuration;
     }
 
     public void LogTouch(float yPos)
@@ -111,16 +91,16 @@ public class BalloonGameLogger : MonoBehaviour
 
         string path = $"users/{username}/balloonGame/sessions/{currentSessionId}/touches";
         string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-        
+
         dbRef.Child(path).Child("reactionTimes").Push().SetValueAsync(reaction);
-        
+
         var positionData = new Dictionary<string, object>
         {
             { "value", yPos },
             { "timestamp", timestamp }
         };
         dbRef.Child(path).Child("yPositions").Push().SetValueAsync(positionData);
-        
+
         Debug.Log($"Toque registrado | Y: {yPos:F2} | Reação: {reaction:F2}s | {timestamp}");
     }
 

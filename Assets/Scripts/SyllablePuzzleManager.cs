@@ -91,8 +91,10 @@ public class SyllablePuzzleManager : MonoBehaviour
     private bool isReviewing = false;
 
     private ButtonFloatEffect currentFloatEffect;
-    
+
     private float savedTime; 
+    
+    private SyllableGameLogger gameLogger; //Firebase
     #endregion
 
     private void Awake()
@@ -103,6 +105,7 @@ public class SyllablePuzzleManager : MonoBehaviour
 
     private void Start()
     {
+        gameLogger = FindObjectOfType<SyllableGameLogger>();//firebase
 
         SetSFXVolume(initialSFXVolume);
         LoadPuzzle(currentPuzzleIndex);
@@ -262,15 +265,30 @@ public class SyllablePuzzleManager : MonoBehaviour
     {
         if (isReviewing) return;
 
+        // CORREÇÃO: Verifica se é o próximo botão na sequência, não a sílaba
         if (button != activeSourceButtons[nextClickIndex])
         {
-            Debug.Log("Clique fora de ordem!");
+            // LOG DE ERRO FIREBASE
+            if (gameLogger != null)
+            {
+                string expectedName = activeSourceButtons[nextClickIndex].GetWordName();
+                string receivedName = clickedWord.syllableImage != null ? clickedWord.syllableImage.name : "unknown";
+                gameLogger.LogWrongClick(expectedName, receivedName, currentPuzzleIndex, nextClickIndex);
+            }
+
+            Debug.Log($"Clique fora de ordem! Esperava o botão na posição {nextClickIndex}");
             return;
+        }
+
+        // LOG DE ACERTO FIREBASE
+        if (gameLogger != null)
+        {
+            string wordName = clickedWord.syllableImage != null ? clickedWord.syllableImage.name : "unknown";
+            gameLogger.LogCorrectClick(wordName, currentPuzzleIndex, nextClickIndex);
         }
 
         StartCoroutine(SourceButtonClickSequence(clickedWord, button));
     }
-
     private IEnumerator SourceButtonClickSequence(OnScreenWord clickedWord, SyllableSourceButton button)
     {
         button.SetUsed(true);
@@ -296,6 +314,11 @@ public class SyllablePuzzleManager : MonoBehaviour
     private IEnumerator ReviewAndWinSequence()
     {
         yield return new WaitForSeconds(delayBeforeReview);
+
+        if (gameLogger != null) // firebase log de puzzle completo
+        {
+            gameLogger.LogPuzzleCompleted(currentPuzzle.targetWord, currentPuzzleIndex, true);
+        }
 
         for (int i = 0; i < currentPuzzle.answerSequence.Count; i++)
         {
@@ -370,7 +393,8 @@ public class SyllablePuzzleManager : MonoBehaviour
     private void HighlightNextButton()
     {
     if (nextClickIndex < activeSourceButtons.Count)
-    {
+        {
+        // var btnImage = button.GetSyllableImage(); //firebase
         var button = activeSourceButtons[nextClickIndex];
         if (button.GetComponent<ButtonFloatEffect>() == null)
         {

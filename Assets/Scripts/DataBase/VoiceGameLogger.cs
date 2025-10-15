@@ -1,6 +1,7 @@
 using UnityEngine;
 using Firebase.Database;
 using System;
+using System.Collections.Generic;
 
 public class VoiceGameLogger : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class VoiceGameLogger : MonoBehaviour
     private string username;
     private string currentSessionId;
 
+    private float sessionStartTime;
     private int loadCount = 0;
     private int correctCount = 0;
     private int errorCount = 0;
@@ -40,7 +42,6 @@ public class VoiceGameLogger : MonoBehaviour
             dbRef.Child(path).SetValueAsync(loadCount);
 
             Debug.Log("VoiceGame - LoadCount atualizado -> " + loadCount);
-
             UnityMainThreadDispatcher.Enqueue(() => StartNewSession());
         });
     }
@@ -48,31 +49,56 @@ public class VoiceGameLogger : MonoBehaviour
     private void StartNewSession()
     {
         currentSessionId = Guid.NewGuid().ToString();
+        sessionStartTime = Time.time;
 
         string path = $"users/{username}/voiceGame/sessions/{currentSessionId}";
         dbRef.Child(path).Child("startedAt")
-             .SetValueAsync(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            .SetValueAsync(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
         correctCount = 0;
         errorCount = 0;
         hintCount = 0;
 
-        Debug.Log("VoiceGame - Sessão iniciada: " + currentSessionId);
+        Debug.Log("VoiceGame - Sessao iniciada: " + currentSessionId + " | Tempo: " + sessionStartTime);
     }
 
-    // ====== LOGS ======
+    public float EndSession()
+    {
+        float sessionEndTime = Time.time;
+        float sessionDuration = sessionEndTime - sessionStartTime;
+
+        string path = $"users/{username}/voiceGame/sessions/{currentSessionId}";
+        
+        dbRef.Child(path).Child("endedAt")
+            .SetValueAsync(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        
+        dbRef.Child(path).Child("sessionDuration")
+            .SetValueAsync(sessionDuration);
+
+        Debug.Log($"VoiceGame - Sessao finalizada: {currentSessionId}");
+        Debug.Log($"Duracao da sessao: {sessionDuration:F2} segundos");
+        Debug.Log($"Inicio: {sessionStartTime:F2} | Fim: {sessionEndTime:F2}");
+
+        return sessionDuration;
+    }
+
     public void LogImageProgress(string word, int index)
     {
+        string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+        
         string path = $"users/{username}/voiceGame/sessions/{currentSessionId}/progress";
-        dbRef.Child(path).Push().SetRawJsonValueAsync(JsonUtility.ToJson(new
+        
+        var progressData = new Dictionary<string, object>
         {
-            word = word,
-            index = index,
-            accuracyRate = CalculateAccuracyRate(),
-            timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
-        }));
+            { "word", word },
+            { "index", index },
+            { "accuracyRate", CalculateAccuracyRate() },
+            { "timestamp", timestamp }
+        };
+        
+        dbRef.Child(path).Push().SetValueAsync(progressData);
 
-        Debug.Log($"Progresso imagem {index} -> {word}, Taxa: {CalculateAccuracyRate():P}");
+        Debug.Log($"Progresso imagem {index} -> {word}, Taxa: {CalculateAccuracyRate():P0}");
     }
 
     public void LogCorrect(string word)
@@ -80,16 +106,21 @@ public class VoiceGameLogger : MonoBehaviour
         correctCount++;
         UpdateStats();
 
-        dbRef.Child($"users/{username}/voiceGame/sessions/{currentSessionId}/events").Push()
-            .SetRawJsonValueAsync(JsonUtility.ToJson(new
-            {
-                type = "correct",
-                word = word,
-                accuracyRate = CalculateAccuracyRate(),
-                timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
-            }));
+        string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
-        Debug.Log("Acerto -> " + word + $" | Taxa: {CalculateAccuracyRate():P}");
+        string path = $"users/{username}/voiceGame/sessions/{currentSessionId}/events";
+        
+        var eventData = new Dictionary<string, object>
+        {
+            { "type", "correct" },
+            { "word", word },
+            { "accuracyRate", CalculateAccuracyRate() },
+            { "timestamp", timestamp }
+        };
+        
+        dbRef.Child(path).Push().SetValueAsync(eventData);
+
+        Debug.Log("Acerto -> " + word + $" | Taxa: {CalculateAccuracyRate():P0}");
     }
 
     public void LogError(string expected, string received)
@@ -97,55 +128,62 @@ public class VoiceGameLogger : MonoBehaviour
         errorCount++;
         UpdateStats();
 
-        dbRef.Child($"users/{username}/voiceGame/sessions/{currentSessionId}/events").Push()
-            .SetRawJsonValueAsync(JsonUtility.ToJson(new
-            {
-                type = "error",
-                expected = expected,
-                received = received,
-                accuracyRate = CalculateAccuracyRate(),
-                timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
-            }));
+        string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
-        Debug.Log($"Erro -> esperado: {expected}, reconhecido: {received} | Taxa: {CalculateAccuracyRate():P}");
+        string path = $"users/{username}/voiceGame/sessions/{currentSessionId}/events";
+        
+        var eventData = new Dictionary<string, object>
+        {
+            { "type", "error" },
+            { "expected", expected },
+            { "received", received },
+            { "accuracyRate", CalculateAccuracyRate() },
+            { "timestamp", timestamp }
+        };
+        
+        dbRef.Child(path).Push().SetValueAsync(eventData);
+
+        Debug.Log($"Erro -> esperado: {expected}, reconhecido: {received} | Taxa: {CalculateAccuracyRate():P0}");
     }
 
     public void LogHint(string word, int mistakeCount)
     {
         hintCount++;
-        dbRef.Child($"users/{username}/voiceGame/sessions/{currentSessionId}/stats/hints")
-             .SetValueAsync(hintCount);
+        
+        string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
-        dbRef.Child($"users/{username}/voiceGame/sessions/{currentSessionId}/events").Push()
-            .SetRawJsonValueAsync(JsonUtility.ToJson(new
-            {
-                type = "hint",
-                word = word,
-                mistakeCount = mistakeCount,
-                timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
-            }));
+        string statsPath = $"users/{username}/voiceGame/sessions/{currentSessionId}/stats";
+        dbRef.Child(statsPath).Child("hints").SetValueAsync(hintCount);
+
+        string eventsPath = $"users/{username}/voiceGame/sessions/{currentSessionId}/events";
+        
+        var eventData = new Dictionary<string, object>
+        {
+            { "type", "hint" },
+            { "word", word },
+            { "mistakeCount", mistakeCount },
+            { "timestamp", timestamp }
+        };
+        
+        dbRef.Child(eventsPath).Push().SetValueAsync(eventData);
 
         Debug.Log("Ajuda -> " + word);
     }
 
-    public void LogSessionEnd()
-    {
-        dbRef.Child($"users/{username}/voiceGame/sessions/{currentSessionId}/endedAt")
-            .SetValueAsync(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-
-        Debug.Log("VoiceGame - Sessão finalizada: " + currentSessionId);
-    }
-
-    // ====== SUPORTE ======
     private void UpdateStats()
     {
         float accuracyRate = CalculateAccuracyRate();
-        int accuracyPercent = Mathf.RoundToInt(accuracyRate * 100f);
 
         var statsPath = $"users/{username}/voiceGame/sessions/{currentSessionId}/stats";
-        dbRef.Child(statsPath).Child("corrects").SetValueAsync(correctCount);
-        dbRef.Child(statsPath).Child("errors").SetValueAsync(errorCount);
-        dbRef.Child(statsPath).Child("accuracyRate").SetValueAsync(accuracyPercent.ToString() + "%");
+        var statsData = new Dictionary<string, object>
+        {
+            { "corrects", correctCount },
+            { "errors", errorCount },
+            { "hints", hintCount },
+            { "accuracyRate", accuracyRate }
+        };
+        
+        dbRef.Child(statsPath).UpdateChildrenAsync(statsData);
     }
 
     private float CalculateAccuracyRate()
@@ -154,4 +192,13 @@ public class VoiceGameLogger : MonoBehaviour
         return total > 0 ? (float)correctCount / total : 0f;
     }
 
+    private void OnApplicationQuit()
+    {
+        EndSession();
+    }
+
+    private void OnDestroy()
+    {
+        EndSession();
+    }
 }

@@ -43,19 +43,26 @@ public class SyllableSourceButton : MonoBehaviour
 
     private void OnClicked()
     {
-      
         AudioManager audioManager = FindObjectOfType<AudioManager>();
-        if(audioManager != null)
+        if (audioManager != null)
         {
-          
             audioManager.PauseAudio(audioManager.background);
         }
-        // ------------------------------------
 
         if (manager != null)
         {
             manager.OnSourceButtonClicked(myData, this);
         }
+    }
+
+    public string GetWordName()
+    {
+        // CORREÇÃO: Use myData em vez de wordData
+        if (myData != null && myData.syllableImage != null)
+        {
+            return myData.syllableImage.name;
+        }
+        return $"button_{GetInstanceID()}"; //firebase
     }
 
     // CORREÇÃO: Adicionado o método público que o manager precisa para comandar a revelação.

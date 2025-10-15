@@ -100,7 +100,6 @@ public class FireBaseManager : MonoBehaviour
             Debug.Log("Usuário cadastrado: " + username);
 
             // yield return new WaitForSeconds(1f);
-            LoginAfterRegister(username);
         }
     }
 
@@ -153,7 +152,7 @@ public class FireBaseManager : MonoBehaviour
             }
 
             // yield return new WaitForSeconds(1f);
-            LoadScenes.LoadSceneByIndex(1);
+            LoadScenes.LoadSceneByIndex(13);
         }
         else
         {
@@ -161,15 +160,15 @@ public class FireBaseManager : MonoBehaviour
         }
     }
 
-    private void LoginAfterRegister(string username)
-    {
-        if (FirebaseUserSession.Instance != null)
-        {
-            FirebaseUserSession.Instance.SetUser(username);
-        }
+    // private void LoginAfterRegister(string username)
+    // {
+    //     if (FirebaseUserSession.Instance != null)
+    //     {
+    //         FirebaseUserSession.Instance.SetUser(username);
+    //     }
 
-        LoadScenes.LoadSceneByIndex(1);
-    }
+    //     LoadScenes.LoadSceneByIndex(1);
+    // }
 
     private void UpdateStatus(string message)
     {

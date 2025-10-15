@@ -1,350 +1,193 @@
 using UnityEngine;
 using Firebase.Database;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
+
 public class DragGameLogger : MonoBehaviour
 {
     private DatabaseReference dbRef;
     private string username;
-    private string parentSessionId;
-    private string currentLevelId;
-    
+    private string currentSessionId;
+
+    private float sessionStartTime;
     private int loadCount = 0;
-    private int totalLevelsCompleted = 0;
-    private float parentSessionStartTime;
-    private float levelStartTime;
-    
-    // Dados acumulados da sessão pai
-    private int totalCorrectMatches = 0;
-    private int totalErrors = 0;
-    
-    // Dados do nível atual
-    private int levelCorrectMatches = 0;
-    private int levelErrors = 0;
-
-    // Tempo de arrasto
-    private float dragStartTime;
-    private bool isDragging;
-
-    // Configuração dos índices das cenas
-    private const int FIRST_LEVEL_INDEX = 3;
-    private const int LAST_LEVEL_INDEX = 12;
-    private const int TOTAL_LEVELS = 10;
-
-    private int currentLevelIndex = -1;
-
-    // Eventos
-    public System.Action<string> OnParentSessionStarted;
-    public System.Action<string, string, int> OnLevelStarted;
-    public System.Action<string, int, int> OnLevelCompleted;
+    private int correctMatches = 0;
+    private int errors = 0;
 
     private void Start()
     {
         if (FirebaseUserSession.Instance == null || string.IsNullOrEmpty(FirebaseUserSession.Instance.LoggedUser))
         {
-            Debug.LogError("Usuario não logado no DragGameLogger!");
+            Debug.LogError("Usuário não logado no DragGameLogger!");
             return;
         }
 
         username = FirebaseUserSession.Instance.LoggedUser;
         dbRef = FirebaseDatabase.DefaultInstance.RootReference;
-
-        StartCoroutine(InitializeDragGameLogger());
+        LoadAndIncrementLoadCount();
     }
 
-    private IEnumerator InitializeDragGameLogger()
-    {
-        yield return StartCoroutine(LoadAndIncrementLoadCount());
-        StartParentSession();
-    }
-
-    private IEnumerator LoadAndIncrementLoadCount()
+    private void LoadAndIncrementLoadCount()
     {
         string path = $"users/{username}/dragGame/loadCount";
 
-        var loadTask = dbRef.Child(path).GetValueAsync();
-        yield return new WaitUntil(() => loadTask.IsCompleted);
-
-        if (loadTask.IsCompleted && !loadTask.IsFaulted && loadTask.Result != null && loadTask.Result.Exists)
+        dbRef.Child(path).GetValueAsync().ContinueWith(task =>
         {
-            int.TryParse(loadTask.Result.Value.ToString(), out loadCount);
-        }
-        else
-        {
-            loadCount = 0;
-        }
+            if (task.IsCompleted && task.Result.Exists)
+                int.TryParse(task.Result.Value.ToString(), out loadCount);
 
-        loadCount++;
-        var saveTask = dbRef.Child(path).SetValueAsync(loadCount);
-        yield return new WaitUntil(() => saveTask.IsCompleted);
+            loadCount++;
+            dbRef.Child(path).SetValueAsync(loadCount);
 
-        Debug.Log($"DragGame - LoadCount: {loadCount}");
+            Debug.Log($"[DragGame] LoadCount -> {loadCount}");
+            UnityMainThreadDispatcher.Enqueue(StartNewSession);
+        });
     }
 
-    // ===== SESSÃO PAI =====
-    private void StartParentSession()
+    private void StartNewSession()
     {
-        parentSessionId = Guid.NewGuid().ToString();
-        parentSessionStartTime = Time.time;
-        
-        totalCorrectMatches = 0;
-        totalErrors = 0;
-        currentLevelIndex = FIRST_LEVEL_INDEX;
+        currentSessionId = Guid.NewGuid().ToString();
+        sessionStartTime = Time.time;
 
-        var parentSessionData = new Dictionary<string, object>
+        string path = $"users/{username}/dragGame/sessions/{currentSessionId}";
+        dbRef.Child(path).Child("startedAt").SetValueAsync(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
+        correctMatches = 0;
+        errors = 0;
+
+        Debug.Log($"[DragGame] Sessão iniciada -> {currentSessionId}");
+    }
+
+    public float EndSession()
+    {
+        float sessionEndTime = Time.time;
+        float sessionDuration = sessionEndTime - sessionStartTime;
+
+        string path = $"users/{username}/dragGame/sessions/{currentSessionId}";
+        dbRef.Child(path).UpdateChildrenAsync(new Dictionary<string, object>
         {
-            { "startedAt", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
-            { "loadCount", loadCount }
+            { "endedAt", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
+            { "sessionDuration", sessionDuration }
+        });
+
+        Debug.Log($"[DragGame] Sessão finalizada: {currentSessionId} | Duração: {sessionDuration:F2}s");
+        return sessionDuration;
+    }
+
+    public void CompleteCurrentLevel(bool success, int matchesCompleted = 0, string reason = "completed")
+    {
+        if (matchesCompleted > 0)
+        {
+            correctMatches = matchesCompleted;
+            UpdateStats();
+        }
+
+        string timestamp = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss");
+        string path = $"users/{username}/dragGame/sessions/{currentSessionId}/levelCompletion";
+
+        var completionData = new Dictionary<string, object>
+        {
+            { "success", success },
+            { "matchesCompleted", matchesCompleted },
+            { "reason", reason },
+            { "totalCorrectMatches", correctMatches },
+            { "totalErrors", errors },
+            { "accuracyRate", CalculateAccuracyRate() },
+            { "timestamp", timestamp }
         };
 
-        dbRef.Child($"users/{username}/dragGame/parentSessions/{parentSessionId}")
-            .UpdateChildrenAsync(parentSessionData);
-
-        Debug.Log($"Sessao Pai iniciada: {parentSessionId}");
-        OnParentSessionStarted?.Invoke(parentSessionId);
-        
-        StartCurrentLevel();
+        dbRef.Child(path).Push().SetValueAsync(completionData);
+        Debug.Log(success
+            ? $"[DragGame] Nível completado com sucesso! Acertos: {correctMatches}, Erros: {errors}"
+            : $"[DragGame] Nível falhou ({reason}) Acertos: {correctMatches}, Erros: {errors}");
     }
 
-    private void StartCurrentLevel()
-    {
-        if (currentLevelIndex < FIRST_LEVEL_INDEX || currentLevelIndex > LAST_LEVEL_INDEX)
-        {
-            Debug.LogError($"Indice invalido: {currentLevelIndex}");
-            return;
-        }
-
-        currentLevelId = Guid.NewGuid().ToString();
-        levelStartTime = Time.time;
-        
-        levelCorrectMatches = 0;
-        levelErrors = 0;
-
-        string levelName = SceneManager.GetActiveScene().name;
-        
-        Debug.Log($"Iniciando nivel: {levelName}");
-
-        var levelData = new Dictionary<string, object>
-        {
-            { "startedAt", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
-            { "levelName", levelName }
-        };
-
-        string path = $"users/{username}/dragGame/parentSessions/{parentSessionId}/levels/{currentLevelId}";
-        dbRef.Child(path).UpdateChildrenAsync(levelData);
-
-        OnLevelStarted?.Invoke(parentSessionId, levelName, currentLevelIndex);
-    }
-
-    // ===== EVENTOS DE ARRASTO =====
-    
-    public void LogDragStart(string imageType, Vector2 position)
-    {
-        if (isDragging) return;
-        
-        dragStartTime = Time.time;
-        isDragging = true;
-        
-        Debug.Log($"Drag iniciado: {imageType} em {position}");
-    }
-
-    public void LogDragEnd(string imageType, Vector2 startPosition, Vector2 endPosition, bool wasDropped)
-    {
-        if (!isDragging) return;
-        
-        float dragTime = Time.time - dragStartTime;
-        float dragDistance = Vector2.Distance(startPosition, endPosition);
-        isDragging = false;
-        
-        Debug.Log($"Drag finalizado: {imageType} - Tempo: {dragTime:F2}s, Distancia: {dragDistance:F2}, Drop: {wasDropped}");
-    }
-
-    // ===== EVENTOS PRINCIPAIS =====
-    
     public void LogCorrectMatch(string imageType, string targetType)
     {
-        levelCorrectMatches++;
-        totalCorrectMatches++;
-
-        Debug.Log($"Acerto: {imageType} -> {targetType}");
-
-        UpdateLevelCounters();
-        UpdateParentSessionCounters();
+        correctMatches++;
+        UpdateStats();
+        LogMatchEvent("correct", imageType, targetType);
     }
 
     public void LogError(string expectedType, string receivedType, string errorType)
     {
-        levelErrors++;
-        totalErrors++;
-
-        Debug.Log($"Erro: Esperado {expectedType}, Recebido {receivedType}, Tipo: {errorType}");
-
-        UpdateLevelCounters();
-        UpdateParentSessionCounters();
+        errors++;
+        UpdateStats();
+        LogMatchEvent("error", expectedType, receivedType, errorType);
     }
 
-    // ===== CONTROLE DE NÍVEL =====
-    
-    public void CompleteCurrentLevel(bool success, int matchesCompleted = 0, string reason = "completed")
+    private void LogMatchEvent(string type, string a, string b, string extra = null)
     {
-        if (matchesCompleted > 0) levelCorrectMatches = matchesCompleted;
+        string timestamp = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss");
+        string path = $"users/{username}/dragGame/sessions/{currentSessionId}/matches";
 
-        CompleteLevel(success, reason);
-
-        if (success)
+        var data = new Dictionary<string, object>
         {
-            totalLevelsCompleted++;
-            
-            CompleteParentSession();
-            
-            Debug.Log($"Nivel completado com sucesso! - Acertos: {levelCorrectMatches}, Erros: {levelErrors}");
-        }
-    }
-
-    public void RestartCurrentLevel(string reason = "restart")
-    {
-        CompleteLevel(false, reason);
-    }
-
-    public void FailCurrentLevel(string reason = "failed")
-    {
-        CompleteLevel(false, reason);
-    }
-
-    // ===== MÉTODOS INTERNOS =====
-    private void CompleteLevel(bool success, string reason)
-    {
-        if (string.IsNullOrEmpty(currentLevelId)) return;
-
-        float levelDuration = Time.time - levelStartTime;
-        float accuracy = CalculateAccuracy() * 100f;
-
-        var levelCompletionData = new Dictionary<string, object>
-        {
-            { "endedAt", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
-            { "levelDuration", levelDuration },
-            { "completionReason", reason },
-            { "correctMatches", levelCorrectMatches },
-            { "errors", levelErrors },
-            { "accuracy", accuracy }
+            { "type", type },
+            { "a", a },
+            { "b", b },
+            { "extra", extra },
+            { "accuracyRate", CalculateAccuracyRate() },
+            { "timestamp", timestamp }
         };
 
-        string path = $"users/{username}/dragGame/parentSessions/{parentSessionId}/levels/{currentLevelId}";
-        dbRef.Child(path).UpdateChildrenAsync(levelCompletionData);
-
-        if (success)
-        {
-            UpdateParentSessionCounters();
-            
-            Debug.Log($"Nivel completado - Acertos: {levelCorrectMatches}, Erros: {levelErrors}, Tempo: {levelDuration:F1}s");
-            OnLevelCompleted?.Invoke(currentLevelId, levelCorrectMatches, currentLevelIndex);
-        }
-        else
-        {
-            Debug.Log($"Nivel falhou - Razao: {reason}, Acertos: {levelCorrectMatches}, Erros: {levelErrors}");
-        }
+        dbRef.Child(path).Push().SetValueAsync(data);
+        Debug.Log($"[DragGame] {type.ToUpper()}: {a} -> {b} | Taxa: {CalculateAccuracyRate():P0}");
     }
-    
-    public void LogDragEnd(string imageType, Vector2 startPosition, Vector2 endPosition, bool wasDropped, float dragTime, float dragDistance)
+
+    public void LogDragStart(string imageType, Vector2 position)
     {
-        if (!isDragging) return;
+        LogDragEvent("start", imageType, position, Vector2.zero);
+    }
 
-        isDragging = false;
+    public void LogDragEnd(string imageType, Vector2 startPos, Vector2 endPos, bool wasDropped, float dragTime, float dragDistance)
+    {
+        LogDragEvent("end", imageType, startPos, endPos, wasDropped, dragTime, dragDistance);
+    }
 
-        Debug.Log($"Drag finalizado: {imageType} - " +
-                $"Tempo de arrasto: {dragTime:F2}s, " +
-                $"Distancia: {dragDistance:F2}, " +
-                $"Drop: {wasDropped}, " +
-                $"Start: {startPosition}, " +
-                $"End: {endPosition}");
+    private void LogDragEvent(string phase, string imageType, Vector2 startPos, Vector2 endPos, bool wasDropped = false, float dragTime = 0f, float dragDistance = 0f)
+    {
+        string timestamp = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss");
+        string path = $"users/{username}/dragGame/sessions/{currentSessionId}/dragEvents";
 
         var dragData = new Dictionary<string, object>
         {
+            { "phase", phase },
             { "imageType", imageType },
+            { "wasDropped", wasDropped },
             { "dragTime", dragTime },
             { "dragDistance", dragDistance },
-            { "wasDropped", wasDropped },
-            { "startPosition", $"{startPosition.x:F2},{startPosition.y:F2}" },
-            { "endPosition", $"{endPosition.x:F2},{endPosition.y:F2}" },
-            { "timestamp", DateTime.Now.ToString("HH:mm:ss") }
+            { "start", $"{startPos.x:F2},{startPos.y:F2}" },
+            { "end", $"{endPos.x:F2},{endPos.y:F2}" },
+            { "timestamp", timestamp }
         };
 
-        string path = $"users/{username}/dragGame/parentSessions/{parentSessionId}/levels/{currentLevelId}/dragEvents";
         dbRef.Child(path).Push().SetValueAsync(dragData);
+        Debug.Log($"[DragGame] Drag {phase}: {imageType}");
     }
 
-    private void CompleteParentSession()
+    private void UpdateStats()
     {
-        float totalDuration = Time.time - parentSessionStartTime;
-        float overallAccuracy = CalculateOverallAccuracy() * 100f;
-
-        var sessionCompletionData = new Dictionary<string, object>
+        var stats = new Dictionary<string, object>
         {
-            { "endedAt", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
-            { "totalDuration", totalDuration },
-            { "levelsCompleted", totalLevelsCompleted },
-            { "totalCorrectMatches", totalCorrectMatches },
-            { "totalErrors", totalErrors },
-            { "overallAccuracy", overallAccuracy }
+            { "correctMatches", correctMatches },
+            { "errors", errors },
+            { "accuracyRate", CalculateAccuracyRate() }
         };
 
-        dbRef.Child($"users/{username}/dragGame/parentSessions/{parentSessionId}")
-            .UpdateChildrenAsync(sessionCompletionData);
-
-        Debug.Log($"Sessao Pai finalizada - Tempo total: {totalDuration:F1}s, Acertos: {totalCorrectMatches}, Erros: {totalErrors}, Precisao: {overallAccuracy:F1}%");
+        string path = $"users/{username}/dragGame/sessions/{currentSessionId}/stats";
+        dbRef.Child(path).UpdateChildrenAsync(stats);
     }
 
-    // ===== MÉTODOS AUXILIARES =====
-    private void UpdateLevelCounters()
+    private float CalculateAccuracyRate()
     {
-        var counters = new Dictionary<string, object>
-        {
-            { "currentCorrectMatches", levelCorrectMatches },
-            { "currentErrors", levelErrors },
-            { "currentAccuracy", CalculateAccuracy() * 100f }
-        };
-
-        string path = $"users/{username}/dragGame/parentSessions/{parentSessionId}/levels/{currentLevelId}";
-        dbRef.Child(path).UpdateChildrenAsync(counters);
+        int total = correctMatches + errors;
+        return total > 0 ? (float)correctMatches / total : 0f;
     }
 
-    private void UpdateParentSessionCounters()
-    {
-        var sessionCounters = new Dictionary<string, object>
-        {
-            { "totalCorrectMatches", totalCorrectMatches },
-            { "totalErrors", totalErrors },
-            { "levelsCompleted", totalLevelsCompleted },
-            { "overallAccuracy", CalculateOverallAccuracy() * 100f }
-        };
+    public void RestartCurrentLevel(string reason = "restart") => CompleteCurrentLevel(false, 0, reason);
+    public void FailCurrentLevel(string reason = "failed") => CompleteCurrentLevel(false, 0, reason);
 
-        dbRef.Child($"users/{username}/dragGame/parentSessions/{parentSessionId}")
-            .UpdateChildrenAsync(sessionCounters);
-    }
-
-    private float CalculateAccuracy()
-    {
-        int totalAttempts = levelCorrectMatches + levelErrors;
-        return totalAttempts > 0 ? (float)levelCorrectMatches / totalAttempts : 0f;
-    }
-
-    private float CalculateOverallAccuracy()
-    {
-        int totalAttempts = totalCorrectMatches + totalErrors;
-        return totalAttempts > 0 ? (float)totalCorrectMatches / totalAttempts : 0f;
-    }
-
-    private int GetLevelNumber()
-    {
-        return (currentLevelIndex - FIRST_LEVEL_INDEX) + 1;
-    }
-
-    // ===== INFO PÚBLICA =====
-    public int GetCurrentLevelIndex() => currentLevelIndex;
-    public string GetCurrentLevelName() => SceneManager.GetActiveScene().name;
-    public int GetCurrentLevelNumber() => GetLevelNumber();
-    public int GetTotalLevels() => TOTAL_LEVELS;
-    public bool IsLastLevel() => currentLevelIndex >= LAST_LEVEL_INDEX;
+    private void OnApplicationQuit() => EndSession();
+    private void OnDestroy() => EndSession();
 }
