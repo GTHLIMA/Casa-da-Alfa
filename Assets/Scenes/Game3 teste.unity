@@ -844,22 +844,27 @@ MonoBehaviour:
       syllableAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
     - syllableImage: {fileID: 21300000, guid: 6f3b69fa5e38b734985fb2d32992b59e, type: 3}
       syllableAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
-  - targetWord: CAPA
-    finalDrawingImage: {fileID: 21300000, guid: ada24ba552e29a442a09b606fcb49dc0, type: 3}
-    finalWordImage: {fileID: 21300000, guid: b60043b4033b82c4384ff8971d14e074, type: 3}
+  - targetWord: MACACA
+    finalDrawingImage: {fileID: 21300000, guid: e60db5ebf3e0b374797b25045234832b, type: 3}
+    finalWordImage: {fileID: 21300000, guid: b848e4248c448154b80951f2056f6446, type: 3}
     finalWordAudio: {fileID: 8300000, guid: 64016e06e4c860145bf5ca8ad44e146d, type: 3}
     onScreenWords:
+    - drawingImage: {fileID: 21300000, guid: 2e94cefa8b7cbb64a8b3820582c746c8, type: 3}
+      syllableImage: {fileID: 21300000, guid: 1e54b1d1330a874409c4a806f05caaba, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
     - drawingImage: {fileID: 21300000, guid: 0550470fb5aa7a1488ba873404c914bf, type: 3}
       syllableImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
       syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
-    - drawingImage: {fileID: 21300000, guid: fa6f2881f4026dc43b02b99e1d91a522, type: 3}
-      syllableImage: {fileID: 21300000, guid: 3909d92f734a7124ab2a382f1b89eb0f, type: 3}
-      syllableAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
+    - drawingImage: {fileID: 21300000, guid: 0550470fb5aa7a1488ba873404c914bf, type: 3}
+      syllableImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
     answerSequence:
+    - syllableImage: {fileID: 21300000, guid: 1e54b1d1330a874409c4a806f05caaba, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
     - syllableImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
       syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
-    - syllableImage: {fileID: 21300000, guid: 3909d92f734a7124ab2a382f1b89eb0f, type: 3}
-      syllableAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
+    - syllableImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
   - targetWord: FADA
     finalDrawingImage: {fileID: 21300000, guid: 26f99ebe22be5484aaebf8a57c49d2dc, type: 3}
     finalWordImage: {fileID: 21300000, guid: b5add49cdaef1ca4e9d56492ceb3e475, type: 3}
@@ -4165,7 +4170,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 109.079956}
+  m_AnchoredPosition: {x: 0, y: 109.079834}
   m_SizeDelta: {x: -134.1, y: -1519}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2046072130
