@@ -225,7 +225,7 @@ Transform:
   m_GameObject: {fileID: 99774438}
   serializedVersion: 2
   m_LocalRotation: {x: 0.70993197, y: 0.000049418763, z: -0.0037423298, w: -0.70426035}
-  m_LocalPosition: {x: -445.17, y: -848.75995, z: -148}
+  m_LocalPosition: {x: -33, y: -907, z: -148}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5279,8 +5279,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00036526, y: 256}
-  m_SizeDelta: {x: 129.3361, y: 112.6522}
+  m_AnchoredPosition: {x: -3, y: 585.09}
+  m_SizeDelta: {x: 484.38, y: 322.65}
   m_Pivot: {x: 0.49999997, y: 0.49999994}
 --- !u!114 &270939288
 MonoBehaviour:
@@ -5326,8 +5326,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1715173768}
-        m_TargetAssemblyTypeName: RoundController, Assembly-CSharp
+      - m_Target: {fileID: 868681517}
+        m_TargetAssemblyTypeName: RoundController_V2, Assembly-CSharp
         m_MethodName: RepeatQuestion
         m_Mode: 1
         m_Arguments:
@@ -5610,7 +5610,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 18
+          m_IntArgument: 8
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -6326,7 +6326,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 15
+          m_IntArgument: 17
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -6456,6 +6456,7 @@ GameObject:
   m_Component:
   - component: {fileID: 868681516}
   - component: {fileID: 868681515}
+  - component: {fileID: 868681517}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -6480,7 +6481,7 @@ MonoBehaviour:
   sfxSource: {fileID: 2003650166}
   musicSource: {fileID: 0}
   backgroundMusic: {fileID: 8300000, guid: a13344ac26ae22f40ae0160a0a8c756e, type: 3}
-  musicVolume: 0.874
+  musicVolume: 0.134
   syllableVolume: 1
   optionVolume: 1
   sfxVolume: 1
@@ -6509,6 +6510,234 @@ Transform:
   - {fileID: 2003650165}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &868681517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 868681514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c16c0715ea8f534bb1e9d2b304ca280, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundIcon: {fileID: 0}
+  optionsParent: {fileID: 1936055223}
+  optionPrefab: {fileID: 4082163324305313816, guid: 6d8dbdab331f99e4cb1a709dbe00d712, type: 3}
+  syllables:
+  - syllableName: BA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+    correctOption:
+      optionName: BA
+      optionImage: {fileID: 21300000, guid: faffc2e187bd1d34cbfed9de67e5aa0a, type: 3}
+      optionAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: CA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+    correctOption:
+      optionName: CA
+      optionImage: {fileID: 21300000, guid: 793e94e6332d86e449eae810b72f6615, type: 3}
+      optionAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: DA
+    syllableImage: {fileID: 21300000, guid: edb8e95b33e4313439b1dcb6b8f14d45, type: 3}
+    syllableAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
+    correctOption:
+      optionName: DA
+      optionImage: {fileID: 21300000, guid: edb8e95b33e4313439b1dcb6b8f14d45, type: 3}
+      optionAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: FA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: 129794c8ee0dc12408c51fd88ac9e2bb, type: 3}
+    correctOption:
+      optionName: FA
+      optionImage: {fileID: 21300000, guid: b18c62169f43fb642be41fcde7de511a, type: 3}
+      optionAudio: {fileID: 8300000, guid: 129794c8ee0dc12408c51fd88ac9e2bb, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: GA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: e8ac2564d0fa2274fbb75b0410be4f14, type: 3}
+    correctOption:
+      optionName: GA
+      optionImage: {fileID: 21300000, guid: 2eedc9c262396d34f91130a8a30017d9, type: 3}
+      optionAudio: {fileID: 8300000, guid: e8ac2564d0fa2274fbb75b0410be4f14, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: JA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: c96e17bef7505bb4892d3739af4ecdca, type: 3}
+    correctOption:
+      optionName: JA
+      optionImage: {fileID: 21300000, guid: 6f4cd7da104c63246999c6c0d9168fd5, type: 3}
+      optionAudio: {fileID: 8300000, guid: c96e17bef7505bb4892d3739af4ecdca, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: LA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
+    correctOption:
+      optionName: LA
+      optionImage: {fileID: 21300000, guid: 4f46e7572abc2d94dbc513c19df5537a, type: 3}
+      optionAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: MA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
+    correctOption:
+      optionName: MA
+      optionImage: {fileID: 21300000, guid: 62d8104431a972f4e97003093dd332c4, type: 3}
+      optionAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: NA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
+    correctOption:
+      optionName: NA
+      optionImage: {fileID: 21300000, guid: 5652afc20630de146a98cb9985bf59f7, type: 3}
+      optionAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: PA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
+    correctOption:
+      optionName: PA
+      optionImage: {fileID: 21300000, guid: 7c047ee3ff4220547ad4ca68e395c7c3, type: 3}
+      optionAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: QUA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: 87cc05ac624dbea49b336e82ea8ee833, type: 3}
+    correctOption:
+      optionName: QUA
+      optionImage: {fileID: 21300000, guid: d77b177d9dde2234388b17bb4961811f, type: 3}
+      optionAudio: {fileID: 8300000, guid: 87cc05ac624dbea49b336e82ea8ee833, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: RA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: ec5f88918413db0499c5cfe14436284d, type: 3}
+    correctOption:
+      optionName: RA
+      optionImage: {fileID: 21300000, guid: 2c5bed1eb0b43a143a28ade2605385b5, type: 3}
+      optionAudio: {fileID: 8300000, guid: ec5f88918413db0499c5cfe14436284d, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: SA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: 3d305eca04e72fb4eae413ea7a7fb010, type: 3}
+    correctOption:
+      optionName: SA
+      optionImage: {fileID: 21300000, guid: c9de3270379a80242bacc2b212c0b4fe, type: 3}
+      optionAudio: {fileID: 8300000, guid: 3d305eca04e72fb4eae413ea7a7fb010, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: TA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
+    correctOption:
+      optionName: TA
+      optionImage: {fileID: 21300000, guid: 722c5e00b7e903c46b694ea081ab89c4, type: 3}
+      optionAudio: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: VA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: 1fd611b92e287a04bbf8e125612c1d21, type: 3}
+    correctOption:
+      optionName: VA
+      optionImage: {fileID: 21300000, guid: e9d7b8dbc0d6b2f4ca73129e7142e5fd, type: 3}
+      optionAudio: {fileID: 8300000, guid: 1fd611b92e287a04bbf8e125612c1d21, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: XA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: e0c7ccbffc70fde4ebc32eae6d3b6cee, type: 3}
+    correctOption:
+      optionName: XA
+      optionImage: {fileID: 21300000, guid: f0485d6685cb8904b8ea465f9f0e8974, type: 3}
+      optionAudio: {fileID: 8300000, guid: e0c7ccbffc70fde4ebc32eae6d3b6cee, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: ZA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: 440c31cdf6232e445b1e3735d4d02ad5, type: 3}
+    correctOption:
+      optionName: ZA
+      optionImage: {fileID: 21300000, guid: 74b3904d9e214fb48a8df4884f489b13, type: 3}
+      optionAudio: {fileID: 8300000, guid: 440c31cdf6232e445b1e3735d4d02ad5, type: 3}
+      syllableSprite: {fileID: 0}
+  allOptions:
+  - optionName: BA
+    optionImage: {fileID: 21300000, guid: faffc2e187bd1d34cbfed9de67e5aa0a, type: 3}
+    optionAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: CA
+    optionImage: {fileID: 21300000, guid: 793e94e6332d86e449eae810b72f6615, type: 3}
+    optionAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: DA
+    optionImage: {fileID: 21300000, guid: edb8e95b33e4313439b1dcb6b8f14d45, type: 3}
+    optionAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: FA
+    optionImage: {fileID: 21300000, guid: b18c62169f43fb642be41fcde7de511a, type: 3}
+    optionAudio: {fileID: 8300000, guid: 129794c8ee0dc12408c51fd88ac9e2bb, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: GA
+    optionImage: {fileID: 21300000, guid: 2eedc9c262396d34f91130a8a30017d9, type: 3}
+    optionAudio: {fileID: 8300000, guid: e8ac2564d0fa2274fbb75b0410be4f14, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: JA
+    optionImage: {fileID: 21300000, guid: 6f4cd7da104c63246999c6c0d9168fd5, type: 3}
+    optionAudio: {fileID: 8300000, guid: c96e17bef7505bb4892d3739af4ecdca, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: LA
+    optionImage: {fileID: 21300000, guid: 4f46e7572abc2d94dbc513c19df5537a, type: 3}
+    optionAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: MA
+    optionImage: {fileID: 21300000, guid: 62d8104431a972f4e97003093dd332c4, type: 3}
+    optionAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: NA
+    optionImage: {fileID: 21300000, guid: 5652afc20630de146a98cb9985bf59f7, type: 3}
+    optionAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: PA
+    optionImage: {fileID: 21300000, guid: 7c047ee3ff4220547ad4ca68e395c7c3, type: 3}
+    optionAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: QUA
+    optionImage: {fileID: 21300000, guid: d77b177d9dde2234388b17bb4961811f, type: 3}
+    optionAudio: {fileID: 8300000, guid: 87cc05ac624dbea49b336e82ea8ee833, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: RA
+    optionImage: {fileID: 21300000, guid: 2c5bed1eb0b43a143a28ade2605385b5, type: 3}
+    optionAudio: {fileID: 8300000, guid: ec5f88918413db0499c5cfe14436284d, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: SA
+    optionImage: {fileID: 21300000, guid: c9de3270379a80242bacc2b212c0b4fe, type: 3}
+    optionAudio: {fileID: 8300000, guid: 3d305eca04e72fb4eae413ea7a7fb010, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: TA
+    optionImage: {fileID: 21300000, guid: 722c5e00b7e903c46b694ea081ab89c4, type: 3}
+    optionAudio: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: VA
+    optionImage: {fileID: 21300000, guid: e9d7b8dbc0d6b2f4ca73129e7142e5fd, type: 3}
+    optionAudio: {fileID: 8300000, guid: 1fd611b92e287a04bbf8e125612c1d21, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: XA
+    optionImage: {fileID: 21300000, guid: f0485d6685cb8904b8ea465f9f0e8974, type: 3}
+    optionAudio: {fileID: 8300000, guid: e0c7ccbffc70fde4ebc32eae6d3b6cee, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: ZA
+    optionImage: {fileID: 21300000, guid: 74b3904d9e214fb48a8df4884f489b13, type: 3}
+    optionAudio: {fileID: 8300000, guid: 440c31cdf6232e445b1e3735d4d02ad5, type: 3}
+    syllableSprite: {fileID: 0}
+  checkSprite: {fileID: 21300000, guid: ec4afbf3114368142acf69c71c06700a, type: 3}
+  wrongSprite: {fileID: 21300000, guid: 78df9938d99e7114ea7121ce34909898, type: 3}
+  endPhasePanel: {fileID: 834097410}
+  scoreEndPhase: {fileID: 0}
+  confettiEffect: {fileID: 99774441}
+  spawnPoint: {fileID: 0}
+  score: 0
 --- !u!1 &992389353
 GameObject:
   m_ObjectHideFlags: 0
@@ -6611,7 +6840,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 17
+          m_IntArgument: 18
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -6893,7 +7122,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 18
+          m_IntArgument: 8
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -7086,81 +7315,6 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1058123838}
-  m_CullTransparentMesh: 1
---- !u!1 &1198437928
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1198437929}
-  - component: {fileID: 1198437931}
-  - component: {fileID: 1198437930}
-  m_Layer: 5
-  m_Name: SyllablePanel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1198437929
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1198437928}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1715173767}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -3, y: 595}
-  m_SizeDelta: {x: 255.3287, y: 190.4594}
-  m_Pivot: {x: 0.49999988, y: 0.50000006}
---- !u!114 &1198437930
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1198437928}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 1
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &1198437931
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1198437928}
   m_CullTransparentMesh: 1
 --- !u!1 &1242839824
 GameObject:
@@ -7523,7 +7677,6 @@ GameObject:
   - component: {fileID: 1715173766}
   - component: {fileID: 1715173765}
   - component: {fileID: 1715173764}
-  - component: {fileID: 1715173768}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -7607,7 +7760,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1935800146}
-  - {fileID: 1198437929}
   - {fileID: 1775477999}
   - {fileID: 1936055223}
   - {fileID: 270939287}
@@ -7620,234 +7772,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1715173768
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1715173763}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1cd5b8c240eaadd4b9edefda2a77ce2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syllablePanel: {fileID: 1198437930}
-  optionsParent: {fileID: 1936055223}
-  optionPrefab: {fileID: 4082163324305313816, guid: 85ff83c95834a6943b0835591f91a432, type: 3}
-  syllables:
-  - syllableName: BA DE
-    syllableImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
-    syllableAudio: {fileID: 8300000, guid: a70c326af141a75458db42719348da2f, type: 3}
-    correctOption:
-      optionName: BALAO
-      optionImage: {fileID: 21300000, guid: 41cd00b389c65354ab8cf489d22fee87, type: 3}
-      optionAudio: {fileID: 8300000, guid: 49c50922760da3f40899a2e990a84f5e, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
-  - syllableName: CA DE
-    syllableImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
-    syllableAudio: {fileID: 8300000, guid: 99df1e10793da7344bcc1c47bb622d33, type: 3}
-    correctOption:
-      optionName: CASA
-      optionImage: {fileID: 21300000, guid: 02d2b68ba8464d44598496ef5dfbbff9, type: 3}
-      optionAudio: {fileID: 8300000, guid: 244ec0e7d759d014d81b9b776f55eb66, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
-  - syllableName: DA DE
-    syllableImage: {fileID: 21300000, guid: b853cd58663860d4b90beafefbce3e77, type: 3}
-    syllableAudio: {fileID: 8300000, guid: f931341914255604181422c61fb72929, type: 3}
-    correctOption:
-      optionName: DADO
-      optionImage: {fileID: 21300000, guid: 7ac550a7ae2b46b43bc979cb7e82844b, type: 3}
-      optionAudio: {fileID: 8300000, guid: 7db016608aaf4634eaaed4c230b3bfe2, type: 3}
-      syllableSprite: {fileID: 21300000, guid: b853cd58663860d4b90beafefbce3e77, type: 3}
-  - syllableName: FA DE
-    syllableImage: {fileID: 21300000, guid: 3295dc4b1ef57304194bb183a2baf36b, type: 3}
-    syllableAudio: {fileID: 8300000, guid: f4a3cfced78e4bf4db7f410ef1d0aab0, type: 3}
-    correctOption:
-      optionName: FACA
-      optionImage: {fileID: 21300000, guid: 39c7aa4f7e0347b4da7ac0d033858aef, type: 3}
-      optionAudio: {fileID: 8300000, guid: 9ea799873f704ea48a8705f6f381f437, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 3295dc4b1ef57304194bb183a2baf36b, type: 3}
-  - syllableName: GA DE
-    syllableImage: {fileID: 21300000, guid: 75f92c228e90a4940a05cfdabe258eb8, type: 3}
-    syllableAudio: {fileID: 8300000, guid: 8b0103426b4aa04428a15eb3a13658c9, type: 3}
-    correctOption:
-      optionName: GATO
-      optionImage: {fileID: 21300000, guid: 86e346b794b2ad24bb9d38c5c984f938, type: 3}
-      optionAudio: {fileID: 8300000, guid: c0f08c0de90ade74798a4e3f9cce578e, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 75f92c228e90a4940a05cfdabe258eb8, type: 3}
-  - syllableName: JA DE
-    syllableImage: {fileID: 21300000, guid: 86ce0ec77a9934d4d9eaa62049c4e0bf, type: 3}
-    syllableAudio: {fileID: 8300000, guid: 6f420dfcab6261f439549899ff880b81, type: 3}
-    correctOption:
-      optionName: JACA
-      optionImage: {fileID: 21300000, guid: 65007bffd78fcb245a24f247d9ac186b, type: 3}
-      optionAudio: {fileID: 8300000, guid: e9ff4b2ef4bf1b9448ff77caa77ac4fb, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 86ce0ec77a9934d4d9eaa62049c4e0bf, type: 3}
-  - syllableName: LA DE
-    syllableImage: {fileID: 21300000, guid: 6f3b69fa5e38b734985fb2d32992b59e, type: 3}
-    syllableAudio: {fileID: 8300000, guid: 3483326003c829447b6ec30c58797337, type: 3}
-    correctOption:
-      optionName: LATA
-      optionImage: {fileID: 21300000, guid: 5ae6e45565994364a80cf6ee8375fcf3, type: 3}
-      optionAudio: {fileID: 8300000, guid: ff0fb7f55def5ec4cbaa402e1d580434, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 6f3b69fa5e38b734985fb2d32992b59e, type: 3}
-  - syllableName: MA DE
-    syllableImage: {fileID: 21300000, guid: 1e54b1d1330a874409c4a806f05caaba, type: 3}
-    syllableAudio: {fileID: 8300000, guid: eb43b42d4e245c74190f918ad50d7704, type: 3}
-    correctOption:
-      optionName: 'MALA '
-      optionImage: {fileID: 21300000, guid: 67bc93b57360d4046ae9ff4004c6f18e, type: 3}
-      optionAudio: {fileID: 8300000, guid: 83f6be1643b176b4ba29dd5c89f325d2, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 1e54b1d1330a874409c4a806f05caaba, type: 3}
-  - syllableName: NA DE
-    syllableImage: {fileID: 21300000, guid: d7a47787471d29546aaf875379f81f66, type: 3}
-    syllableAudio: {fileID: 8300000, guid: c56651ab72fda8043b1509e20e4f0375, type: 3}
-    correctOption:
-      optionName: NAVIO
-      optionImage: {fileID: 21300000, guid: d9b44c9113a9a9a459db3f5785a23782, type: 3}
-      optionAudio: {fileID: 8300000, guid: 091d771cb4f1c8348982de701f633ad7, type: 3}
-      syllableSprite: {fileID: 21300000, guid: d7a47787471d29546aaf875379f81f66, type: 3}
-  - syllableName: PA DE
-    syllableImage: {fileID: 21300000, guid: 3909d92f734a7124ab2a382f1b89eb0f, type: 3}
-    syllableAudio: {fileID: 8300000, guid: ee3addfed59558042aa347b2fe5fa6dd, type: 3}
-    correctOption:
-      optionName: PATO
-      optionImage: {fileID: 21300000, guid: e72658e467a3012409db9b2e8d2310b1, type: 3}
-      optionAudio: {fileID: 8300000, guid: d63d894cc12010248be7547bf8fbd6a9, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 3909d92f734a7124ab2a382f1b89eb0f, type: 3}
-  - syllableName: QUA DE
-    syllableImage: {fileID: 21300000, guid: 5b113c9dc01f631409a5dfc5efb923b6, type: 3}
-    syllableAudio: {fileID: 8300000, guid: 6fb96b839ba5c534d9e2d013c3a1e442, type: 3}
-    correctOption:
-      optionName: QUADRO
-      optionImage: {fileID: 21300000, guid: c1a606cde1025c347a86c65ad287385b, type: 3}
-      optionAudio: {fileID: 8300000, guid: 35c43b3f55b0edf45814b64385ffb950, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 5b113c9dc01f631409a5dfc5efb923b6, type: 3}
-  - syllableName: RA DE
-    syllableImage: {fileID: 21300000, guid: e9d7e26ef4bf8034e8d107a29042169f, type: 3}
-    syllableAudio: {fileID: 8300000, guid: aa1ecb0b8e65d254181394ed734dfa45, type: 3}
-    correctOption:
-      optionName: RATO
-      optionImage: {fileID: 21300000, guid: bc67a66d47394f24a982697e1310f89b, type: 3}
-      optionAudio: {fileID: 8300000, guid: dedd63e60ac8a22419fa4a47a12a8fdd, type: 3}
-      syllableSprite: {fileID: 21300000, guid: e9d7e26ef4bf8034e8d107a29042169f, type: 3}
-  - syllableName: SA DE
-    syllableImage: {fileID: 21300000, guid: c612877ee004d9a44ba84459bd5d28c2, type: 3}
-    syllableAudio: {fileID: 8300000, guid: 8b18610b50e17ff4eaaedaca0fce7350, type: 3}
-    correctOption:
-      optionName: 'SAPO '
-      optionImage: {fileID: 21300000, guid: 9e97978f96f8f9040a9ba3e7b1d6d320, type: 3}
-      optionAudio: {fileID: 8300000, guid: 43bfb1d330b47a747b3fff4bb565d56c, type: 3}
-      syllableSprite: {fileID: 21300000, guid: c612877ee004d9a44ba84459bd5d28c2, type: 3}
-  - syllableName: 'TA DE '
-    syllableImage: {fileID: 21300000, guid: a0d5ab77003a2274f919fcb594be6880, type: 3}
-    syllableAudio: {fileID: 8300000, guid: c831d8c1bf9309a44bdae24ff80f2b09, type: 3}
-    correctOption:
-      optionName: TATU
-      optionImage: {fileID: 21300000, guid: 82538c4ed3b58134c8d5aeb296b06070, type: 3}
-      optionAudio: {fileID: 8300000, guid: c4658fe7efbb7be45b8978f4f8c84318, type: 3}
-      syllableSprite: {fileID: 21300000, guid: a0d5ab77003a2274f919fcb594be6880, type: 3}
-  - syllableName: VA DE
-    syllableImage: {fileID: 21300000, guid: 8be7ecac8a15308408b8952e08dadf76, type: 3}
-    syllableAudio: {fileID: 8300000, guid: f75ca22aa2d06244cb252bb3609a9681, type: 3}
-    correctOption:
-      optionName: VACA
-      optionImage: {fileID: 21300000, guid: f77f17b2b8a20464db81e987d7f8b3ce, type: 3}
-      optionAudio: {fileID: 8300000, guid: 0d318a2ba40107b469f9caa3f8da4ab2, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 8be7ecac8a15308408b8952e08dadf76, type: 3}
-  - syllableName: XA DE
-    syllableImage: {fileID: 21300000, guid: adedc79b222239a438d7f3d1835e7c01, type: 3}
-    syllableAudio: {fileID: 8300000, guid: 1db75415d11f0334b9b4a1fa2fec232f, type: 3}
-    correctOption:
-      optionName: XADREZ
-      optionImage: {fileID: 21300000, guid: 15e737d532375754eadffae8e52c753c, type: 3}
-      optionAudio: {fileID: 8300000, guid: 2161babc62d593e47a04797cc1cfcad4, type: 3}
-      syllableSprite: {fileID: 21300000, guid: adedc79b222239a438d7f3d1835e7c01, type: 3}
-  - syllableName: ZA DE
-    syllableImage: {fileID: 21300000, guid: 957602da4b4339a4a8e3ad74f1fbf88c, type: 3}
-    syllableAudio: {fileID: 8300000, guid: e75174289fd9a7f4992493623b20f978, type: 3}
-    correctOption:
-      optionName: ZACA
-      optionImage: {fileID: 21300000, guid: 3c9c05a6538709b4d8f79e5d423ed52b, type: 3}
-      optionAudio: {fileID: 8300000, guid: dfda4b12eaaff3b45a0e3401a12c14b3, type: 3}
-      syllableSprite: {fileID: 21300000, guid: 957602da4b4339a4a8e3ad74f1fbf88c, type: 3}
-  allOptions:
-  - optionName: BALAO
-    optionImage: {fileID: 21300000, guid: 41cd00b389c65354ab8cf489d22fee87, type: 3}
-    optionAudio: {fileID: 8300000, guid: 49c50922760da3f40899a2e990a84f5e, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
-  - optionName: CASA
-    optionImage: {fileID: 21300000, guid: 02d2b68ba8464d44598496ef5dfbbff9, type: 3}
-    optionAudio: {fileID: 8300000, guid: 244ec0e7d759d014d81b9b776f55eb66, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
-  - optionName: DADO
-    optionImage: {fileID: 21300000, guid: 7ac550a7ae2b46b43bc979cb7e82844b, type: 3}
-    optionAudio: {fileID: 8300000, guid: 7db016608aaf4634eaaed4c230b3bfe2, type: 3}
-    syllableSprite: {fileID: 21300000, guid: b853cd58663860d4b90beafefbce3e77, type: 3}
-  - optionName: FACA
-    optionImage: {fileID: 21300000, guid: 39c7aa4f7e0347b4da7ac0d033858aef, type: 3}
-    optionAudio: {fileID: 8300000, guid: 9ea799873f704ea48a8705f6f381f437, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 3295dc4b1ef57304194bb183a2baf36b, type: 3}
-  - optionName: GATO
-    optionImage: {fileID: 21300000, guid: 86e346b794b2ad24bb9d38c5c984f938, type: 3}
-    optionAudio: {fileID: 8300000, guid: c0f08c0de90ade74798a4e3f9cce578e, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 75f92c228e90a4940a05cfdabe258eb8, type: 3}
-  - optionName: 'JACA '
-    optionImage: {fileID: 21300000, guid: 65007bffd78fcb245a24f247d9ac186b, type: 3}
-    optionAudio: {fileID: 8300000, guid: e9ff4b2ef4bf1b9448ff77caa77ac4fb, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 86ce0ec77a9934d4d9eaa62049c4e0bf, type: 3}
-  - optionName: LATA
-    optionImage: {fileID: 21300000, guid: 5ae6e45565994364a80cf6ee8375fcf3, type: 3}
-    optionAudio: {fileID: 8300000, guid: ff0fb7f55def5ec4cbaa402e1d580434, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 6f3b69fa5e38b734985fb2d32992b59e, type: 3}
-  - optionName: MALA
-    optionImage: {fileID: 21300000, guid: 67bc93b57360d4046ae9ff4004c6f18e, type: 3}
-    optionAudio: {fileID: 8300000, guid: 83f6be1643b176b4ba29dd5c89f325d2, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 1e54b1d1330a874409c4a806f05caaba, type: 3}
-  - optionName: NAVIO
-    optionImage: {fileID: 21300000, guid: d9b44c9113a9a9a459db3f5785a23782, type: 3}
-    optionAudio: {fileID: 8300000, guid: 091d771cb4f1c8348982de701f633ad7, type: 3}
-    syllableSprite: {fileID: 21300000, guid: d7a47787471d29546aaf875379f81f66, type: 3}
-  - optionName: PATO
-    optionImage: {fileID: 21300000, guid: e72658e467a3012409db9b2e8d2310b1, type: 3}
-    optionAudio: {fileID: 8300000, guid: d63d894cc12010248be7547bf8fbd6a9, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 3909d92f734a7124ab2a382f1b89eb0f, type: 3}
-  - optionName: QUADRO
-    optionImage: {fileID: 21300000, guid: c1a606cde1025c347a86c65ad287385b, type: 3}
-    optionAudio: {fileID: 8300000, guid: 35c43b3f55b0edf45814b64385ffb950, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 5b113c9dc01f631409a5dfc5efb923b6, type: 3}
-  - optionName: RATO
-    optionImage: {fileID: 21300000, guid: bc67a66d47394f24a982697e1310f89b, type: 3}
-    optionAudio: {fileID: 8300000, guid: dedd63e60ac8a22419fa4a47a12a8fdd, type: 3}
-    syllableSprite: {fileID: 21300000, guid: e9d7e26ef4bf8034e8d107a29042169f, type: 3}
-  - optionName: SAPO
-    optionImage: {fileID: 21300000, guid: 9e97978f96f8f9040a9ba3e7b1d6d320, type: 3}
-    optionAudio: {fileID: 8300000, guid: 43bfb1d330b47a747b3fff4bb565d56c, type: 3}
-    syllableSprite: {fileID: 21300000, guid: c612877ee004d9a44ba84459bd5d28c2, type: 3}
-  - optionName: TATU
-    optionImage: {fileID: 21300000, guid: 82538c4ed3b58134c8d5aeb296b06070, type: 3}
-    optionAudio: {fileID: 8300000, guid: c4658fe7efbb7be45b8978f4f8c84318, type: 3}
-    syllableSprite: {fileID: 21300000, guid: a0d5ab77003a2274f919fcb594be6880, type: 3}
-  - optionName: VACA
-    optionImage: {fileID: 21300000, guid: f77f17b2b8a20464db81e987d7f8b3ce, type: 3}
-    optionAudio: {fileID: 8300000, guid: 0d318a2ba40107b469f9caa3f8da4ab2, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 8be7ecac8a15308408b8952e08dadf76, type: 3}
-  - optionName: XADREZ
-    optionImage: {fileID: 21300000, guid: 15e737d532375754eadffae8e52c753c, type: 3}
-    optionAudio: {fileID: 8300000, guid: 2161babc62d593e47a04797cc1cfcad4, type: 3}
-    syllableSprite: {fileID: 21300000, guid: adedc79b222239a438d7f3d1835e7c01, type: 3}
-  - optionName: ZACA
-    optionImage: {fileID: 21300000, guid: 3c9c05a6538709b4d8f79e5d423ed52b, type: 3}
-    optionAudio: {fileID: 8300000, guid: dfda4b12eaaff3b45a0e3401a12c14b3, type: 3}
-    syllableSprite: {fileID: 21300000, guid: 957602da4b4339a4a8e3ad74f1fbf88c, type: 3}
-  checkSprite: {fileID: 21300000, guid: 0368b0a537dbc3c4487019267ac006d0, type: 3}
-  wrongSprite: {fileID: 21300000, guid: 78df9938d99e7114ea7121ce34909898, type: 3}
-  endPhasePanel: {fileID: 834097410}
-  scoreEndPhase: {fileID: 0}
-  confettiEffect: {fileID: 99774441}
-  spawnPoint: {fileID: 0}
-  score: 0
 --- !u!1 &1753677463
 GameObject:
   m_ObjectHideFlags: 0
@@ -7883,7 +7807,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.1, y: 0}
+  m_AnchoredPosition: {x: 0.4, y: 0.1}
   m_SizeDelta: {x: 1445.6396, y: 2781.4788}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1753677466
@@ -7935,8 +7859,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
-  m_Sprite: {fileID: 21300000, guid: 6ce371cf245d4594f9d0e2b753dacf39, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 651d5e3d4d432a54ca9382df116be9c4, type: 3}
+  m_Color: {r: 0.09803924, g: 0.972549, b: 0.60599416, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -7958,7 +7882,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84946a9ddeab225498a314dab8d153a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isAspectRatio: 1
+  isAspectRatio: 0
 --- !u!1 &1775477998
 GameObject:
   m_ObjectHideFlags: 0
@@ -7994,7 +7918,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -40.695007, y: -36.651}
+  m_AnchoredPosition: {x: -40.69507, y: -36.65088}
   m_SizeDelta: {x: 19.3148, y: 29.5024}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1775478000
@@ -8457,8 +8381,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -3, y: 585.09}
-  m_SizeDelta: {x: 517.3982, y: 356.52}
+  m_AnchoredPosition: {x: 9, y: 595}
+  m_SizeDelta: {x: 601.83, y: 516.52}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1935800147
 MonoBehaviour:
@@ -8473,7 +8397,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.27171594, g: 0.8113208, b: 0.6672194, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -8508,6 +8432,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1936055223}
   - component: {fileID: 1936055224}
+  - component: {fileID: 1936055225}
   m_Layer: 5
   m_Name: OptionsPanel
   m_TagString: Untagged
@@ -8558,6 +8483,58 @@ MonoBehaviour:
   m_Spacing: {x: 30, y: 90}
   m_Constraint: 0
   m_ConstraintCount: 2
+--- !u!212 &1936055225
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1936055222}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300000, guid: e24f423882e19404fabd5e006c6aeab7, type: 3}
+  m_Color: {r: 0.27058825, g: 0.8117648, b: 0.6666667, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 1
+  m_Size: {x: 800, y: 800}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
 --- !u!1 &1994280734
 GameObject:
   m_ObjectHideFlags: 0
@@ -8864,7 +8841,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 15
+          m_IntArgument: 17
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -9077,7 +9054,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 17
+          m_IntArgument: 18
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
