@@ -220,6 +220,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &37925760
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 37925762}
+  - component: {fileID: 37925761}
+  m_Layer: 0
+  m_Name: CardGameLogger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &37925761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 37925760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e567a4bd3c53104dab1a670b9c7f0c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &37925762
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 37925760}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -5.392388, y: -2.599156, z: 0.38226777}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &66968061
 GameObject:
   m_ObjectHideFlags: 0
@@ -6412,7 +6456,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -29.10498, y: -44}
-  m_SizeDelta: {x: 30.9044, y: 46.3429}
+  m_SizeDelta: {x: 30, y: 40}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &785273159
 MonoBehaviour:
@@ -8098,6 +8142,7 @@ MonoBehaviour:
   scoreEndPhase: {fileID: 0}
   endOfLevelConfetti: {fileID: 0}
   roundOverlayImage: {fileID: 2104408928}
+  gameLogger: {fileID: 0}
   SFXSource: {fileID: 97484212}
   initialSFXVolume: 0.015
 --- !u!4 &2086876177
@@ -8276,3 +8321,4 @@ SceneRoots:
   - {fileID: 2086876177}
   - {fileID: 97484213}
   - {fileID: 16125743}
+  - {fileID: 37925762}

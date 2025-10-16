@@ -27,7 +27,6 @@ public class CardsController : MonoBehaviour
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject endPhasePanel;
 
-
     [Header("UI Texts")]
     [SerializeField] private Text scoreHUD;
     [SerializeField] private Text scorePause;
@@ -39,17 +38,19 @@ public class CardsController : MonoBehaviour
     [Header("Imagem de transição")]
     [SerializeField] private Image roundOverlayImage;
     
-    // --- NOVO HEADER PARA ÁUDIO SFX ---
+    [Header("Game Logger")]
+    [SerializeField] private CardGameLogger gameLogger;
+    
     [Header("--- ÁUDIO (SFX Controller) ---")]
     [Tooltip("AudioSource dedicado para tocar efeitos sonoros (SFX).")]
     [SerializeField] private AudioSource SFXSource;
     [Tooltip("Define o volume inicial para os efeitos sonoros (SFX) nesta cena.")]
     [SerializeField] private float initialSFXVolume = 1.0f; 
-    // ---------------------------------
 
-    private AudioSource audioSource; // Áudio principal (eventos e música de fundo se for o caso)
+    private AudioSource audioSource;
     private List<Sprite> spritePairs;
     private List<AudioClip> audioPairs;
+    private List<Card> allCards = new List<Card>();
 
     private Card firstSelected;
     private Card secondSelected;
@@ -57,29 +58,56 @@ public class CardsController : MonoBehaviour
     private int matchCounts;
     private int currentRound = 0;
     private bool canSelect = true;
-
     private int score = 0;
+
+    // Variáveis para logging de matches
+    private int matchAttempts = 0;
+    private float matchStartTime;
+    private int totalCardTouches = 0;
 
     private void Start()
     {
-        // Cria e anexa o AudioSource principal (para eventos)
+        Debug.Log("=== CARDS CONTROLLER START ===");
+        
+        // Cria e anexa o AudioSource principal
         audioSource = gameObject.AddComponent<AudioSource>();
         
         // Aplica a configuração inicial de volume SFX
         SetSFXVolume(initialSFXVolume);
         
+        // Verificar se o logger está configurado
+        if (gameLogger == null)
+        {
+            gameLogger = GetComponent<CardGameLogger>();
+            if (gameLogger == null)
+            {
+                gameLogger = FindObjectOfType<CardGameLogger>();
+                if (gameLogger == null)
+                {
+                    Debug.LogError("❌ CardGameLogger não encontrado!");
+                }
+                else
+                {
+                    Debug.Log("✅ CardGameLogger encontrado via FindObjectOfType");
+                }
+            }
+        }
+
         StartRound();
         UpdateAllScoreDisplays();
     }
 
-    // ... (Métodos StartRound, PreviewCardsCoroutine, ClearGrid, PrepareSpritesForRound, CreateCards, ShufflePairs permanecem inalterados)
-    
     private void StartRound()
     {
+        Debug.Log($"🔄 INICIANDO ROUND {currentRound + 1}");
+        
         matchCounts = 0;
         firstSelected = null;
         secondSelected = null;
         canSelect = false;
+        matchAttempts = 0;
+        totalCardTouches = 0;
+        allCards.Clear();
 
         ClearGrid();
 
@@ -92,26 +120,38 @@ public class CardsController : MonoBehaviour
         if (gridLayout != null)
             gridLayout.enabled = false;
 
+        // LOG DO INÍCIO DO ROUND
+        if (gameLogger != null)
+        {
+            int pairsThisRound = pairsPerRound[Mathf.Clamp(currentRound, 0, pairsPerRound.Length - 1)];
+            gameLogger.StartRound(currentRound + 1, pairsThisRound);
+        }
+
         StartCoroutine(PreviewCardsCoroutine());
     }
 
     private IEnumerator PreviewCardsCoroutine()
     {
-        foreach (Transform child in gridTransform)
+        Debug.Log("👀 Mostrando preview das cartas...");
+        
+        // Mostra todas as cartas
+        foreach (var card in allCards)
         {
-            Card c = child.GetComponent<Card>();
-            c.Show();
+            card.Show();
         }
 
         yield return new WaitForSeconds(3f);
 
-        foreach (Transform child in gridTransform)
+        // Esconde todas as cartas
+        foreach (var card in allCards)
         {
-            Card c = child.GetComponent<Card>();
-            c.Hide();
+            card.Hide();
         }
 
         canSelect = true;
+        matchStartTime = Time.time;
+        
+        Debug.Log($"🎮 Round {currentRound + 1} pronto para jogar!");
     }
 
     private void ClearGrid()
@@ -157,27 +197,54 @@ public class CardsController : MonoBehaviour
         {
             Card card = Instantiate(cardPrefab, gridTransform);
             card.Initialize(spritePairs[i], (audioPairs != null && i < audioPairs.Count) ? audioPairs[i] : null, this);
+            allCards.Add(card);
         }
     }
 
     public void SetSelected(Card card)
     {
-        if (!canSelect || !card.isSelected) return;
-        if (firstSelected == card) return;
+        if (!canSelect || !card.isSelected) 
+        {
+            Debug.Log($"⚠️ Carta não pode ser selecionada: canSelect={canSelect}, isSelected={card.isSelected}");
+            return;
+        }
+        
+        if (firstSelected == card) 
+        {
+            Debug.Log("⚠️ Carta já é a primeira selecionada");
+            return;
+        }
+
+        Debug.Log($"🎯 Carta selecionada: {card.iconSprite.name}");
 
         canSelect = false;
+        totalCardTouches++;
+
+        // LOG DO TOQUE NA CARTA
+        if (gameLogger != null)
+        {
+            Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(Camera.main, card.transform.position);
+            bool isFirstCard = (firstSelected == null);
+            gameLogger.LogCardTouch(totalCardTouches, screenPos, card.iconSprite.name, isFirstCard);
+        }
+
+        // Mostra a carta
         card.Show();
 
+        // Toca o áudio e depois processa a seleção
         card.PlayAudio(() =>
         {
             if (firstSelected == null)
             {
+                Debug.Log("📌 Primeira carta selecionada");
                 firstSelected = card;
                 canSelect = true;
             }
             else if (secondSelected == null)
             {
+                Debug.Log("📌 Segunda carta selecionada - verificando match...");
                 secondSelected = card;
+                matchAttempts++;
                 StartCoroutine(CheckMatching(firstSelected, secondSelected));
             }
         });
@@ -185,10 +252,22 @@ public class CardsController : MonoBehaviour
 
     private IEnumerator CheckMatching(Card a, Card b)
     {
+        float matchTime = Time.time - matchStartTime;
+        
+        Debug.Log($"🔍 Verificando match: {a.iconSprite.name} vs {b.iconSprite.name}");
+
         yield return new WaitForSeconds(0.3f);
 
         if (a.iconSprite == b.iconSprite)
         {
+            Debug.Log("✅ MATCH CORRETO!");
+            
+            // LOG DO MATCH CORRETO
+            if (gameLogger != null)
+            {
+                gameLogger.LogCardMatch(true, a.iconSprite.name, b.iconSprite.name, matchTime, matchAttempts);
+            }
+
             a.CorrectMatch();
             b.CorrectMatch();
             matchCounts++;
@@ -197,11 +276,28 @@ public class CardsController : MonoBehaviour
 
             if (matchCounts >= spritePairs.Count / 2)
             {
+                Debug.Log($"🎯 Todos os {matchCounts} pares encontrados! Round completo.");
                 yield return StartCoroutine(HandleRoundComplete());
+            }
+            else
+            {
+                matchAttempts = 0; // Reset attempts for next match
+                matchStartTime = Time.time; // Reset match timer
+                Debug.Log($"📊 Progresso: {matchCounts}/{spritePairs.Count / 2} pares");
             }
         }
         else
         {
+            Debug.Log("❌ MATCH ERRADO!");
+            
+            // LOG DO MATCH ERRADO
+            if (gameLogger != null)
+            {
+                gameLogger.LogCardMatch(false, a.iconSprite.name, b.iconSprite.name, matchTime, matchAttempts);
+            }
+
+            yield return new WaitForSeconds(0.5f); // Pequena pausa antes de esconder
+            
             a.Hide();
             b.Hide();
         }
@@ -209,11 +305,26 @@ public class CardsController : MonoBehaviour
         firstSelected = null;
         secondSelected = null;
         canSelect = true;
+        
+        Debug.Log("🔄 Pronto para próxima seleção");
     }
 
     private IEnumerator HandleRoundComplete()
     {
-        if (roundCompleteAudio != null) audioSource.PlayOneShot(roundCompleteAudio);
+        Debug.Log($"🎯 ROUND {currentRound + 1} COMPLETO!");
+
+        // LOG DA CONCLUSÃO DO ROUND
+        if (gameLogger != null)
+        {
+            int pairsThisRound = pairsPerRound[Mathf.Clamp(currentRound, 0, pairsPerRound.Length - 1)];
+            gameLogger.LogRoundComplete(currentRound + 1, pairsThisRound, Time.time - matchStartTime);
+        }
+
+        if (roundCompleteAudio != null) 
+        {
+            audioSource.PlayOneShot(roundCompleteAudio);
+            Debug.Log("🔊 Tocando áudio de round completo");
+        }
 
         if (roundOverlayImage != null)
         {
@@ -235,10 +346,12 @@ public class CardsController : MonoBehaviour
         currentRound++;
         if (currentRound < pairsPerRound.Length)
         {
+            Debug.Log($"➡️ Avançando para round {currentRound + 1}");
             StartRound();
         }
         else
         {
+            Debug.Log("🏁 Todos os rounds completos! Fim de jogo.");
             ShowEndPhasePanel();
         }
     }
@@ -260,34 +373,36 @@ public class CardsController : MonoBehaviour
                 audiosList[randomIndex] = ta;
             }
         }
+        
+        Debug.Log($"🔀 {spritesList.Count} cartas embaralhadas");
     }
     
-    // ==== FUNÇÕES DE ÁUDIO MIGRARADAS ====
+    // ==== FUNÇÕES DE ÁUDIO ====
     
-    // Função para tocar SFX (usa o SFXSource dedicado)
     public void PlaySFX(AudioClip clip)
     {
         if (SFXSource != null && clip != null)
         {
             SFXSource.PlayOneShot(clip);
+            Debug.Log($"🔊 Tocando SFX: {clip.name}");
         }
     }
     
-    // Função para definir o volume do SFX
     public void SetSFXVolume(float volume)
     {
         if (SFXSource != null)
         {
             SFXSource.volume = Mathf.Clamp01(volume);
+            Debug.Log($"🔊 Volume SFX ajustado para: {volume}");
         }
     }
 
-    // Função para definir o volume do áudio principal (background/eventos)
     public void SetBackgroundVolume(float volume)
     {
         if (audioSource != null)
         {
             audioSource.volume = Mathf.Clamp01(volume);
+            Debug.Log($"Volume background ajustado para: {volume}");
         }
     }
 
@@ -297,14 +412,37 @@ public class CardsController : MonoBehaviour
         score += amount;
         if (score < 0) score = 0;
         UpdateAllScoreDisplays();
+        Debug.Log($"Score atualizado: +{amount} = {score}");
     }
 
     public void ShowEndPhasePanel()
     {
-        Debug.Log("== [ShowEndPhasePanel] - FIM DE JOGO! ==");
-        if (endPhasePanel != null) endPhasePanel.SetActive(true);
-        if (endGameAudio != null) audioSource.PlayOneShot(endGameAudio);
-        if (endOfLevelConfetti != null) endOfLevelConfetti.Play();
+        Debug.Log("ShowEndPhasePanel] - FIM DE JOGO! ===");
+        
+        // LOG DO FIM DA SESSÃO
+        if (gameLogger != null)
+        {
+            gameLogger.LogSessionEnd(score);
+        }
+
+        if (endPhasePanel != null) 
+        {
+            endPhasePanel.SetActive(true);
+            Debug.Log("Painel de fim de fase ativado");
+        }
+        
+        if (endGameAudio != null) 
+        {
+            audioSource.PlayOneShot(endGameAudio);
+            Debug.Log("Tocando áudio de fim de jogo");
+        }
+        
+        if (endOfLevelConfetti != null) 
+        {
+            endOfLevelConfetti.Play();
+            Debug.Log("Confetti ativado!");
+        }
+        
         UpdateAllScoreDisplays();
     }
     
@@ -318,17 +456,32 @@ public class CardsController : MonoBehaviour
 
     public void OpenPauseMenu()
     {
-        pauseMenu.SetActive(true);
-        if (scorePause != null) scorePause.text = "Score: " + score.ToString();
-        if (pauseMenu != null) pauseMenu.SetActive(true);
-        audioSource.Pause();
+        if (pauseMenu != null)
+        {
+            pauseMenu.SetActive(true);
+            Debug.Log("Menu de pausa aberto");
+        }
+        
+        if (scorePause != null) 
+            scorePause.text = "Score: " + score.ToString();
+            
+        if (audioSource != null)
+            audioSource.Pause();
+            
         Time.timeScale = 0;
     }
 
     public void ClosePauseMenu()
     {
-        if (pauseMenu != null) pauseMenu.SetActive(false);
+        if (pauseMenu != null)
+        {
+            pauseMenu.SetActive(false);
+            Debug.Log(" Menu de pausa fechado");
+        }
+            
         Time.timeScale = 1f;
-        audioSource.UnPause();
+        
+        if (audioSource != null)
+            audioSource.UnPause();
     }
 }
