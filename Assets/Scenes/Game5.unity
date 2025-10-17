@@ -5502,9 +5502,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 868681515}
-        m_TargetAssemblyTypeName: GameManager5, Assembly-CSharp
-        m_MethodName: ClosePauseMenuLvl1
+      - m_Target: {fileID: 1715173768}
+        m_TargetAssemblyTypeName: RoundController, Assembly-CSharp
+        m_MethodName: ResumeGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6519,23 +6519,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b76fbda0cd5c648418b34ad92eb673e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  musicSource: {fileID: 0}
+  sfxSource: {fileID: 2003650166}
   syllableSource: {fileID: 1879931140}
   optionSource: {fileID: 1787665807}
-  sfxSource: {fileID: 2003650166}
-  musicSource: {fileID: 0}
   backgroundMusic: {fileID: 8300000, guid: a13344ac26ae22f40ae0160a0a8c756e, type: 3}
-  musicVolume: 0.874
-  syllableVolume: 1
-  optionVolume: 1
-  sfxVolume: 1
   correctSfx: {fileID: 8300000, guid: f4318f53195abcc4a9b70cffd9efe49f, type: 3}
   wrongSfx: {fileID: 0}
   confettiSfx: {fileID: 8300000, guid: 74d5dc0c5fa7f7144b6923e39a624b64, type: 3}
-  gameLogger: {fileID: 33149194}
-  confettiEffect: {fileID: 99774441}
-  PauseMenu: {fileID: 132933640}
-  endPhasePanel: {fileID: 834097410}
-  spawnPoint: {fileID: 0}
+  musicVolume: 0.025
+  sfxVolume: 1
+  syllableVolume: 1
+  optionVolume: 1
 --- !u!4 &868681516
 Transform:
   m_ObjectHideFlags: 0
@@ -7680,6 +7675,12 @@ MonoBehaviour:
   syllablePanel: {fileID: 1198437930}
   optionsParent: {fileID: 1936055223}
   optionPrefab: {fileID: 4082163324305313816, guid: 85ff83c95834a6943b0835591f91a432, type: 3}
+  PauseMenu: {fileID: 132933640}
+  endPhasePanel: {fileID: 834097410}
+  confettiEffect: {fileID: 99774441}
+  spawnPoint: {fileID: 0}
+  scoreTextPause: {fileID: 0}
+  scoreTextEnd: {fileID: 0}
   syllables:
   - syllableName: BA DE
     syllableImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
@@ -7888,10 +7889,7 @@ MonoBehaviour:
     syllableSprite: {fileID: 21300000, guid: 957602da4b4339a4a8e3ad74f1fbf88c, type: 3}
   checkSprite: {fileID: 21300000, guid: 0368b0a537dbc3c4487019267ac006d0, type: 3}
   wrongSprite: {fileID: 21300000, guid: 78df9938d99e7114ea7121ce34909898, type: 3}
-  endPhasePanel: {fileID: 834097410}
   scoreEndPhase: {fileID: 0}
-  confettiEffect: {fileID: 99774441}
-  spawnPoint: {fileID: 0}
   score: 0
 --- !u!1 &1753677463
 GameObject:
@@ -8039,7 +8037,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -40.695007, y: -36.651}
+  m_AnchoredPosition: {x: -40.69507, y: -36.65088}
   m_SizeDelta: {x: 19.3148, y: 29.5024}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1775478000
@@ -8086,9 +8084,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 868681515}
-        m_TargetAssemblyTypeName: GameManager5, Assembly-CSharp
-        m_MethodName: OpenPauseMenuLvl1
+      - m_Target: {fileID: 1715173768}
+        m_TargetAssemblyTypeName: RoundController, Assembly-CSharp
+        m_MethodName: PauseGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

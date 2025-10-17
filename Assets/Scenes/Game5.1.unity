@@ -5326,7 +5326,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 868681517}
+      - m_Target: {fileID: 1715173768}
         m_TargetAssemblyTypeName: RoundController_V2, Assembly-CSharp
         m_MethodName: RepeatQuestion
         m_Mode: 1
@@ -5458,9 +5458,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 868681515}
-        m_TargetAssemblyTypeName: GameManager5, Assembly-CSharp
-        m_MethodName: ClosePauseMenuLvl1
+      - m_Target: {fileID: 1715173768}
+        m_TargetAssemblyTypeName: RoundController_V2, Assembly-CSharp
+        m_MethodName: ResumeGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6456,7 +6456,6 @@ GameObject:
   m_Component:
   - component: {fileID: 868681516}
   - component: {fileID: 868681515}
-  - component: {fileID: 868681517}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -6476,22 +6475,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b76fbda0cd5c648418b34ad92eb673e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  musicSource: {fileID: 0}
+  sfxSource: {fileID: 2003650166}
   syllableSource: {fileID: 1879931140}
   optionSource: {fileID: 1787665807}
-  sfxSource: {fileID: 2003650166}
-  musicSource: {fileID: 0}
   backgroundMusic: {fileID: 8300000, guid: a13344ac26ae22f40ae0160a0a8c756e, type: 3}
-  musicVolume: 0.134
-  syllableVolume: 1
-  optionVolume: 1
-  sfxVolume: 1
   correctSfx: {fileID: 8300000, guid: f4318f53195abcc4a9b70cffd9efe49f, type: 3}
   wrongSfx: {fileID: 0}
   confettiSfx: {fileID: 8300000, guid: 74d5dc0c5fa7f7144b6923e39a624b64, type: 3}
-  confettiEffect: {fileID: 99774441}
-  PauseMenu: {fileID: 132933640}
-  endPhasePanel: {fileID: 834097410}
-  spawnPoint: {fileID: 0}
+  musicVolume: 0.085
+  sfxVolume: 1
+  syllableVolume: 1
+  optionVolume: 1
 --- !u!4 &868681516
 Transform:
   m_ObjectHideFlags: 0
@@ -6510,234 +6505,6 @@ Transform:
   - {fileID: 2003650165}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &868681517
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 868681514}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c16c0715ea8f534bb1e9d2b304ca280, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  soundIcon: {fileID: 0}
-  optionsParent: {fileID: 1936055223}
-  optionPrefab: {fileID: 4082163324305313816, guid: 6d8dbdab331f99e4cb1a709dbe00d712, type: 3}
-  syllables:
-  - syllableName: BA
-    syllableImage: {fileID: 0}
-    syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
-    correctOption:
-      optionName: BA
-      optionImage: {fileID: 21300000, guid: faffc2e187bd1d34cbfed9de67e5aa0a, type: 3}
-      optionAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
-      syllableSprite: {fileID: 0}
-  - syllableName: CA
-    syllableImage: {fileID: 0}
-    syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
-    correctOption:
-      optionName: CA
-      optionImage: {fileID: 21300000, guid: 793e94e6332d86e449eae810b72f6615, type: 3}
-      optionAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
-      syllableSprite: {fileID: 0}
-  - syllableName: DA
-    syllableImage: {fileID: 21300000, guid: edb8e95b33e4313439b1dcb6b8f14d45, type: 3}
-    syllableAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
-    correctOption:
-      optionName: DA
-      optionImage: {fileID: 21300000, guid: edb8e95b33e4313439b1dcb6b8f14d45, type: 3}
-      optionAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
-      syllableSprite: {fileID: 0}
-  - syllableName: FA
-    syllableImage: {fileID: 0}
-    syllableAudio: {fileID: 8300000, guid: 129794c8ee0dc12408c51fd88ac9e2bb, type: 3}
-    correctOption:
-      optionName: FA
-      optionImage: {fileID: 21300000, guid: b18c62169f43fb642be41fcde7de511a, type: 3}
-      optionAudio: {fileID: 8300000, guid: 129794c8ee0dc12408c51fd88ac9e2bb, type: 3}
-      syllableSprite: {fileID: 0}
-  - syllableName: GA
-    syllableImage: {fileID: 0}
-    syllableAudio: {fileID: 8300000, guid: e8ac2564d0fa2274fbb75b0410be4f14, type: 3}
-    correctOption:
-      optionName: GA
-      optionImage: {fileID: 21300000, guid: 2eedc9c262396d34f91130a8a30017d9, type: 3}
-      optionAudio: {fileID: 8300000, guid: e8ac2564d0fa2274fbb75b0410be4f14, type: 3}
-      syllableSprite: {fileID: 0}
-  - syllableName: JA
-    syllableImage: {fileID: 0}
-    syllableAudio: {fileID: 8300000, guid: c96e17bef7505bb4892d3739af4ecdca, type: 3}
-    correctOption:
-      optionName: JA
-      optionImage: {fileID: 21300000, guid: 6f4cd7da104c63246999c6c0d9168fd5, type: 3}
-      optionAudio: {fileID: 8300000, guid: c96e17bef7505bb4892d3739af4ecdca, type: 3}
-      syllableSprite: {fileID: 0}
-  - syllableName: LA
-    syllableImage: {fileID: 0}
-    syllableAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
-    correctOption:
-      optionName: LA
-      optionImage: {fileID: 21300000, guid: 4f46e7572abc2d94dbc513c19df5537a, type: 3}
-      optionAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
-      syllableSprite: {fileID: 0}
-  - syllableName: MA
-    syllableImage: {fileID: 0}
-    syllableAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
-    correctOption:
-      optionName: MA
-      optionImage: {fileID: 21300000, guid: 62d8104431a972f4e97003093dd332c4, type: 3}
-      optionAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
-      syllableSprite: {fileID: 0}
-  - syllableName: NA
-    syllableImage: {fileID: 0}
-    syllableAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
-    correctOption:
-      optionName: NA
-      optionImage: {fileID: 21300000, guid: 5652afc20630de146a98cb9985bf59f7, type: 3}
-      optionAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
-      syllableSprite: {fileID: 0}
-  - syllableName: PA
-    syllableImage: {fileID: 0}
-    syllableAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
-    correctOption:
-      optionName: PA
-      optionImage: {fileID: 21300000, guid: 7c047ee3ff4220547ad4ca68e395c7c3, type: 3}
-      optionAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
-      syllableSprite: {fileID: 0}
-  - syllableName: QUA
-    syllableImage: {fileID: 0}
-    syllableAudio: {fileID: 8300000, guid: 87cc05ac624dbea49b336e82ea8ee833, type: 3}
-    correctOption:
-      optionName: QUA
-      optionImage: {fileID: 21300000, guid: d77b177d9dde2234388b17bb4961811f, type: 3}
-      optionAudio: {fileID: 8300000, guid: 87cc05ac624dbea49b336e82ea8ee833, type: 3}
-      syllableSprite: {fileID: 0}
-  - syllableName: RA
-    syllableImage: {fileID: 0}
-    syllableAudio: {fileID: 8300000, guid: ec5f88918413db0499c5cfe14436284d, type: 3}
-    correctOption:
-      optionName: RA
-      optionImage: {fileID: 21300000, guid: 2c5bed1eb0b43a143a28ade2605385b5, type: 3}
-      optionAudio: {fileID: 8300000, guid: ec5f88918413db0499c5cfe14436284d, type: 3}
-      syllableSprite: {fileID: 0}
-  - syllableName: SA
-    syllableImage: {fileID: 0}
-    syllableAudio: {fileID: 8300000, guid: 3d305eca04e72fb4eae413ea7a7fb010, type: 3}
-    correctOption:
-      optionName: SA
-      optionImage: {fileID: 21300000, guid: c9de3270379a80242bacc2b212c0b4fe, type: 3}
-      optionAudio: {fileID: 8300000, guid: 3d305eca04e72fb4eae413ea7a7fb010, type: 3}
-      syllableSprite: {fileID: 0}
-  - syllableName: TA
-    syllableImage: {fileID: 0}
-    syllableAudio: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
-    correctOption:
-      optionName: TA
-      optionImage: {fileID: 21300000, guid: 722c5e00b7e903c46b694ea081ab89c4, type: 3}
-      optionAudio: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
-      syllableSprite: {fileID: 0}
-  - syllableName: VA
-    syllableImage: {fileID: 0}
-    syllableAudio: {fileID: 8300000, guid: 1fd611b92e287a04bbf8e125612c1d21, type: 3}
-    correctOption:
-      optionName: VA
-      optionImage: {fileID: 21300000, guid: e9d7b8dbc0d6b2f4ca73129e7142e5fd, type: 3}
-      optionAudio: {fileID: 8300000, guid: 1fd611b92e287a04bbf8e125612c1d21, type: 3}
-      syllableSprite: {fileID: 0}
-  - syllableName: XA
-    syllableImage: {fileID: 0}
-    syllableAudio: {fileID: 8300000, guid: e0c7ccbffc70fde4ebc32eae6d3b6cee, type: 3}
-    correctOption:
-      optionName: XA
-      optionImage: {fileID: 21300000, guid: f0485d6685cb8904b8ea465f9f0e8974, type: 3}
-      optionAudio: {fileID: 8300000, guid: e0c7ccbffc70fde4ebc32eae6d3b6cee, type: 3}
-      syllableSprite: {fileID: 0}
-  - syllableName: ZA
-    syllableImage: {fileID: 0}
-    syllableAudio: {fileID: 8300000, guid: 440c31cdf6232e445b1e3735d4d02ad5, type: 3}
-    correctOption:
-      optionName: ZA
-      optionImage: {fileID: 21300000, guid: 74b3904d9e214fb48a8df4884f489b13, type: 3}
-      optionAudio: {fileID: 8300000, guid: 440c31cdf6232e445b1e3735d4d02ad5, type: 3}
-      syllableSprite: {fileID: 0}
-  allOptions:
-  - optionName: BA
-    optionImage: {fileID: 21300000, guid: faffc2e187bd1d34cbfed9de67e5aa0a, type: 3}
-    optionAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
-    syllableSprite: {fileID: 0}
-  - optionName: CA
-    optionImage: {fileID: 21300000, guid: 793e94e6332d86e449eae810b72f6615, type: 3}
-    optionAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
-    syllableSprite: {fileID: 0}
-  - optionName: DA
-    optionImage: {fileID: 21300000, guid: edb8e95b33e4313439b1dcb6b8f14d45, type: 3}
-    optionAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
-    syllableSprite: {fileID: 0}
-  - optionName: FA
-    optionImage: {fileID: 21300000, guid: b18c62169f43fb642be41fcde7de511a, type: 3}
-    optionAudio: {fileID: 8300000, guid: 129794c8ee0dc12408c51fd88ac9e2bb, type: 3}
-    syllableSprite: {fileID: 0}
-  - optionName: GA
-    optionImage: {fileID: 21300000, guid: 2eedc9c262396d34f91130a8a30017d9, type: 3}
-    optionAudio: {fileID: 8300000, guid: e8ac2564d0fa2274fbb75b0410be4f14, type: 3}
-    syllableSprite: {fileID: 0}
-  - optionName: JA
-    optionImage: {fileID: 21300000, guid: 6f4cd7da104c63246999c6c0d9168fd5, type: 3}
-    optionAudio: {fileID: 8300000, guid: c96e17bef7505bb4892d3739af4ecdca, type: 3}
-    syllableSprite: {fileID: 0}
-  - optionName: LA
-    optionImage: {fileID: 21300000, guid: 4f46e7572abc2d94dbc513c19df5537a, type: 3}
-    optionAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
-    syllableSprite: {fileID: 0}
-  - optionName: MA
-    optionImage: {fileID: 21300000, guid: 62d8104431a972f4e97003093dd332c4, type: 3}
-    optionAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
-    syllableSprite: {fileID: 0}
-  - optionName: NA
-    optionImage: {fileID: 21300000, guid: 5652afc20630de146a98cb9985bf59f7, type: 3}
-    optionAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
-    syllableSprite: {fileID: 0}
-  - optionName: PA
-    optionImage: {fileID: 21300000, guid: 7c047ee3ff4220547ad4ca68e395c7c3, type: 3}
-    optionAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
-    syllableSprite: {fileID: 0}
-  - optionName: QUA
-    optionImage: {fileID: 21300000, guid: d77b177d9dde2234388b17bb4961811f, type: 3}
-    optionAudio: {fileID: 8300000, guid: 87cc05ac624dbea49b336e82ea8ee833, type: 3}
-    syllableSprite: {fileID: 0}
-  - optionName: RA
-    optionImage: {fileID: 21300000, guid: 2c5bed1eb0b43a143a28ade2605385b5, type: 3}
-    optionAudio: {fileID: 8300000, guid: ec5f88918413db0499c5cfe14436284d, type: 3}
-    syllableSprite: {fileID: 0}
-  - optionName: SA
-    optionImage: {fileID: 21300000, guid: c9de3270379a80242bacc2b212c0b4fe, type: 3}
-    optionAudio: {fileID: 8300000, guid: 3d305eca04e72fb4eae413ea7a7fb010, type: 3}
-    syllableSprite: {fileID: 0}
-  - optionName: TA
-    optionImage: {fileID: 21300000, guid: 722c5e00b7e903c46b694ea081ab89c4, type: 3}
-    optionAudio: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
-    syllableSprite: {fileID: 0}
-  - optionName: VA
-    optionImage: {fileID: 21300000, guid: e9d7b8dbc0d6b2f4ca73129e7142e5fd, type: 3}
-    optionAudio: {fileID: 8300000, guid: 1fd611b92e287a04bbf8e125612c1d21, type: 3}
-    syllableSprite: {fileID: 0}
-  - optionName: XA
-    optionImage: {fileID: 21300000, guid: f0485d6685cb8904b8ea465f9f0e8974, type: 3}
-    optionAudio: {fileID: 8300000, guid: e0c7ccbffc70fde4ebc32eae6d3b6cee, type: 3}
-    syllableSprite: {fileID: 0}
-  - optionName: ZA
-    optionImage: {fileID: 21300000, guid: 74b3904d9e214fb48a8df4884f489b13, type: 3}
-    optionAudio: {fileID: 8300000, guid: 440c31cdf6232e445b1e3735d4d02ad5, type: 3}
-    syllableSprite: {fileID: 0}
-  checkSprite: {fileID: 21300000, guid: ec4afbf3114368142acf69c71c06700a, type: 3}
-  wrongSprite: {fileID: 21300000, guid: 78df9938d99e7114ea7121ce34909898, type: 3}
-  endPhasePanel: {fileID: 834097410}
-  scoreEndPhase: {fileID: 0}
-  confettiEffect: {fileID: 99774441}
-  spawnPoint: {fileID: 0}
-  score: 0
 --- !u!1 &992389353
 GameObject:
   m_ObjectHideFlags: 0
@@ -7677,6 +7444,7 @@ GameObject:
   - component: {fileID: 1715173766}
   - component: {fileID: 1715173765}
   - component: {fileID: 1715173764}
+  - component: {fileID: 1715173768}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -7772,6 +7540,236 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1715173768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1715173763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c16c0715ea8f534bb1e9d2b304ca280, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundIcon: {fileID: 0}
+  optionsParent: {fileID: 1936055223}
+  optionPrefab: {fileID: 4082163324305313816, guid: 6d8dbdab331f99e4cb1a709dbe00d712, type: 3}
+  PauseMenu: {fileID: 132933640}
+  scoreTextPause: {fileID: 0}
+  syllables:
+  - syllableName: BA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+    correctOption:
+      optionName: BA
+      optionImage: {fileID: 21300000, guid: faffc2e187bd1d34cbfed9de67e5aa0a, type: 3}
+      optionAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: CA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+    correctOption:
+      optionName: CA
+      optionImage: {fileID: 21300000, guid: 793e94e6332d86e449eae810b72f6615, type: 3}
+      optionAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: DA
+    syllableImage: {fileID: 21300000, guid: edb8e95b33e4313439b1dcb6b8f14d45, type: 3}
+    syllableAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
+    correctOption:
+      optionName: DA
+      optionImage: {fileID: 21300000, guid: edb8e95b33e4313439b1dcb6b8f14d45, type: 3}
+      optionAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: FA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: 129794c8ee0dc12408c51fd88ac9e2bb, type: 3}
+    correctOption:
+      optionName: FA
+      optionImage: {fileID: 21300000, guid: b18c62169f43fb642be41fcde7de511a, type: 3}
+      optionAudio: {fileID: 8300000, guid: 129794c8ee0dc12408c51fd88ac9e2bb, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: GA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: e8ac2564d0fa2274fbb75b0410be4f14, type: 3}
+    correctOption:
+      optionName: GA
+      optionImage: {fileID: 21300000, guid: 2eedc9c262396d34f91130a8a30017d9, type: 3}
+      optionAudio: {fileID: 8300000, guid: e8ac2564d0fa2274fbb75b0410be4f14, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: JA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: c96e17bef7505bb4892d3739af4ecdca, type: 3}
+    correctOption:
+      optionName: JA
+      optionImage: {fileID: 21300000, guid: 6f4cd7da104c63246999c6c0d9168fd5, type: 3}
+      optionAudio: {fileID: 8300000, guid: c96e17bef7505bb4892d3739af4ecdca, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: LA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
+    correctOption:
+      optionName: LA
+      optionImage: {fileID: 21300000, guid: 4f46e7572abc2d94dbc513c19df5537a, type: 3}
+      optionAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: MA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
+    correctOption:
+      optionName: MA
+      optionImage: {fileID: 21300000, guid: 62d8104431a972f4e97003093dd332c4, type: 3}
+      optionAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: NA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
+    correctOption:
+      optionName: NA
+      optionImage: {fileID: 21300000, guid: 5652afc20630de146a98cb9985bf59f7, type: 3}
+      optionAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: PA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
+    correctOption:
+      optionName: PA
+      optionImage: {fileID: 21300000, guid: 7c047ee3ff4220547ad4ca68e395c7c3, type: 3}
+      optionAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: QUA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: 87cc05ac624dbea49b336e82ea8ee833, type: 3}
+    correctOption:
+      optionName: QUA
+      optionImage: {fileID: 21300000, guid: d77b177d9dde2234388b17bb4961811f, type: 3}
+      optionAudio: {fileID: 8300000, guid: 87cc05ac624dbea49b336e82ea8ee833, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: RA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: ec5f88918413db0499c5cfe14436284d, type: 3}
+    correctOption:
+      optionName: RA
+      optionImage: {fileID: 21300000, guid: 2c5bed1eb0b43a143a28ade2605385b5, type: 3}
+      optionAudio: {fileID: 8300000, guid: ec5f88918413db0499c5cfe14436284d, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: SA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: 3d305eca04e72fb4eae413ea7a7fb010, type: 3}
+    correctOption:
+      optionName: SA
+      optionImage: {fileID: 21300000, guid: c9de3270379a80242bacc2b212c0b4fe, type: 3}
+      optionAudio: {fileID: 8300000, guid: 3d305eca04e72fb4eae413ea7a7fb010, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: TA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
+    correctOption:
+      optionName: TA
+      optionImage: {fileID: 21300000, guid: 722c5e00b7e903c46b694ea081ab89c4, type: 3}
+      optionAudio: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: VA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: 1fd611b92e287a04bbf8e125612c1d21, type: 3}
+    correctOption:
+      optionName: VA
+      optionImage: {fileID: 21300000, guid: e9d7b8dbc0d6b2f4ca73129e7142e5fd, type: 3}
+      optionAudio: {fileID: 8300000, guid: 1fd611b92e287a04bbf8e125612c1d21, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: XA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: e0c7ccbffc70fde4ebc32eae6d3b6cee, type: 3}
+    correctOption:
+      optionName: XA
+      optionImage: {fileID: 21300000, guid: f0485d6685cb8904b8ea465f9f0e8974, type: 3}
+      optionAudio: {fileID: 8300000, guid: e0c7ccbffc70fde4ebc32eae6d3b6cee, type: 3}
+      syllableSprite: {fileID: 0}
+  - syllableName: ZA
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 8300000, guid: 440c31cdf6232e445b1e3735d4d02ad5, type: 3}
+    correctOption:
+      optionName: ZA
+      optionImage: {fileID: 21300000, guid: 74b3904d9e214fb48a8df4884f489b13, type: 3}
+      optionAudio: {fileID: 8300000, guid: 440c31cdf6232e445b1e3735d4d02ad5, type: 3}
+      syllableSprite: {fileID: 0}
+  allOptions:
+  - optionName: BA
+    optionImage: {fileID: 21300000, guid: faffc2e187bd1d34cbfed9de67e5aa0a, type: 3}
+    optionAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: CA
+    optionImage: {fileID: 21300000, guid: 793e94e6332d86e449eae810b72f6615, type: 3}
+    optionAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: DA
+    optionImage: {fileID: 21300000, guid: edb8e95b33e4313439b1dcb6b8f14d45, type: 3}
+    optionAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: FA
+    optionImage: {fileID: 21300000, guid: b18c62169f43fb642be41fcde7de511a, type: 3}
+    optionAudio: {fileID: 8300000, guid: 129794c8ee0dc12408c51fd88ac9e2bb, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: GA
+    optionImage: {fileID: 21300000, guid: 2eedc9c262396d34f91130a8a30017d9, type: 3}
+    optionAudio: {fileID: 8300000, guid: e8ac2564d0fa2274fbb75b0410be4f14, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: JA
+    optionImage: {fileID: 21300000, guid: 6f4cd7da104c63246999c6c0d9168fd5, type: 3}
+    optionAudio: {fileID: 8300000, guid: c96e17bef7505bb4892d3739af4ecdca, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: LA
+    optionImage: {fileID: 21300000, guid: 4f46e7572abc2d94dbc513c19df5537a, type: 3}
+    optionAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: MA
+    optionImage: {fileID: 21300000, guid: 62d8104431a972f4e97003093dd332c4, type: 3}
+    optionAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: NA
+    optionImage: {fileID: 21300000, guid: 5652afc20630de146a98cb9985bf59f7, type: 3}
+    optionAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: PA
+    optionImage: {fileID: 21300000, guid: 7c047ee3ff4220547ad4ca68e395c7c3, type: 3}
+    optionAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: QUA
+    optionImage: {fileID: 21300000, guid: d77b177d9dde2234388b17bb4961811f, type: 3}
+    optionAudio: {fileID: 8300000, guid: 87cc05ac624dbea49b336e82ea8ee833, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: RA
+    optionImage: {fileID: 21300000, guid: 2c5bed1eb0b43a143a28ade2605385b5, type: 3}
+    optionAudio: {fileID: 8300000, guid: ec5f88918413db0499c5cfe14436284d, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: SA
+    optionImage: {fileID: 21300000, guid: c9de3270379a80242bacc2b212c0b4fe, type: 3}
+    optionAudio: {fileID: 8300000, guid: 3d305eca04e72fb4eae413ea7a7fb010, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: TA
+    optionImage: {fileID: 21300000, guid: 722c5e00b7e903c46b694ea081ab89c4, type: 3}
+    optionAudio: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: VA
+    optionImage: {fileID: 21300000, guid: e9d7b8dbc0d6b2f4ca73129e7142e5fd, type: 3}
+    optionAudio: {fileID: 8300000, guid: 1fd611b92e287a04bbf8e125612c1d21, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: XA
+    optionImage: {fileID: 21300000, guid: f0485d6685cb8904b8ea465f9f0e8974, type: 3}
+    optionAudio: {fileID: 8300000, guid: e0c7ccbffc70fde4ebc32eae6d3b6cee, type: 3}
+    syllableSprite: {fileID: 0}
+  - optionName: ZA
+    optionImage: {fileID: 21300000, guid: 74b3904d9e214fb48a8df4884f489b13, type: 3}
+    optionAudio: {fileID: 8300000, guid: 440c31cdf6232e445b1e3735d4d02ad5, type: 3}
+    syllableSprite: {fileID: 0}
+  checkSprite: {fileID: 21300000, guid: ec4afbf3114368142acf69c71c06700a, type: 3}
+  wrongSprite: {fileID: 21300000, guid: 78df9938d99e7114ea7121ce34909898, type: 3}
+  endPhasePanel: {fileID: 834097410}
+  scoreEndPhase: {fileID: 0}
+  confettiEffect: {fileID: 99774441}
+  spawnPoint: {fileID: 0}
+  score: 0
 --- !u!1 &1753677463
 GameObject:
   m_ObjectHideFlags: 0
@@ -7965,9 +7963,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 868681515}
-        m_TargetAssemblyTypeName: GameManager5, Assembly-CSharp
-        m_MethodName: OpenPauseMenuLvl1
+      - m_Target: {fileID: 1715173768}
+        m_TargetAssemblyTypeName: RoundController_V2, Assembly-CSharp
+        m_MethodName: PauseGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

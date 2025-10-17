@@ -11,6 +11,10 @@ public class RoundController_V2 : MonoBehaviour
     public Transform optionsParent;     // GridLayoutGroup das opções
     public GameObject optionPrefab;     // Prefab do OptionButton
 
+    [Header("----- UI e Efeitos -----")]
+    public GameObject PauseMenu;         // Painel de pausa
+    public Text scoreTextPause;          // Texto de score no pause
+
     [Header("Data")]
     public List<SyllableData> syllables;
     public List<OptionData> allOptions;
@@ -32,13 +36,87 @@ public class RoundController_V2 : MonoBehaviour
     private GameManager5 gm;
     private bool inputLocked = true;
     private bool isPlayingSyllable = false;
+    private bool isPaused = false;
 
     void Start()
     {
-        gm = FindObjectOfType<GameManager5>();
+        // 🔥 GARANTIR QUE O JOGO NÃO INICIE PAUSADO
+        Time.timeScale = 1f;
+        isPaused = false;
+        
+        // 🔥 CORREÇÃO: ESPERAR O GAMEMANAGER SER INICIALIZADO
+        StartCoroutine(WaitForGameManagerAndStart());
+    }
+
+    // 🔥 CORREÇÃO: NOVO MÉTODO PARA ESPERAR O GAMEMANAGER
+    IEnumerator WaitForGameManagerAndStart()
+    {
+        while (gm == null)
+        {
+            Time.timeScale = 1f;
+            gm = FindObjectOfType<GameManager5>();
+            yield return null;
+        }
+
+        yield return new WaitForEndOfFrame();
+
+        // 🔥 FORÇAR MÚSICA TOCAR AO INICIAR A CENA
+        if (gm != null)
+        {
+            gm.PlayMusic(gm.backgroundMusic, true);
+        }
+
+        // 🔥 AGORA INICIA O ROUND COM GAMEMANAGER DISPONÍVEL
         StartCoroutine(StartRoundCoroutine());
     }
 
+    void Update()
+    {
+        // 🔥 CONTROLE DE PAUSA COM TECLA (OPCIONAL)
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            TogglePause();
+        }
+    }
+
+    // =====================================
+    // 💾 CONTROLE DE PAUSA
+    // =====================================
+    public void TogglePause()
+    {
+        if (isPaused)
+            ResumeGame();
+        else
+            PauseGame();
+    }
+
+    public void PauseGame()
+    {
+        if (PauseMenu != null) PauseMenu.SetActive(true);
+        isPaused = true;
+        Time.timeScale = 0f;
+        
+        // Pausar música
+        if (gm != null) gm.PauseMusic();
+
+        // Atualizar score no painel de pause
+        if (scoreTextPause != null)
+            scoreTextPause.text = "Score: " + score;
+    }
+
+    public void ResumeGame()
+    {
+        if (PauseMenu != null) PauseMenu.SetActive(false);
+        isPaused = false;
+        Time.timeScale = 1f;
+        
+        // Retomar música
+        if (gm != null) gm.ResumeMusic();
+    }
+
+    // =====================================
+    // 🎮 LÓGICA DO ROUND (ORIGINAL)
+    // =====================================
     IEnumerator StartRoundCoroutine()
     {
         ClearOptions();
@@ -258,5 +336,13 @@ public class RoundController_V2 : MonoBehaviour
         }
 
         Debug.Log("Fim dos rounds! Painel final exibido.");
+    }
+
+    public void ForcePlayMusic()
+    {
+        if (gm != null && gm.backgroundMusic != null)
+        {
+            gm.PlayMusic(gm.backgroundMusic, true);
+        }
     }
 }
