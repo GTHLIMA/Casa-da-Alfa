@@ -138,7 +138,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &33149194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6531,6 +6531,7 @@ MonoBehaviour:
   sfxVolume: 1
   syllableVolume: 1
   optionVolume: 1
+  gameLogger: {fileID: 33149194}
 --- !u!4 &868681516
 Transform:
   m_ObjectHideFlags: 0
@@ -7891,6 +7892,15 @@ MonoBehaviour:
   wrongSprite: {fileID: 21300000, guid: 78df9938d99e7114ea7121ce34909898, type: 3}
   scoreEndPhase: {fileID: 0}
   score: 0
+  currentSyllable:
+    syllableName: 
+    syllableImage: {fileID: 0}
+    syllableAudio: {fileID: 0}
+    correctOption:
+      optionName: 
+      optionImage: {fileID: 0}
+      optionAudio: {fileID: 0}
+      syllableSprite: {fileID: 0}
 --- !u!1 &1753677463
 GameObject:
   m_ObjectHideFlags: 0

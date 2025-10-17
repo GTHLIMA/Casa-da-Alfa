@@ -49,20 +49,57 @@ public class RoundController : MonoBehaviour
     public Text scoreEndPhase;           // texto de pontuação final
     public int score = 0;                // contador de acertos
 
+    [HideInInspector] public SyllableData currentSyllable;
+
     private List<OptionButton> currentOptionButtons = new List<OptionButton>();
     private int currentRound = 0;
-    private SyllableData currentSyllable;
     private GameManager5 gm;
     private bool inputLocked = true;
     private bool isPaused = false;
+    private float questionStartTime;
+    private RecognitionGameLogger gameLogger;
 
     void Start()
     {
-        // 🔥 GARANTIR QUE O JOGO NÃO INICIE PAUSADO
+        FindComponents();
+        
         Time.timeScale = 1f;
         isPaused = false;
         
         StartCoroutine(WaitForGameManagerAndStart());
+    }
+
+    private void FindComponents()
+    {
+        gm = FindObjectOfType<GameManager5>();
+        if (gm == null)
+        {
+            Debug.LogWarning("GameManager5 não encontrado na cena!");
+        }
+
+        // Buscar RecognitionGameLogger
+        gameLogger = FindObjectOfType<RecognitionGameLogger>();
+        if (gameLogger == null)
+        {
+            Debug.LogWarning("RecognitionGameLogger não encontrado na cena!");
+        }
+
+        if (PauseMenu == null)
+        {
+            GameObject pauseObj = GameObject.Find("PauseMenu");
+            if (pauseObj != null) PauseMenu = pauseObj;
+        }
+
+        if (endPhasePanel == null)
+        {
+            GameObject endPanelObj = GameObject.Find("EndPhasePanel");
+            if (endPanelObj != null) endPhasePanel = endPanelObj;
+        }
+
+        if (confettiEffect == null)
+        {
+            confettiEffect = FindObjectOfType<ParticleSystem>();
+        }
     }
 
     IEnumerator WaitForGameManagerAndStart()
@@ -75,7 +112,6 @@ public class RoundController : MonoBehaviour
 
         yield return new WaitForEndOfFrame();
 
-        // 🔥 FORÇAR MÚSICA TOCAR AO INICIAR A CENA
         if (gm != null)
         {
             gm.PlayMusic(gm.backgroundMusic, true);
@@ -94,7 +130,7 @@ public class RoundController : MonoBehaviour
     }
 
     // =====================================
-    // 💾 CONTROLE DE PAUSA
+    // 💾 CONTROLE DE PAUSA (ORIGINAL)
     // =====================================
     public void TogglePause()
     {
@@ -129,7 +165,7 @@ public class RoundController : MonoBehaviour
     }
 
     // =====================================
-    // 🎮 LÓGICA DO ROUND
+    // 🎮 LÓGICA DO ROUND (COM LOGGING)
     // =====================================
     IEnumerator StartRoundCoroutine()
     {
@@ -142,6 +178,14 @@ public class RoundController : MonoBehaviour
         }
 
         currentSyllable = syllables[currentRound];
+        
+        // Log do início da pergunta
+        if (gm != null)
+        {
+            gm.StartNewQuestion(currentSyllable.syllableName, currentSyllable.correctOption.optionName);
+        }
+        
+        questionStartTime = Time.time; // Marcar tempo de início
 
         // atualiza a imagem da sílaba
         if (syllablePanel != null) syllablePanel.sprite = currentSyllable.syllableImage;
@@ -263,6 +307,19 @@ public class RoundController : MonoBehaviour
             (clicked.optionName == currentSyllable.correctOption.optionName ||
              clicked.optionImage == currentSyllable.correctOption.optionImage));
 
+        // Log da resposta
+        if (gm != null)
+        {
+            if (isCorrect)
+            {
+                gm.LogCorrectAnswer(clicked.optionName);
+            }
+            else
+            {
+                gm.LogWrongAnswer(clicked.optionName, currentSyllable.correctOption.optionName);
+            }
+        }
+
         if (isCorrect)
         {
             button.ShowFeedback(true, checkSprite);
@@ -336,9 +393,6 @@ public class RoundController : MonoBehaviour
         }
     }
 
-    // =====================================
-    // 🎉 FIM DE FASE
-    // =====================================
     public void ShowEndPhasePanel()
     {
         StartCoroutine(ShowEndPhasePanelCoroutine());
@@ -347,6 +401,12 @@ public class RoundController : MonoBehaviour
     private IEnumerator ShowEndPhasePanelCoroutine()
     {
         yield return new WaitForSeconds(0.5f);
+
+        // Log do fim do jogo
+        if (gm != null)
+        {
+            gm.LogGameEnd();
+        }
 
         if (scoreEndPhase != null)
             scoreEndPhase.text = "Score: " + score.ToString();

@@ -8,19 +8,23 @@ using System.Collections;
 public class FireBaseManager : MonoBehaviour
 {
     private DatabaseReference dbRef;
+    private bool isFirebaseReady = false;
 
     [Header("UI Campos")]
     public TMP_InputField usernameField;
     public TMP_InputField passwordField;
     public TMP_Text statusText;
-
-    private bool isFirebaseReady = false;
-
+    
     public int index;
 
     void Start()
     {
-        // Inicializa o Firebase
+        InitializeFirebase();
+    }
+
+    // ===== FIREBASE INITIALIZATION =====
+    private void InitializeFirebase()
+    {
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
         {
             if (task.Result == DependencyStatus.Available)
@@ -38,7 +42,7 @@ public class FireBaseManager : MonoBehaviour
         });
     }
 
-    // ===== CADASTRAR =====
+    // ===== REGISTER =====
     public void RegisterUser()
     {
         if (!isFirebaseReady)
@@ -50,11 +54,8 @@ public class FireBaseManager : MonoBehaviour
         string username = usernameField.text.Trim();
         string password = passwordField.text.Trim();
 
-        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-        {
-            UpdateStatus("Preencha usuário e senha");
+        if (!ValidateCredentials(username, password))
             return;
-        }
 
         if (password.Length < 3)
         {
@@ -68,7 +69,7 @@ public class FireBaseManager : MonoBehaviour
 
     private IEnumerator RegisterUserCoroutine(string username, string password)
     {
-        var checkTask = dbRef.Child("users").Child(username).Child("username").GetValueAsync();
+        var checkTask = dbRef.Child("users").Child(username).Child("info").Child("username").GetValueAsync();
         yield return new WaitUntil(() => checkTask.IsCompleted);
 
         if (checkTask.Result != null && checkTask.Result.Exists)
@@ -79,11 +80,10 @@ public class FireBaseManager : MonoBehaviour
 
         UpdateStatus("Criando conta...");
 
-        // Dados do usuário
         var userData = new UserData(username, password);
         string json = JsonUtility.ToJson(userData);
 
-        var registerTask = dbRef.Child("users").Child(username).SetRawJsonValueAsync(json);
+        var registerTask = dbRef.Child("users").Child(username).Child("info").SetRawJsonValueAsync(json);
         yield return new WaitUntil(() => registerTask.IsCompleted);
 
         if (registerTask.IsFaulted)
@@ -93,15 +93,8 @@ public class FireBaseManager : MonoBehaviour
         }
         else
         {
-
-            var dateTask = dbRef.Child("users").Child(username).Child("createdAt")
-                .SetValueAsync(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-            yield return new WaitUntil(() => dateTask.IsCompleted);
-
             UpdateStatus("Conta criada com sucesso!");
             Debug.Log("Usuário cadastrado: " + username);
-
-            // yield return new WaitForSeconds(1f);
         }
     }
 
@@ -119,11 +112,8 @@ public class FireBaseManager : MonoBehaviour
         string username = usernameField.text.Trim();
         string password = passwordField.text.Trim();
 
-        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-        {
-            UpdateStatus("Preencha usuário e senha");
+        if (!ValidateCredentials(username, password))
             return;
-        }
 
         UpdateStatus("Conectando...");
         StartCoroutine(LoginUserCoroutine(username, password));
@@ -131,7 +121,7 @@ public class FireBaseManager : MonoBehaviour
 
     private IEnumerator LoginUserCoroutine(string username, string password)
     {
-        var loginTask = dbRef.Child("users").Child(username).GetValueAsync();
+        var loginTask = dbRef.Child("users").Child(username).Child("info").GetValueAsync();
         yield return new WaitUntil(() => loginTask.IsCompleted);
 
         if (loginTask.IsFaulted || loginTask.Result == null || !loginTask.Result.Exists)
@@ -147,13 +137,11 @@ public class FireBaseManager : MonoBehaviour
             UpdateStatus("Login deu certo!");
             Debug.Log("Login OK: " + username);
 
-
             if (FirebaseUserSession.Instance != null)
             {
                 FirebaseUserSession.Instance.SetUser(username);
             }
 
-            // yield return new WaitForSeconds(1f);
             LoadScenes.LoadSceneByIndex(index);
         }
         else
@@ -162,16 +150,18 @@ public class FireBaseManager : MonoBehaviour
         }
     }
 
-    // private void LoginAfterRegister(string username)
-    // {
-    //     if (FirebaseUserSession.Instance != null)
-    //     {
-    //         FirebaseUserSession.Instance.SetUser(username);
-    //     }
+    // ===== VALIDATION =====
+    private bool ValidateCredentials(string username, string password)
+    {
+        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+        {
+            UpdateStatus("Preencha usuário e senha");
+            return false;
+        }
+        return true;
+    }
 
-    //     LoadScenes.LoadSceneByIndex(1);
-    // }
-
+    // ===== UTILITIES =====
     private void UpdateStatus(string message)
     {
         if (statusText != null)

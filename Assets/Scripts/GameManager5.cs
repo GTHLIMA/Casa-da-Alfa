@@ -23,6 +23,9 @@ public class GameManager5 : MonoBehaviour
     [Range(0f, 1f)] public float syllableVolume = 1f;
     [Range(0f, 1f)] public float optionVolume = 1f;
 
+    // Removida referência pública - será encontrada no Start
+    private RecognitionGameLogger gameLogger;
+
     private static GameManager5 instance;
     private float savedTime;
     private bool isPaused = false;
@@ -46,14 +49,94 @@ public class GameManager5 : MonoBehaviour
 
     private void Start()
     {
+        // Buscar o RecognitionGameLogger automaticamente
+        FindGameLogger();
+        
         if (backgroundMusic != null)
         {
             PlayMusic(backgroundMusic, true);
         }
     }
 
+    private void FindGameLogger()
+    {
+        gameLogger = FindObjectOfType<RecognitionGameLogger>();
+        if (gameLogger == null)
+        {
+            Debug.LogWarning("RecognitionGameLogger não encontrado na cena!");
+        }
+        else
+        {
+            Debug.Log("RecognitionGameLogger encontrado automaticamente!");
+        }
+    }
+
+    // 🔥🔥🔥 MÉTODOS PARA LOGGING 🔥🔥🔥
+    
+    public void StartNewQuestion(string syllable, string correctImage)
+    {
+        if (gameLogger != null)
+        {
+            RoundController roundController = FindObjectOfType<RoundController>();
+            int questionNumber = roundController?.score + 1 ?? 1;
+            gameLogger.LogQuestionStart(syllable, correctImage, questionNumber);
+        }
+    }
+
+    public void LogCorrectAnswer(string selectedImage)
+    {
+        if (gameLogger != null)
+        {
+            RoundController roundController = FindObjectOfType<RoundController>();
+            if (roundController != null && roundController.currentSyllable != null)
+            {
+                gameLogger.LogAnswer(true, 
+                    roundController.currentSyllable.syllableName, 
+                    selectedImage, 
+                    roundController.currentSyllable.correctOption.optionName, 
+                    0f);
+            }
+        }
+    }
+
+    public void LogWrongAnswer(string selectedImage, string correctImage)
+    {
+        if (gameLogger != null)
+        {
+            RoundController roundController = FindObjectOfType<RoundController>();
+            if (roundController != null && roundController.currentSyllable != null)
+            {
+                gameLogger.LogAnswer(false, 
+                    roundController.currentSyllable.syllableName, 
+                    selectedImage, 
+                    correctImage, 
+                    0f);
+            }
+        }
+    }
+
+    public void LogSyllableAudioPlay(string syllable)
+    {
+        if (gameLogger != null)
+        {
+            RoundController roundController = FindObjectOfType<RoundController>();
+            int questionNumber = roundController?.score + 1 ?? 1;
+            gameLogger.LogSyllablePlay(syllable, questionNumber);
+        }
+    }
+
+    public void LogGameEnd()
+    {
+        if (gameLogger != null)
+        {
+            RoundController roundController = FindObjectOfType<RoundController>();
+            int totalQuestions = roundController?.syllables?.Count ?? 0;
+            gameLogger.LogSessionEnd(totalQuestions);
+        }
+    }
+
     // =====================================
-    // 🔊 SISTEMA DE ÁUDIO COMPLETO
+    // 🔊 SISTEMA DE ÁUDIO COMPLETO (ORIGINAL)
     // =====================================
     private void EnsureAudioSources()
     {
@@ -111,6 +194,13 @@ public class GameManager5 : MonoBehaviour
         syllableSource.clip = clip;
         syllableSource.volume = syllableVolume;
         syllableSource.Play();
+        
+        // Log do áudio da sílaba
+        RoundController roundController = FindObjectOfType<RoundController>();
+        if (roundController != null && roundController.currentSyllable != null)
+        {
+            LogSyllableAudioPlay(roundController.currentSyllable.syllableName);
+        }
     }
 
     public void PlayOption(AudioClip clip)
@@ -151,7 +241,7 @@ public class GameManager5 : MonoBehaviour
     }
 
     // =====================================
-    // 💥 CÂMERA / EFEITOS
+    // 💥 CÂMERA / EFEITOS (ORIGINAL)
     // =====================================
     public void ShakeCamera(float duration = 0.3f, float magnitude = 10f)
     {

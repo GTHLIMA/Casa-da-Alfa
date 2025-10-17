@@ -46,9 +46,7 @@ public class RecognitionGameLogger : MonoBehaviour
         
         var sessionData = new Dictionary<string, object>
         {
-            { "iniciadoEm", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
-            { "tipoJogo", "reconhecimento_silabas" },
-            { "usuario", username }
+            { "iniciadoEm", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") }
         };
         
         dbRef.Child(path).UpdateChildrenAsync(sessionData).ContinueWith(task => {
@@ -118,22 +116,22 @@ public class RecognitionGameLogger : MonoBehaviour
         dbRef.Child(path).Push().SetValueAsync(answerData);
     }
 
-    // public void LogSyllablePlay(string syllable, int questionNumber)
-    // {
-    //     string path = $"users/{username}/recognitionGame/sessions/{currentSessionId}/eventos";
+    public void LogSyllablePlay(string syllable, int questionNumber)
+    {
+        string path = $"users/{username}/recognitionGame/sessions/{currentSessionId}/eventos";
         
-    //     var eventData = new Dictionary<string, object>
-    //     {
-    //         { "tipo", "audio_silaba_reproduzido" },
-    //         { "silaba", syllable },
-    //         { "numeroPergunta", questionNumber },
-    //         { "timestamp", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") }
-    //     };
+        var eventData = new Dictionary<string, object>
+        {
+            { "tipo", "audio_silaba_reproduzido" },
+            { "silaba", syllable },
+            { "numeroPergunta", questionNumber },
+            { "timestamp", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") }
+        };
         
-    //     dbRef.Child(path).Push().SetValueAsync(eventData);
+        dbRef.Child(path).Push().SetValueAsync(eventData);
 
-    //     Debug.Log("Audio da silaba reproduzido: " + syllable + " (Pergunta " + questionNumber + ")");
-    // }
+        Debug.Log("Audio da silaba reproduzido: " + syllable + " (Pergunta " + questionNumber + ")");
+    }
 
     public void LogSessionEnd(int totalQuestionsCompleted)
     {
