@@ -40,15 +40,14 @@ public class RoundController_V2 : MonoBehaviour
 
     void Start()
     {
-        // 🔥 GARANTIR QUE O JOGO NÃO INICIE PAUSADO
+        
         Time.timeScale = 1f;
         isPaused = false;
         
-        // 🔥 CORREÇÃO: ESPERAR O GAMEMANAGER SER INICIALIZADO
+       
         StartCoroutine(WaitForGameManagerAndStart());
     }
 
-    // 🔥 CORREÇÃO: NOVO MÉTODO PARA ESPERAR O GAMEMANAGER
     IEnumerator WaitForGameManagerAndStart()
     {
         while (gm == null)
@@ -60,19 +59,19 @@ public class RoundController_V2 : MonoBehaviour
 
         yield return new WaitForEndOfFrame();
 
-        // 🔥 FORÇAR MÚSICA TOCAR AO INICIAR A CENA
+   
         if (gm != null)
         {
             gm.PlayMusic(gm.backgroundMusic, true);
         }
 
-        // 🔥 AGORA INICIA O ROUND COM GAMEMANAGER DISPONÍVEL
+      
         StartCoroutine(StartRoundCoroutine());
     }
 
     void Update()
     {
-        // 🔥 CONTROLE DE PAUSA COM TECLA (OPCIONAL)
+       
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             TogglePause();
