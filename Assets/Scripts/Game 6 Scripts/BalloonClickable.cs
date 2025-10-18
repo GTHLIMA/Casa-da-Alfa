@@ -1,120 +1,143 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Collider2D))]
 public class BalloonClickable : MonoBehaviour
 {
-    public SpriteRenderer balloonSpriteRenderer; // main balloon sprite
-    public SpriteRenderer innerSyllableRenderer; // the small sprite that shows syllable and cycles
+    [Header("Renderers (select one)")]
+    public SpriteRenderer balloonSpriteRenderer;   // sprite do balão (root child)
+    public SpriteRenderer innerSyllableRenderer;   // sprite no centro (SpriteRenderer)
+    public Image innerSyllableImageUI;             // alternativa: UI Image (opcional)
 
-    [Tooltip("Sprites that will be shown sequentially when the player taps the balloon.")]
-    public Sprite[] syllableStepSprites; // first is initial, last leads to pop
-    public AudioClip[] syllableClips; // play when advancing steps
+    [Header("Syllable steps (0 = initial syllable)")]
+    public Sprite[] syllableStepSprites;           // primeiro elemento será substituído com a sílaba atual
+    public AudioClip[] syllableClips;              // opcional: sons por etapa
 
-    public Sprite[] popAnimation;
-    public float popFrameRate = 0.05f;
+    [Header("Pop/Movement")]
+    public Sprite[] popAnimationFrames;
+    public float popFrameRate = 0.06f;
+    public float upSpeed = 1.0f;                   // velocidade de subida (units/sec)
 
-    public int currentStep = 0;
-
-    public event Action onFinalPop;
+    [HideInInspector] public int currentStep = 0;
+    public event Action onFinalPop;                 // notifica o BalloonManager/MainGameManager
 
     private bool isPopping = false;
 
-    public float upSpeed = 0.02f;
+    // --- API pública chamada pelo BalloonManager ao instanciar ---
+    public void SetSyllableSprite(Sprite syllableSprite)
+    {
+        if (syllableStepSprites == null || syllableStepSprites.Length == 0)
+        {
+            // Garante pelo menos 1 slot
+            syllableStepSprites = new Sprite[] { syllableSprite };
+            currentStep = 0;
+        }
+        else
+        {
+            // sobrescreve o primeiro sprite com a sílaba atual
+            syllableStepSprites[0] = syllableSprite;
+            currentStep = 0;
+        }
+
+        UpdateInnerSprite();
+    }
 
     private void Start()
     {
-        if (innerSyllableRenderer == null) Debug.LogWarning("innerSyllableRenderer not set");
         UpdateInnerSprite();
     }
 
     private void Update()
     {
-        transform.Translate(0, upSpeed * Time.deltaTime, 0);
-        if (transform.position.y > 10f) Destroy(gameObject);
+        // mover para cima (simples)
+        transform.Translate(Vector3.up * upSpeed * Time.deltaTime);
 
-#if UNITY_EDITOR
-        if (Input.GetMouseButtonDown(0)) HandleTouch(Input.mousePosition);
-#else
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) HandleTouch(Input.GetTouch(0).position);
-#endif
+        // auto-destroy se sair da tela (ajuste Y limite conforme camera)
+        if (transform.position.y > Camera.main.orthographicSize + 2f)
+            Destroy(gameObject);
     }
 
-    void HandleTouch(Vector2 screenPos)
+    private void UpdateInnerSprite()
     {
-        Vector2 world = Camera.main.ScreenToWorldPoint(screenPos);
-        if (GetComponent<Collider2D>().OverlapPoint(world))
+        Sprite s = null;
+        if (syllableStepSprites != null && syllableStepSprites.Length > 0)
         {
-            AdvanceStep();
+            int idx = Mathf.Clamp(currentStep, 0, syllableStepSprites.Length - 1);
+            s = syllableStepSprites[idx];
         }
+
+        if (innerSyllableRenderer != null)
+            innerSyllableRenderer.sprite = s;
+        else if (innerSyllableImageUI != null)
+            innerSyllableImageUI.sprite = s;
     }
 
-    public void SetSyllableSprite(Sprite s)
+    // Touch / click handling: funciona no Editor (OnMouseDown) e mobile (toca com touch raycast)
+    private void OnMouseDown()
     {
-        if (syllableStepSprites == null || syllableStepSprites.Length == 0) return;
-        syllableStepSprites[0] = s;
-        currentStep = 0;
-        UpdateInnerSprite();
+        HandleClick();
     }
 
-    void UpdateInnerSprite()
-    {
-        if (innerSyllableRenderer != null && syllableStepSprites != null && syllableStepSprites.Length > 0)
-        {
-            innerSyllableRenderer.sprite = syllableStepSprites[Mathf.Clamp(currentStep, 0, syllableStepSprites.Length - 1)];
-        }
-    }
-
-    void AdvanceStep()
+    public void HandleClick()
     {
         if (isPopping) return;
 
-        // play associated syllable audio
+        // toca som da etapa (se houver)
         if (currentStep < syllableClips.Length && syllableClips[currentStep] != null)
         {
             var mm = MainGameManager.Instance;
-            if (mm != null && mm.syllableSource != null) mm.syllableSource.PlayOneShot(syllableClips[currentStep]);
-        }
-
-        currentStep++;
-        if (currentStep >= syllableStepSprites.Length)
-        {
-            // final pop
-            StartCoroutine(PopSequence());
+            if (mm != null && mm.syllableSource != null)
+                mm.syllableSource.PlayOneShot(syllableClips[currentStep]);
+            else
+                AudioSource.PlayClipAtPoint(syllableClips[currentStep], Camera.main.transform.position);
         }
         else
         {
-            UpdateInnerSprite();
+            // alternativa: tocar o clip da sílaba via MainGameManager se disponível (primeiro)
+            var mm = MainGameManager.Instance;
+            if (mm != null && mm.syllableSource != null && syllableStepSprites.Length > 0)
+            {
+                // tenta tocar mm.syllableSource com o clip associado no MainGameManager list (opcional)
+            }
         }
+
+        currentStep++;
+        if (syllableStepSprites != null && currentStep < syllableStepSprites.Length)
+        {
+            UpdateInnerSprite();
+            return;
+        }
+
+        // se passou do último passo: pop
+        StartCoroutine(PopSequence());
     }
 
     IEnumerator PopSequence()
     {
         isPopping = true;
 
-        // play pop SFX
-        if (MainGameManager.Instance != null && MainGameManager.Instance.sfxSource != null)
+        // tocar pop SFX via MainGameManager.sfxSource se disponível
+        var mm = MainGameManager.Instance;
+        if (mm != null && mm.sfxSource != null)
         {
-            // TODO: assign a pop clip on MainGameManager or via inspector
+            // mm.sfxSource.PlayOneShot(mm.popClip) // se você tiver popClip no manager
         }
 
-        // play pop animation frames if any
-        var sr = balloonSpriteRenderer;
-        if (popAnimation != null && popAnimation.Length > 0 && sr != null)
+        // animação de frames (se existirem)
+        if (popAnimationFrames != null && popAnimationFrames.Length > 0 && balloonSpriteRenderer != null)
         {
-            foreach (var f in popAnimation)
+            foreach (var f in popAnimationFrames)
             {
-                sr.sprite = f;
+                balloonSpriteRenderer.sprite = f;
                 yield return new WaitForSeconds(popFrameRate);
             }
         }
 
-        // notify manager
+        // notifica o manager (arc++ será feito por quem escuta esse evento)
         onFinalPop?.Invoke();
 
         Destroy(gameObject);
     }
 }
-

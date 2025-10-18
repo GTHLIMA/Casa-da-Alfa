@@ -8,15 +8,11 @@ using TMPro;
 [System.Serializable]
 public class SyllableDado
 {
-    public string expectedWord; // palavra esperada para reconhecimento de voz
-    public Sprite syllableSprite; // sprite usada no balão e no arco
-    public AudioClip syllableClip; // som curto da sílaba
-    public Sprite drawingSprite; // imagem exibida na fase de fala
-    public AudioClip hintBasicClip; // dica 1
-    public AudioClip hintFinalClip; // dica 2 (final)
-    public AudioClip correctClip; // som de acerto
+    public string syllableText;     // texto da sílaba (ex: "BA")
+    public Sprite syllableSprite;   // sprite da sílaba (imagem usada nos balões e arco)
+    public AudioClip syllableClip;  // som da sílaba
+    public AudioClip correctClip;   // som de acerto ("Muito bem!")
 }
-
 public class MainGameManager : MonoBehaviour
 {
     public static MainGameManager Instance;
@@ -92,38 +88,58 @@ public class MainGameManager : MonoBehaviour
     }
 
     IEnumerator BeginVoicePhase()
+{
+    inVoicePhase = true;
+
+    balloonManager.StopSpawning();
+    balloonManager.ClearAllBalloons();
+    if (musicSource != null) musicSource.Pause();
+
+    // Mostra sílaba grande no centro novamente
+    ShowCurrentSyllableAtCenter();
+
+    yield return new WaitForSeconds(1.0f);
+
+    // Reproduz o som da sílaba antes de escutar
+    var data = syllables[currentSyllableIndex];
+    if (syllableSource != null && data.syllableClip != null)
+        syllableSource.PlayOneShot(data.syllableClip);
+
+    yield return new WaitForSeconds(0.5f);
+
+    // Ativa reconhecimento de voz (comparando com o texto da sílaba)
+    voiceManager.StartListening(data.syllableText, OnVoiceResult);
+}
+
+   void OnVoiceResult(bool correct)
+{
+    var data = syllables[currentSyllableIndex];
+
+    if (correct)
     {
-        inVoicePhase = true;
+        if (sfxSource != null && data.correctClip != null)
+            sfxSource.PlayOneShot(data.correctClip);
 
-        // pausa e limpa os balões da tela
-        balloonManager.StopSpawning();
-        balloonManager.ClearAllBalloons();
-
-        // pausa música ambiente
-        if (musicSource != null) musicSource.Pause();
-
-        yield return new WaitForSeconds(0.25f);
-
-        // inicia fase de reconhecimento de voz
-        voiceManager.StartListening(syllables[currentSyllableIndex].expectedWord, OnVoiceResult);
+        StartCoroutine(AdvanceToNextSyllable(1.2f));
     }
-
-    void OnVoiceResult(bool correct)
+    else
     {
-        if (correct)
-        {
-            // toca som de acerto (ou som padrão)
-            if (sfxSource != null && syllables[currentSyllableIndex].correctClip != null)
-                sfxSource.PlayOneShot(syllables[currentSyllableIndex].correctClip);
+        // repete o som da sílaba e tenta novamente
+        if (syllableSource != null && data.syllableClip != null)
+            syllableSource.PlayOneShot(data.syllableClip);
 
-            StartCoroutine(AdvanceToNextSyllable(0.8f));
-        }
-        else
-        {
-            // se errar, deixa o voiceManager lidar com dicas e depois retoma o ciclo
-            StartCoroutine(HandleFailedVoiceAttempts());
-        }
+        StartCoroutine(RestartSameSyllable());
     }
+}
+
+IEnumerator RestartSameSyllable()
+{
+    yield return new WaitForSeconds(1f);
+    inVoicePhase = false;
+    arcController.ResetArc();
+    if (musicSource != null) musicSource.UnPause();
+    balloonManager.StartSpawning(syllables[currentSyllableIndex].syllableSprite);
+}
 
     IEnumerator HandleFailedVoiceAttempts()
     {
