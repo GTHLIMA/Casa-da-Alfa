@@ -5374,9 +5374,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: RoundController_V2, Assembly-CSharp
-        m_MethodName: ResumeGame
+      - m_Target: {fileID: 2018456477}
+        m_TargetAssemblyTypeName: MainGameManager, Assembly-CSharp
+        m_MethodName: ClosePauseMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5821,7 +5821,7 @@ Transform:
   m_GameObject: {fileID: 624359483}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.18, y: -6.23, z: 160.32646}
+  m_LocalPosition: {x: -1.75, y: -6.29, z: 160.32646}
   m_LocalScale: {x: 100, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6035,6 +6035,81 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 723409380}
+  m_CullTransparentMesh: 1
+--- !u!1 &761134870
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 761134871}
+  - component: {fileID: 761134873}
+  - component: {fileID: 761134872}
+  m_Layer: 5
+  m_Name: Microfone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &761134871
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 761134870}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1715173767}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 9, y: -464}
+  m_SizeDelta: {x: 500, y: 500}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &761134872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 761134870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 1
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &761134873
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 761134870}
   m_CullTransparentMesh: 1
 --- !u!1 &769560906
 GameObject:
@@ -6695,7 +6770,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 18
+          m_IntArgument: 19
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -7751,10 +7826,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 972790685}
+  - {fileID: 761134871}
+  - {fileID: 1446656303}
   - {fileID: 1775477999}
   - {fileID: 132933641}
   - {fileID: 834097411}
-  - {fileID: 1446656303}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -7986,9 +8062,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: RoundController_V2, Assembly-CSharp
-        m_MethodName: PauseGame
+      - m_Target: {fileID: 2018456477}
+        m_TargetAssemblyTypeName: MainGameManager, Assembly-CSharp
+        m_MethodName: OpenPauseMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8284,7 +8360,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.544
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -8399,7 +8475,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxAttemptsBeforeReset: 2
   listeningTimeout: 5
-  delayBetweenAttempts: 0.5
+  delayBetweenAttempts: 1
 --- !u!4 &1976159625
 Transform:
   m_ObjectHideFlags: 0
@@ -8535,7 +8611,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: a13344ac26ae22f40ae0160a0a8c756e, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.049
+  m_Volume: 0.034
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -8808,12 +8884,84 @@ MonoBehaviour:
     syllableSprite: {fileID: 21300000, guid: 793e94e6332d86e449eae810b72f6615, type: 3}
     syllableClip: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
     correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
+  - syllableText: DA
+    syllableSprite: {fileID: 21300000, guid: edb8e95b33e4313439b1dcb6b8f14d45, type: 3}
+    syllableClip: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
+    correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
+  - syllableText: FA
+    syllableSprite: {fileID: 21300000, guid: b18c62169f43fb642be41fcde7de511a, type: 3}
+    syllableClip: {fileID: 8300000, guid: 129794c8ee0dc12408c51fd88ac9e2bb, type: 3}
+    correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
+  - syllableText: GA
+    syllableSprite: {fileID: 21300000, guid: 2eedc9c262396d34f91130a8a30017d9, type: 3}
+    syllableClip: {fileID: 8300000, guid: e8ac2564d0fa2274fbb75b0410be4f14, type: 3}
+    correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
+  - syllableText: JA
+    syllableSprite: {fileID: 21300000, guid: 6f4cd7da104c63246999c6c0d9168fd5, type: 3}
+    syllableClip: {fileID: 8300000, guid: c96e17bef7505bb4892d3739af4ecdca, type: 3}
+    correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
+  - syllableText: LA
+    syllableSprite: {fileID: 21300000, guid: 4f46e7572abc2d94dbc513c19df5537a, type: 3}
+    syllableClip: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
+    correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
+  - syllableText: MA
+    syllableSprite: {fileID: 21300000, guid: 62d8104431a972f4e97003093dd332c4, type: 3}
+    syllableClip: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
+    correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
+  - syllableText: NA
+    syllableSprite: {fileID: 21300000, guid: 5652afc20630de146a98cb9985bf59f7, type: 3}
+    syllableClip: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
+    correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
+  - syllableText: PA
+    syllableSprite: {fileID: 21300000, guid: 7c047ee3ff4220547ad4ca68e395c7c3, type: 3}
+    syllableClip: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
+    correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
+  - syllableText: QUA
+    syllableSprite: {fileID: 21300000, guid: d77b177d9dde2234388b17bb4961811f, type: 3}
+    syllableClip: {fileID: 8300000, guid: 87cc05ac624dbea49b336e82ea8ee833, type: 3}
+    correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
+  - syllableText: RA
+    syllableSprite: {fileID: 21300000, guid: 2c5bed1eb0b43a143a28ade2605385b5, type: 3}
+    syllableClip: {fileID: 8300000, guid: ec5f88918413db0499c5cfe14436284d, type: 3}
+    correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
+  - syllableText: SA
+    syllableSprite: {fileID: 21300000, guid: c9de3270379a80242bacc2b212c0b4fe, type: 3}
+    syllableClip: {fileID: 8300000, guid: 3d305eca04e72fb4eae413ea7a7fb010, type: 3}
+    correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
+  - syllableText: TA
+    syllableSprite: {fileID: 21300000, guid: 722c5e00b7e903c46b694ea081ab89c4, type: 3}
+    syllableClip: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
+    correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
+  - syllableText: VA
+    syllableSprite: {fileID: 21300000, guid: e9d7b8dbc0d6b2f4ca73129e7142e5fd, type: 3}
+    syllableClip: {fileID: 8300000, guid: 1fd611b92e287a04bbf8e125612c1d21, type: 3}
+    correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
+  - syllableText: XA
+    syllableSprite: {fileID: 21300000, guid: f0485d6685cb8904b8ea465f9f0e8974, type: 3}
+    syllableClip: {fileID: 8300000, guid: e0c7ccbffc70fde4ebc32eae6d3b6cee, type: 3}
+    correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
+  - syllableText: ZA
+    syllableSprite: {fileID: 21300000, guid: 74b3904d9e214fb48a8df4884f489b13, type: 3}
+    syllableClip: {fileID: 8300000, guid: 440c31cdf6232e445b1e3735d4d02ad5, type: 3}
+    correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
   currentSyllableIndex: 0
   introPanelGroup: {fileID: 1446656306}
   syllableIntroImage: {fileID: 1370523269}
   syllableStartPosition: {fileID: 1727915721}
   syllableArcPosition: {fileID: 1368599304}
   mainCanvas: {fileID: 1715173766}
+  voicePromptClips:
+  - {fileID: 8300000, guid: b537dc9ffa4dad042a5b9761e688bec9, type: 3}
+  - {fileID: 8300000, guid: d89355862e10a724092a3669f2029d7e, type: 3}
+  microphoneIcon: {fileID: 761134872}
+  microphoneOffSprite: {fileID: 21300000, guid: 41cbc89f24a041849b278ec6d7793c6a, type: 3}
+  microphoneOnSprite: {fileID: 21300000, guid: 054ddf0442fb5e44384136820798b704, type: 3}
+  pauseMenu: {fileID: 132933640}
+  endGamePanel: {fileID: 834097410}
+  confettiEffect: {fileID: 99774441}
+  scorePauseText: {fileID: 0}
+  scoreEndGameText: {fileID: 0}
+  endGameClip: {fileID: 8300000, guid: 74d5dc0c5fa7f7144b6923e39a624b64, type: 3}
   popsToComplete: 5
 --- !u!4 &2018456478
 Transform:
@@ -9003,7 +9151,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 18
+          m_IntArgument: 19
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0

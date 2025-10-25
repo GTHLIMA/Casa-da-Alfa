@@ -41,11 +41,37 @@ public class MainGameManager : MonoBehaviour
     public Transform syllableArcPosition;
     public Canvas mainCanvas;
 
+    [Header("Voice Phase UI")]
+    [Tooltip("Áudios perguntando para falar a sílaba (escolhe aleatório)")]
+    public AudioClip[] voicePromptClips;           // 🔊 NOVOS: áudios de pergunta
+    
+    [Tooltip("Ícone do microfone (Image no Canvas)")]
+    public Image microphoneIcon;                    // 🎤 NOVO: ícone do microfone
+    
+    [Tooltip("Sprite do microfone DESATIVADO (cinza)")]
+    public Sprite microphoneOffSprite;              // 🎤 NOVO: sprite cinza
+    
+    [Tooltip("Sprite do microfone ATIVADO (verde)")]
+    public Sprite microphoneOnSprite;               // 🎤 NOVO: sprite verde
+
+    [Header("UI Panels")]
+    public GameObject pauseMenu;                    // 🆕 Painel de pausa
+    public GameObject endGamePanel;                 // 🆕 Painel de fim de jogo
+    public ParticleSystem confettiEffect;           // 🆕 Efeito de confete
+    public Text scorePauseText;                     // 🆕 Score no pause (opcional)
+    public Text scoreEndGameText;                   // 🆕 Score no end game (opcional)
+
+    [Header("Audio Clips")]
+    public AudioClip endGameClip;                   // 🆕 Som de vitória
+
     [Header("Gameplay")]
     public int popsToComplete = 5;
 
     private bool inVoicePhase = false;
     private bool spawningActive = false;
+    private bool isFirstRound = true;  // 🆕 Flag para controlar fade in do arco
+    private bool isPaused = false;     // 🆕 Flag de pausa
+    private int balloonsPopped = 0;    // 🆕 Contador de balões estourados no round atual
 
     private void Awake()
     {
@@ -69,6 +95,25 @@ public class MainGameManager : MonoBehaviour
             enabled = false;
             return;
         }
+
+        // 🆕 Inicializar sílaba do arco invisível (só na primeira rodada)
+        if (arcController != null && arcController.centerSyllableImage != null)
+        {
+            var arcSyllableColor = arcController.centerSyllableImage.color;
+            arcSyllableColor.a = 0f; // Totalmente transparente
+            arcController.centerSyllableImage.color = arcSyllableColor;
+        }
+
+        // 🆕 Esconder microfone no início
+        if (microphoneIcon != null)
+            microphoneIcon.gameObject.SetActive(false);
+
+        // 🆕 Esconder painéis no início
+        if (pauseMenu != null)
+            pauseMenu.SetActive(false);
+        
+        if (endGamePanel != null)
+            endGamePanel.SetActive(false);
 
         ShowCurrentSyllableAtCenter();
     }
@@ -170,6 +215,13 @@ public class MainGameManager : MonoBehaviour
         arcController.SetSyllable(data.syllableSprite);
         arcController.ResetArc();
 
+        // 🆕 Fade in da sílaba no arco (só na primeira rodada)
+        if (isFirstRound && arcController.centerSyllableImage != null)
+        {
+            yield return StartCoroutine(FadeInArcSyllable());
+            isFirstRound = false; // Não fazer fade in nas próximas rodadas
+        }
+
         // Limpar listener antigo e adicionar novo
         balloonManager.onBalloonPopped -= OnBalloonPopped;
         balloonManager.onBalloonPopped += OnBalloonPopped;
@@ -204,6 +256,25 @@ public class MainGameManager : MonoBehaviour
 
         if (temp != null)
             Destroy(temp);
+    }
+
+    // 🆕 Fade in da sílaba no arco (primeira rodada)
+    IEnumerator FadeInArcSyllable()
+    {
+        if (arcController.centerSyllableImage == null) yield break;
+
+        float fadeDuration = 0.8f;
+        Color color = arcController.centerSyllableImage.color;
+        
+        for (float t = 0; t < fadeDuration; t += Time.deltaTime)
+        {
+            color.a = Mathf.Lerp(0f, 1f, t / fadeDuration);
+            arcController.centerSyllableImage.color = color;
+            yield return null;
+        }
+
+        color.a = 1f;
+        arcController.centerSyllableImage.color = color;
     }
 
     void OnBalloonPopped()
@@ -241,8 +312,28 @@ public class MainGameManager : MonoBehaviour
 
         yield return new WaitForSeconds(1.5f);
 
-        // NÃO fazer fade out - sílaba fica visível!
-        // Removi o código de fade aqui
+        // 🆕 TOCAR ÁUDIO DE PERGUNTA (aleatório)
+        if (voicePromptClips != null && voicePromptClips.Length > 0)
+        {
+            int randomIndex = Random.Range(0, voicePromptClips.Length);
+            AudioClip promptClip = voicePromptClips[randomIndex];
+            
+            if (promptClip != null && syllableSource != null)
+            {
+                Debug.Log($"[MainGameManager] Tocando pergunta {randomIndex + 1}/{voicePromptClips.Length}");
+                syllableSource.PlayOneShot(promptClip);
+                
+                // Aguardar o áudio terminar
+                yield return new WaitForSeconds(promptClip.length + 0.3f);
+            }
+        }
+
+        // 🆕 MOSTRAR MICROFONE CINZA (desativado)
+        SetMicrophoneState(false);
+        yield return new WaitForSeconds(0.5f);
+
+        // 🆕 ATIVAR MICROFONE (verde)
+        SetMicrophoneState(true);
 
         // Iniciar reconhecimento (sílaba continua visível)
         if (voiceManager != null)
@@ -257,9 +348,32 @@ public class MainGameManager : MonoBehaviour
         }
     }
 
+    // 🆕 Controla o estado visual do microfone
+    void SetMicrophoneState(bool isActive)
+    {
+        if (microphoneIcon == null) return;
+
+        microphoneIcon.gameObject.SetActive(true);
+
+        if (isActive && microphoneOnSprite != null)
+        {
+            microphoneIcon.sprite = microphoneOnSprite;
+            Debug.Log("[MainGameManager] 🎤 Microfone ATIVADO (verde)");
+        }
+        else if (!isActive && microphoneOffSprite != null)
+        {
+            microphoneIcon.sprite = microphoneOffSprite;
+            Debug.Log("[MainGameManager] 🎤 Microfone DESATIVADO (cinza)");
+        }
+    }
+
     void OnVoiceResult(bool correct)
     {
         if (!inVoicePhase) return;
+
+        // 🆕 Desativar microfone visualmente
+        if (microphoneIcon != null)
+            microphoneIcon.gameObject.SetActive(false);
 
         if (correct)
         {
@@ -363,18 +477,221 @@ public class MainGameManager : MonoBehaviour
         balloonManager.StopSpawning();
         balloonManager.ClearAllBalloons();
         
-        if (sfxSource != null)
+        StartCoroutine(ShowEndGamePanel());
+    }
+
+    // ========== 🆕 SISTEMA DE PAUSE ==========
+    public void OpenPauseMenu()
+    {
+        if (isPaused) return;
+
+        isPaused = true;
+
+        // Atualiza score no painel (se existir)
+        if (scorePauseText != null)
+            scorePauseText.text = $"Sílaba: {currentSyllableIndex + 1}/{syllables.Count}";
+
+        // Ativa o painel de pausa
+        if (pauseMenu != null)
         {
-            // Tocar som de vitória aqui
+            pauseMenu.SetActive(true);
+
+            // Garante que o painel receba cliques
+            CanvasGroup cg = pauseMenu.GetComponent<CanvasGroup>();
+            if (cg == null) cg = pauseMenu.AddComponent<CanvasGroup>();
+            cg.interactable = true;
+            cg.blocksRaycasts = true;
         }
+
+        // Pausa TODAS as músicas
+        if (musicSource != null) musicSource.Pause();
+        if (sfxSource != null) sfxSource.Pause();
+        if (syllableSource != null) syllableSource.Pause();
+
+        // Pausa o tempo do jogo
+        Time.timeScale = 0f;
+
+        // Pausa todos os áudios do sistema
+        AudioListener.pause = true;
+
+        Debug.Log("🔇 Jogo pausado: tempo parado e áudios pausados.");
+    }
+
+    public void ClosePauseMenu()
+    {
+        if (!isPaused) return;
+
+        isPaused = false;
+
+        // Retoma o tempo do jogo
+        Time.timeScale = 1f;
+
+        // Retoma todos os áudios
+        AudioListener.pause = false;
+
+        if (musicSource != null && !inVoicePhase) musicSource.UnPause();
+        if (sfxSource != null) sfxSource.UnPause();
+        if (syllableSource != null) syllableSource.UnPause();
+
+        // Desativa o painel de pausa
+        if (pauseMenu != null)
+            pauseMenu.SetActive(false);
+
+        Debug.Log("▶️ Jogo retomado.");
+    }
+
+    // ========== 🆕 SISTEMA DE END GAME ==========
+    IEnumerator ShowEndGamePanel()
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        // Atualiza score final (se existir)
+        if (scoreEndGameText != null)
+            scoreEndGameText.text = $"Completou {syllables.Count} sílabas!";
+
+        // Ativa painel de vitória
+        if (endGamePanel != null)
+            endGamePanel.SetActive(true);
+
+        // 🎊 ATIVA CONFETE
+        if (confettiEffect != null)
+        {
+            confettiEffect.Play();
+            Debug.Log("🎊 Efeito de confete ativado!");
+        }
+
+        // Para música de fundo e toca som de vitória
+        if (musicSource != null)
+            musicSource.Pause();
+
+        if (sfxSource != null && endGameClip != null)
+        {
+            sfxSource.PlayOneShot(endGameClip);
+        }
+
+        Debug.Log("🏆 Painel de vitória exibido!");
+    }
+
+    // ========== 🆕 SISTEMA DE RESTART ==========
+    public void RestartGame()
+    {
+        Debug.Log("🔄 Reiniciando jogo...");
+
+        // Retoma tempo ANTES de recarregar cena
+        Time.timeScale = 1f;
+        AudioListener.pause = false;
+
+        // Recarrega a cena atual (reset completo)
+        int currentSceneIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
+        LoadScenes.LoadSceneByIndex(currentSceneIndex);
+    }
+
+    // Alternativa: Reiniciar sem recarregar cena (para testes rápidos)
+    public void RestartGameInPlace()
+    {
+        Debug.Log("🔄 Reiniciando jogo (sem recarregar cena)...");
+
+        // Para todas as coroutines
+        StopAllCoroutines();
+
+        // Limpa balões
+        if (balloonManager != null)
+        {
+            balloonManager.StopSpawning();
+            balloonManager.ClearAllBalloons();
+        }
+
+        // Para voice manager
+        if (voiceManager != null)
+            voiceManager.StopListening();
+
+        // Reseta flags
+        currentSyllableIndex = 0;
+        inVoicePhase = false;
+        spawningActive = false;
+        isFirstRound = true;
+        isPaused = false;
+
+        // Retoma tempo
+        Time.timeScale = 1f;
+        AudioListener.pause = false;
+
+        // Esconde painéis
+        if (pauseMenu != null)
+            pauseMenu.SetActive(false);
         
-        // Você pode adicionar UI de vitória aqui
+        if (endGamePanel != null)
+            endGamePanel.SetActive(false);
+        
+        if (introPanelGroup != null)
+            introPanelGroup.gameObject.SetActive(false);
+        
+        if (microphoneIcon != null)
+            microphoneIcon.gameObject.SetActive(false);
+
+        // Para confete
+        if (confettiEffect != null && confettiEffect.isPlaying)
+            confettiEffect.Stop();
+
+        // Reseta arco
+        if (arcController != null)
+        {
+            arcController.ResetArc();
+            
+            // Reseta transparência da sílaba no arco
+            if (arcController.centerSyllableImage != null)
+            {
+                var color = arcController.centerSyllableImage.color;
+                color.a = 0f;
+                arcController.centerSyllableImage.color = color;
+            }
+        }
+
+        // Retoma música de fundo
+        if (musicSource != null)
+        {
+            musicSource.UnPause();
+            if (!musicSource.isPlaying)
+                musicSource.Play();
+        }
+
+        // Reinicia jogo
+        ShowCurrentSyllableAtCenter();
+
+        Debug.Log("✅ Jogo reiniciado com sucesso!");
+    }
+
+    // 🆕 Voltar ao menu principal
+    public void GoToMainMenu(int menuSceneIndex = 0)
+    {
+        Debug.Log("🏠 Voltando ao menu principal...");
+        
+        // Retoma tempo antes de trocar cena
+        Time.timeScale = 1f;
+        AudioListener.pause = false;
+        
+        LoadScenes.LoadSceneByIndex(menuSceneIndex);
     }
 
     // ========== DEBUG HOTKEYS (Editor apenas) ==========
     private void Update()
     {
 #if UNITY_EDITOR
+        // Simular toque mobile com mouse no Editor
+        if (Input.GetMouseButtonDown(0))
+        {
+            // Raycast para detectar cliques em balões mesmo no Editor
+            Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero);
+            
+            if (hit.collider != null)
+            {
+                var clickable = hit.collider.GetComponent<BalloonClickable>();
+                if (clickable != null)
+                    clickable.HandleClick();
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.C))
         {
             Debug.Log("[DEBUG] Simulando voz CORRETA");
@@ -434,16 +751,14 @@ public class MainGameManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            Debug.Log("[DEBUG] Resetar jogo");
-            balloonManager.StopSpawning();
-            balloonManager.ClearAllBalloons();
-            StopAllCoroutines();
-            currentSyllableIndex = 0;
-            inVoicePhase = false;
-            spawningActive = false;
-            if (introPanelGroup != null)
-                introPanelGroup.gameObject.SetActive(false);
-            ShowCurrentSyllableAtCenter();
+            Debug.Log("[DEBUG] Resetar jogo (recarregar cena)");
+            RestartGame();
+        }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            Debug.Log("[DEBUG] Resetar in-place (sem recarregar)");
+            RestartGameInPlace();
         }
 
         if (Input.GetKeyDown(KeyCode.P))
@@ -453,6 +768,27 @@ public class MainGameManager : MonoBehaviour
             {
                 arcController.IncrementProgress();
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Debug.Log("[DEBUG] Toggle Pause");
+            if (isPaused)
+                ClosePauseMenu();
+            else
+                OpenPauseMenu();
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Debug.Log("[DEBUG] Forçar End Game");
+            EndGame();
+        }
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            Debug.Log("[DEBUG] Voltar ao menu (cena 0)");
+            GoToMainMenu(0);
         }
 #endif
     }
