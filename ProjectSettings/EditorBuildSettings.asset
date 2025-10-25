@@ -63,6 +63,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Game5.1.unity
     guid: a0e25088a63e64341b99944896cdadbb
   - enabled: 1
-    path: Assets/Scenes/Areia.unity
-    guid: 579ed54e1d3417843888e6715a82bd24
+    path: Assets/Scenes/Game6.unity
+    guid: 85c9e3c7f5b687046aeb9144d769ca52
   m_configObjects: {}
