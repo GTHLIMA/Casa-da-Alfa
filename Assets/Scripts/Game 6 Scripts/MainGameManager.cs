@@ -1,18 +1,19 @@
-// MainGameManager.cs
+// SUBSTITUA O MainGameManager.cs COMPLETO POR ESTE:
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 [System.Serializable]
 public class SyllableDado
 {
-    public string syllableText;     // texto da sílaba (ex: "BA")
-    public Sprite syllableSprite;   // sprite da sílaba (imagem usada nos balões e arco)
-    public AudioClip syllableClip;  // som da sílaba
-    public AudioClip correctClip;   // som de acerto ("Muito bem!")
+    public string syllableText;
+    public Sprite syllableSprite;
+    public AudioClip syllableClip;
+    public AudioClip correctClip;
 }
+
 public class MainGameManager : MonoBehaviour
 {
     public static MainGameManager Instance;
@@ -22,161 +23,437 @@ public class MainGameManager : MonoBehaviour
     public ArcProgressController arcController;
     public VoiceRecognitionManager voiceManager;
 
-    [Header("AudioSources (attach in inspector)")]
-    public AudioSource musicSource; // música ambiente
-    public AudioSource sfxSource; // estouro, confete, acerto/erro
-    public AudioSource syllableSource; // sons de sílaba e dicas
+    [Header("AudioSources")]
+    public AudioSource musicSource;
+    public AudioSource sfxSource;
+    public AudioSource syllableSource;
 
     [Header("Syllable data")]
     public List<SyllableDado> syllables = new List<SyllableDado>();
     public int currentSyllableIndex = 0;
 
-    [Header("UI")]
-    public Transform syllableStartPosition; // posição central
-    public Transform syllableArcPosition;   // posição no arco superior esquerdo
+    [Header("Syllable Intro UI")]
+    public CanvasGroup introPanelGroup;
+    public Image syllableIntroImage;
+
+    [Header("UI Positions")]
+    public Transform syllableStartPosition;
+    public Transform syllableArcPosition;
+    public Canvas mainCanvas;
 
     [Header("Gameplay")]
     public int popsToComplete = 5;
 
     private bool inVoicePhase = false;
+    private bool spawningActive = false;
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        else { Destroy(gameObject); return; }
+
+#if UNITY_ANDROID
+        if (!SpeechToText.IsInitialized())
+            SpeechToText.Initialize("pt-BR");
+#endif
     }
 
     private void Start()
     {
-        // inicia música ambiente em volume baixo
         if (musicSource != null) musicSource.Play();
+        
+        // Validar referências críticas
+        if (!ValidateReferences())
+        {
+            Debug.LogError("[MainGameManager] Referências críticas não atribuídas! Verifique o Inspector.");
+            enabled = false;
+            return;
+        }
+
         ShowCurrentSyllableAtCenter();
+    }
+
+    private bool ValidateReferences()
+    {
+        bool valid = true;
+
+        if (balloonManager == null)
+        {
+            Debug.LogError("[MainGameManager] BalloonManager não atribuído!");
+            valid = false;
+        }
+
+        if (arcController == null)
+        {
+            Debug.LogError("[MainGameManager] ArcProgressController não atribuído!");
+            valid = false;
+        }
+
+        if (syllables == null || syllables.Count == 0)
+        {
+            Debug.LogError("[MainGameManager] Lista de sílabas vazia!");
+            valid = false;
+        }
+
+        if (introPanelGroup == null)
+        {
+            Debug.LogError("[MainGameManager] introPanelGroup não atribuído!");
+            valid = false;
+        }
+
+        if (syllableIntroImage == null)
+        {
+            Debug.LogError("[MainGameManager] syllableIntroImage não atribuído!");
+            valid = false;
+        }
+
+        // Avisos (não bloqueiam)
+        if (mainCanvas == null)
+            Debug.LogWarning("[MainGameManager] mainCanvas não atribuído - animação de movimento desabilitada");
+        
+        if (syllableStartPosition == null)
+            Debug.LogWarning("[MainGameManager] syllableStartPosition não atribuído");
+        
+        if (syllableArcPosition == null)
+            Debug.LogWarning("[MainGameManager] syllableArcPosition não atribuído");
+
+        return valid;
     }
 
     void ShowCurrentSyllableAtCenter()
     {
+        if (currentSyllableIndex >= syllables.Count)
+        {
+            EndGame();
+            return;
+        }
+
         var data = syllables[currentSyllableIndex];
 
-        // toca o som da sílaba
-        if (syllableSource != null && data.syllableClip != null)
-            syllableSource.PlayOneShot(data.syllableClip);
+        if (syllableIntroImage != null)
+            syllableIntroImage.sprite = data.syllableSprite;
 
-        // após pequeno delay, move sílaba para o arco e começa o spawn
-        StartCoroutine(MoveSyllableThenStartSpawn(1.0f));
+        StartCoroutine(ShowIntroSequence(data));
     }
 
-    IEnumerator MoveSyllableThenStartSpawn(float delay)
+    IEnumerator ShowIntroSequence(SyllableDado data)
     {
-        yield return new WaitForSeconds(delay);
+        introPanelGroup.alpha = 1f;
+        introPanelGroup.gameObject.SetActive(true);
 
-        // define sprite da sílaba no arco
-        arcController.SetSyllable(syllables[currentSyllableIndex].syllableSprite);
+        if (syllableSource && data.syllableClip)
+            syllableSource.PlayOneShot(data.syllableClip);
+
+        yield return new WaitForSeconds(1.2f);
+
+        // Fade out
+        float fadeTime = 0.6f;
+        for (float t = 0; t < fadeTime; t += Time.deltaTime)
+        {
+            introPanelGroup.alpha = Mathf.Lerp(1f, 0f, t / fadeTime);
+            yield return null;
+        }
+        introPanelGroup.alpha = 0f;
+        introPanelGroup.gameObject.SetActive(false);
+
+        // Animar para o arco (se referências existirem)
+        if (mainCanvas != null && syllableStartPosition != null && syllableArcPosition != null)
+        {
+            yield return StartCoroutine(MoveSyllableToArc(data.syllableSprite));
+        }
+        else
+        {
+            Debug.LogWarning("[MainGameManager] Pulando animação de movimento - referências faltando");
+        }
+
+        // Setup do arco
+        arcController.SetSyllable(data.syllableSprite);
         arcController.ResetArc();
 
-        // começa a gerar os balões dessa sílaba
-        balloonManager.StartSpawning(syllables[currentSyllableIndex].syllableSprite);
+        // Limpar listener antigo e adicionar novo
+        balloonManager.onBalloonPopped -= OnBalloonPopped;
         balloonManager.onBalloonPopped += OnBalloonPopped;
+
+        // Iniciar spawn
+        balloonManager.StartSpawning(data.syllableSprite);
+        spawningActive = true;
+    }
+
+    IEnumerator MoveSyllableToArc(Sprite sprite)
+    {
+        // Validação já feita antes de chamar
+        GameObject temp = new GameObject("MovingSyllable");
+        Image img = temp.AddComponent<Image>();
+        img.sprite = sprite;
+        img.preserveAspect = true;
+
+        RectTransform rt = temp.GetComponent<RectTransform>();
+        rt.SetParent(mainCanvas.transform, false);
+        rt.position = syllableStartPosition.position;
+
+        float duration = 0.8f;
+        Vector3 start = syllableStartPosition.position;
+        Vector3 end = syllableArcPosition.position;
+
+        for (float t = 0; t < duration; t += Time.deltaTime)
+        {
+            if (temp == null) yield break; // Safety check
+            rt.position = Vector3.Lerp(start, end, t / duration);
+            yield return null;
+        }
+
+        if (temp != null)
+            Destroy(temp);
     }
 
     void OnBalloonPopped()
     {
         arcController.IncrementProgress();
-        if (arcController.IsComplete())
+
+        if (arcController.IsComplete() && !inVoicePhase)
         {
+            spawningActive = false;
             StartCoroutine(BeginVoicePhase());
         }
     }
 
     IEnumerator BeginVoicePhase()
-{
-    inVoicePhase = true;
-
-    balloonManager.StopSpawning();
-    balloonManager.ClearAllBalloons();
-    if (musicSource != null) musicSource.Pause();
-
-    // Mostra sílaba grande no centro novamente
-    ShowCurrentSyllableAtCenter();
-
-    yield return new WaitForSeconds(1.0f);
-
-    // Reproduz o som da sílaba antes de escutar
-    var data = syllables[currentSyllableIndex];
-    if (syllableSource != null && data.syllableClip != null)
-        syllableSource.PlayOneShot(data.syllableClip);
-
-    yield return new WaitForSeconds(0.5f);
-
-    // Ativa reconhecimento de voz (comparando com o texto da sílaba)
-    voiceManager.StartListening(data.syllableText, OnVoiceResult);
-}
-
-   void OnVoiceResult(bool correct)
-{
-    var data = syllables[currentSyllableIndex];
-
-    if (correct)
     {
-        if (sfxSource != null && data.correctClip != null)
-            sfxSource.PlayOneShot(data.correctClip);
+        inVoicePhase = true;
 
-        StartCoroutine(AdvanceToNextSyllable(1.2f));
-    }
-    else
-    {
-        // repete o som da sílaba e tenta novamente
-        if (syllableSource != null && data.syllableClip != null)
-            syllableSource.PlayOneShot(data.syllableClip);
+        balloonManager.StopSpawning();
+        balloonManager.ClearAllBalloons();
 
-        StartCoroutine(RestartSameSyllable());
-    }
-}
+        if (musicSource) musicSource.Pause();
 
-IEnumerator RestartSameSyllable()
-{
-    yield return new WaitForSeconds(1f);
-    inVoicePhase = false;
-    arcController.ResetArc();
-    if (musicSource != null) musicSource.UnPause();
-    balloonManager.StartSpawning(syllables[currentSyllableIndex].syllableSprite);
-}
-
-    IEnumerator HandleFailedVoiceAttempts()
-    {
         yield return new WaitForSeconds(0.5f);
 
-        // retoma música e spawn para tentar novamente a mesma sílaba
-        if (musicSource != null) musicSource.UnPause();
-        arcController.ResetArc();
-        balloonManager.StartSpawning(syllables[currentSyllableIndex].syllableSprite);
-        inVoicePhase = false;
+        // Mostrar sílaba e DEIXAR NA TELA até acertar
+        var data = syllables[currentSyllableIndex];
+        
+        introPanelGroup.alpha = 1f;
+        introPanelGroup.gameObject.SetActive(true);
+        if (syllableIntroImage != null)
+            syllableIntroImage.sprite = data.syllableSprite;
+
+        if (syllableSource && data.syllableClip)
+            syllableSource.PlayOneShot(data.syllableClip);
+
+        yield return new WaitForSeconds(1.5f);
+
+        // NÃO fazer fade out - sílaba fica visível!
+        // Removi o código de fade aqui
+
+        // Iniciar reconhecimento (sílaba continua visível)
+        if (voiceManager != null)
+        {
+            Debug.Log($"[MainGameManager] Iniciando reconhecimento para: {data.syllableText}");
+            voiceManager.StartListening(data.syllableText, OnVoiceResult);
+        }
+        else
+        {
+            Debug.LogError("[MainGameManager] VoiceManager não atribuído!");
+            OnVoiceResult(false);
+        }
     }
 
-    IEnumerator AdvanceToNextSyllable(float delay)
+    void OnVoiceResult(bool correct)
     {
-        yield return new WaitForSeconds(delay);
+        if (!inVoicePhase) return;
 
+        if (correct)
+        {
+            Debug.Log("[MainGameManager] ✓ Resposta correta!");
+            
+            // Fade out da sílaba AGORA que acertou
+            StartCoroutine(FadeOutSyllableAndAdvance());
+        }
+        else
+        {
+            Debug.Log("[MainGameManager] ✗ Resposta incorreta - sílaba continua na tela");
+            // Sílaba continua visível, apenas toca o áudio novamente como hint
+            var data = syllables[currentSyllableIndex];
+            if (syllableSource && data.syllableClip)
+                syllableSource.PlayOneShot(data.syllableClip);
+        }
+    }
+
+    IEnumerator FadeOutSyllableAndAdvance()
+    {
+        inVoicePhase = false;
+
+        // Tocar som de acerto
+        if (sfxSource && syllables[currentSyllableIndex].correctClip)
+            sfxSource.PlayOneShot(syllables[currentSyllableIndex].correctClip);
+
+        yield return new WaitForSeconds(0.5f);
+
+        // Fade out da sílaba
+        float fadeTime = 0.6f;
+        for (float t = 0; t < fadeTime; t += Time.deltaTime)
+        {
+            introPanelGroup.alpha = Mathf.Lerp(1f, 0f, t / fadeTime);
+            yield return null;
+        }
+        introPanelGroup.alpha = 0f;
+        introPanelGroup.gameObject.SetActive(false);
+
+        yield return new WaitForSeconds(0.6f);
+
+        // Avançar para próxima sílaba
+        balloonManager.onBalloonPopped -= OnBalloonPopped;
+        
         currentSyllableIndex++;
+        
         if (currentSyllableIndex >= syllables.Count)
         {
             EndGame();
             yield break;
         }
 
-        // retoma música e avança para próxima sílaba
         if (musicSource != null) musicSource.UnPause();
+        
         ShowCurrentSyllableAtCenter();
-        inVoicePhase = false;
+    }
+
+    IEnumerator RestartSameSyllable()
+    {
+        yield return new WaitForSeconds(1f);
+        
+        arcController.ResetArc();
+        
+        if (musicSource != null) musicSource.UnPause();
+        
+        // Fade out da sílaba
+        float fadeTime = 0.6f;
+        for (float t = 0; t < fadeTime; t += Time.deltaTime)
+        {
+            introPanelGroup.alpha = Mathf.Lerp(1f, 0f, t / fadeTime);
+            yield return null;
+        }
+        introPanelGroup.alpha = 0f;
+        introPanelGroup.gameObject.SetActive(false);
+        
+        ShowCurrentSyllableAtCenter();
+    }
+
+    IEnumerator AdvanceToNextSyllable(float delay)
+    {
+        balloonManager.onBalloonPopped -= OnBalloonPopped;
+        
+        yield return new WaitForSeconds(delay);
+
+        currentSyllableIndex++;
+        
+        if (currentSyllableIndex >= syllables.Count)
+        {
+            EndGame();
+            yield break;
+        }
+
+        if (musicSource != null) musicSource.UnPause();
+        
+        ShowCurrentSyllableAtCenter();
     }
 
     void EndGame()
     {
-        // final da fase: tocar confete, música de vitória, etc.
+        Debug.Log("🎉 Jogo concluído!");
+        
+        balloonManager.StopSpawning();
+        balloonManager.ClearAllBalloons();
+        
         if (sfxSource != null)
         {
-            // toque som final se desejar
+            // Tocar som de vitória aqui
+        }
+        
+        // Você pode adicionar UI de vitória aqui
+    }
+
+    // ========== DEBUG HOTKEYS (Editor apenas) ==========
+    private void Update()
+    {
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            Debug.Log("[DEBUG] Simulando voz CORRETA");
+            if (inVoicePhase && voiceManager != null)
+            {
+                voiceManager.StopListening();
+                OnVoiceResult(true);
+            }
         }
 
-        Debug.Log("🎉 Fase concluída!");
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            Debug.Log("[DEBUG] Simulando voz INCORRETA");
+            if (inVoicePhase && voiceManager != null)
+            {
+                voiceManager.StopListening();
+                OnVoiceResult(false);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            Debug.Log("[DEBUG] Toggle Spawn");
+            if (spawningActive)
+            {
+                balloonManager.StopSpawning();
+                spawningActive = false;
+            }
+            else
+            {
+                if (syllables.Count > 0)
+                {
+                    balloonManager.StartSpawning(syllables[currentSyllableIndex].syllableSprite);
+                    spawningActive = true;
+                }
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            Debug.Log("[DEBUG] Forçar próxima sílaba");
+            if (!inVoicePhase)
+            {
+                balloonManager.onBalloonPopped -= OnBalloonPopped;
+                balloonManager.StopSpawning();
+                currentSyllableIndex++;
+                if (currentSyllableIndex < syllables.Count)
+                {
+                    ShowCurrentSyllableAtCenter();
+                }
+                else
+                {
+                    EndGame();
+                }
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Debug.Log("[DEBUG] Resetar jogo");
+            balloonManager.StopSpawning();
+            balloonManager.ClearAllBalloons();
+            StopAllCoroutines();
+            currentSyllableIndex = 0;
+            inVoicePhase = false;
+            spawningActive = false;
+            if (introPanelGroup != null)
+                introPanelGroup.gameObject.SetActive(false);
+            ShowCurrentSyllableAtCenter();
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Log("[DEBUG] Completar arco instantaneamente");
+            for (int i = 0; i < 5; i++)
+            {
+                arcController.IncrementProgress();
+            }
+        }
+#endif
     }
 }

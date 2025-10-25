@@ -5,55 +5,74 @@ using UnityEngine;
 public class BalloonManager : MonoBehaviour
 {
     [Header("Balloon Settings")]
-    public GameObject balloonPrefab;       // Prefab do balão
-    public Transform spawnPointCenter;     // Ponto central para spawn (abaixo da tela)
-    public float spawnRate = 1.0f;         // Tempo entre spawns
-    public float spawnXPadding = 2.0f;     // Largura máxima de variação no eixo X
-    public int maxBalloons = 6;            // Limite máximo de balões ativos
+    public GameObject balloonPrefab;
+    public Transform spawnPointCenter;
+    public float spawnRate = 1.0f;
+    public float spawnXPadding = 2.0f;
+    public int maxBalloons = 6;
 
-    [HideInInspector] public System.Action onBalloonPopped; // Evento que o MainGameManager escuta
+    [HideInInspector] public System.Action onBalloonPopped;
 
     private bool spawning = false;
-    private Sprite currentSyllableSprite;  // Sprite da sílaba atual
+    private Sprite currentSyllableSprite;
     private List<GameObject> activeBalloons = new List<GameObject>();
+    private Coroutine spawnCoroutine;
 
-    // Inicia o spawn dos balões
     public void StartSpawning(Sprite syllableSprite)
     {
+        // Previne múltiplas coroutines
+        if (spawning)
+        {
+            Debug.LogWarning("[BalloonManager] Já está spawnando. Ignorando chamada duplicada.");
+            return;
+        }
+
         currentSyllableSprite = syllableSprite;
         spawning = true;
-        StartCoroutine(SpawnRoutine());
+
+        if (spawnCoroutine != null)
+            StopCoroutine(spawnCoroutine);
+
+        spawnCoroutine = StartCoroutine(SpawnLoop());
     }
 
-    // Para de spawnar
     public void StopSpawning()
     {
         spawning = false;
-        StopAllCoroutines();
+        
+        if (spawnCoroutine != null)
+        {
+            StopCoroutine(spawnCoroutine);
+            spawnCoroutine = null;
+        }
     }
 
-    // Rotina que instancia balões
-    IEnumerator SpawnRoutine()
+    IEnumerator SpawnLoop()
     {
         while (spawning)
         {
-            // Limita quantidade de balões ativos
+            // Só spawna se não ultrapassar limite
             if (activeBalloons.Count < maxBalloons)
+            {
                 SpawnOne(currentSyllableSprite);
+            }
 
             yield return new WaitForSeconds(spawnRate);
         }
     }
 
-    // Spawna um balão na tela
     void SpawnOne(Sprite syllableSprite)
     {
-        if (balloonPrefab == null || spawnPointCenter == null) return;
+        if (balloonPrefab == null || spawnPointCenter == null)
+        {
+            Debug.LogError("[BalloonManager] Prefab ou SpawnPoint não atribuído!");
+            return;
+        }
 
-        float randomX = Random.Range(-spawnXPadding, spawnXPadding);
-        Vector3 pos = spawnPointCenter.position + new Vector3(randomX, 0f, 0f);
+        Vector3 spawnPos = spawnPointCenter.position;
+        spawnPos.x += Random.Range(-spawnXPadding, spawnXPadding);
 
-        GameObject go = Instantiate(balloonPrefab, pos, Quaternion.identity, transform);
+        GameObject go = Instantiate(balloonPrefab, spawnPos, Quaternion.identity, transform);
         activeBalloons.Add(go);
 
         var clickable = go.GetComponent<BalloonClickable>();
@@ -62,24 +81,34 @@ public class BalloonManager : MonoBehaviour
             clickable.SetSyllableSprite(syllableSprite);
             clickable.onFinalPop += () => OnBalloonDestroyed(go);
         }
+        else
+        {
+            Debug.LogError("[BalloonManager] Prefab não tem BalloonClickable!");
+        }
     }
 
-    // Quando o balão é estourado
     void OnBalloonDestroyed(GameObject go)
     {
         if (activeBalloons.Contains(go))
             activeBalloons.Remove(go);
 
-        onBalloonPopped?.Invoke(); // avisa o MainGameManager
+        onBalloonPopped?.Invoke();
     }
 
-    // Destroi todos os balões ativos (usado na transição pra fase de fala)
     public void ClearAllBalloons()
     {
+        StopSpawning();
+
         foreach (var b in activeBalloons)
         {
             if (b != null) Destroy(b);
         }
         activeBalloons.Clear();
+    }
+
+    private void OnDestroy()
+    {
+        // Cleanup ao destruir objeto
+        StopSpawning();
     }
 }

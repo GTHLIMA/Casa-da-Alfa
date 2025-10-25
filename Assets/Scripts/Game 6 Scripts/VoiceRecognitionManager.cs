@@ -1,96 +1,251 @@
-
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 
 public class VoiceRecognitionManager : MonoBehaviour, ISpeechToTextListener
 {
-public int maxAttemptsBeforeReset = 4;
-private int attemptCount = 0;
-private string expectedWord;
-private Action<bool> callbackWhenDone;
+    [Header("Settings")]
+    public int maxAttemptsBeforeReset = 4;
+    public float listeningTimeout = 5f;
+    public float delayBetweenAttempts = 0.5f;
 
+    private int attemptCount = 0;
+    private string expectedWord;
+    private Action<bool> callbackWhenDone;
+    private bool isListening = false;
+    private bool resultReceived = false;
 
-public float listeningTimeout = 5f;
+    public void StartListening(string expected, Action<bool> callback)
+    {
+        if (isListening)
+        {
+            Debug.LogWarning("[VoiceRecognition] Já está escutando. Ignorando.");
+            return;
+        }
 
+        expectedWord = expected;
+        callbackWhenDone = callback;
+        attemptCount = 0;
+        isListening = true;
+        resultReceived = false;
 
-public void StartListening(string expected, Action<bool> callback)
-{
-expectedWord = expected;
-callbackWhenDone = callback;
-attemptCount = 0;
-StartCoroutine(ListenCycle());
-}
+        StartCoroutine(ListenCycle());
+    }
 
+    IEnumerator ListenCycle()
+    {
+        while (attemptCount < maxAttemptsBeforeReset && isListening)
+        {
+            resultReceived = false;
+            attemptCount++;
 
-IEnumerator ListenCycle()
-{
-while (attemptCount < maxAttemptsBeforeReset)
-{
-// Start STT
-SpeechToText.Start(this, true, false);
-float elapsed = 0f;
-bool gotResult = false;
+            Debug.Log($"[VoiceRecognition] Tentativa {attemptCount}/{maxAttemptsBeforeReset}");
 
+            // Inicia reconhecimento - SEM try-catch com yield
+            bool sttStarted = StartSTT();
+            
+            if (!sttStarted)
+            {
+                Debug.LogError("[VoiceRecognition] Falha ao iniciar STT");
+                FinishWithResult(false);
+                yield break;
+            }
 
-while (elapsed < listeningTimeout && !gotResult)
-{
-elapsed += Time.deltaTime;
-yield return null;
-}
+            // Aguarda resultado ou timeout
+            float elapsed = 0f;
+            while (elapsed < listeningTimeout && !resultReceived && isListening)
+            {
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
 
+            // Se não recebeu resultado, conta como falha
+            if (!resultReceived && isListening)
+            {
+                Debug.Log("[VoiceRecognition] Timeout - nenhum resultado recebido.");
+                
+                // Toca hint se disponível
+                PlayHintForAttempt(attemptCount);
+                
+                yield return new WaitForSeconds(delayBetweenAttempts);
+            }
+            else if (resultReceived)
+            {
+                // Resultado foi processado em OnResultReceived
+                yield break;
+            }
+        }
 
-// Wait for OnResultReceived to set checks (this example uses a simple blocking style)
-// The STT plugin you already have calls OnResultReceived when result arrives
+        // Esgotou tentativas
+        if (isListening)
+        {
+            Debug.Log("[VoiceRecognition] Tentativas esgotadas.");
+            FinishWithResult(false);
+        }
+    }
 
+    private bool StartSTT()
+    {
+#if UNITY_ANDROID
+        try
+        {
+            SpeechToText.Start(this, true, false);
+            return true;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[VoiceRecognition] Erro ao iniciar STT: {e.Message}");
+            return false;
+        }
+#else
+        Debug.LogWarning("[VoiceRecognition] STT disponível apenas no Android. Use hotkeys C/X no Editor.");
+        return true; // Retorna true no Editor para permitir testes
+#endif
+    }
 
-// If plugin returns via OnResultReceived, it will compare and call the callback
-// If no result, increment attempts and give hint via MainGameManager's syllable audio/hints
-attemptCount++;
-// play hint via MainGameManager if available
-if (attemptCount == 1)
-{
-// first hint
-}
+    public void OnResultReceived(string recognizedText, int? errorCode)
+    {
+        if (!isListening) return;
 
+        resultReceived = true;
 
-yield return new WaitForSeconds(0.3f);
-}
+        if (errorCode.HasValue && errorCode.Value != 0)
+        {
+            Debug.LogWarning($"[VoiceRecognition] Erro STT: {errorCode}");
+            return; // Deixa timeout lidar
+        }
 
+        Debug.Log($"[VoiceRecognition] Reconhecido: '{recognizedText}' | Esperado: '{expectedWord}'");
 
-// if reached here, failed many times -> reset
-callbackWhenDone?.Invoke(false);
-}
+        bool correct = CheckMatch(expectedWord, recognizedText);
+        
+        if (correct)
+        {
+            FinishWithResult(true);
+        }
+        else
+        {
+            // Não acertou, mas ainda tem tentativas
+            PlayHintForAttempt(attemptCount);
+        }
+    }
 
+    private void FinishWithResult(bool success)
+    {
+        isListening = false;
+        StopAllCoroutines();
+        callbackWhenDone?.Invoke(success);
+    }
 
-public void OnResultReceived(string recognizedText, int? errorCode)
-{
-bool correct = CheckMatch(expectedWord, recognizedText);
-if (correct) callbackWhenDone?.Invoke(true);
-else
-{
-attemptCount++;
-if (attemptCount >= maxAttemptsBeforeReset) callbackWhenDone?.Invoke(false);
-else
-{
-// request another attempt
-}
-}
-}
+    private bool CheckMatch(string expected, string received)
+    {
+        if (string.IsNullOrEmpty(received)) return false;
 
+        string exp = RemoveAccents(expected).Trim().ToLower();
+        string rec = RemoveAccents(received).Trim().ToLower();
 
-public void OnReadyForSpeech() { }
-public void OnBeginningOfSpeech() { }
-public void OnVoiceLevelChanged(float level) { }
-public void OnPartialResultReceived(string partialText) { }
+        // Exact match
+        if (exp == rec) return true;
 
+        // Levenshtein distance (tolerância para pequenos erros)
+        int distance = LevenshteinDistance(exp, rec);
+        int tolerance = Mathf.Max(1, expected.Length / 3); // 33% de tolerância
+        
+        bool match = distance <= tolerance;
+        Debug.Log($"[VoiceRecognition] Distance: {distance}, Tolerance: {tolerance}, Match: {match}");
+        
+        return match;
+    }
 
-private bool CheckMatch(string expected, string received)
-{
-if (string.IsNullOrEmpty(received)) return false;
-// simple compare - you can copy Levenshtein from ImageVoiceMatcher
-return expected.Trim().ToLower() == received.Trim().ToLower();
-}
+    private void PlayHintForAttempt(int attempt)
+    {
+        var mm = MainGameManager.Instance;
+        if (mm == null || mm.syllableSource == null) return;
+
+        var currentData = mm.syllables[mm.currentSyllableIndex];
+        
+        if (attempt == 1 && currentData.syllableClip != null)
+        {
+            Debug.Log("[VoiceRecognition] Dica: tocando sílaba novamente");
+            mm.syllableSource.PlayOneShot(currentData.syllableClip);
+        }
+        else if (attempt >= 2 && currentData.syllableClip != null)
+        {
+            Debug.Log("[VoiceRecognition] Dica: tocando sílaba (tentativa extra)");
+            mm.syllableSource.PlayOneShot(currentData.syllableClip);
+        }
+    }
+
+    // Implementação dos outros métodos da interface
+    public void OnReadyForSpeech() 
+    { 
+        Debug.Log("[VoiceRecognition] Pronto para ouvir");
+    }
+    
+    public void OnBeginningOfSpeech() 
+    { 
+        Debug.Log("[VoiceRecognition] Começou a falar");
+    }
+    
+    public void OnVoiceLevelChanged(float level) { }
+    public void OnPartialResultReceived(string partialText) 
+    { 
+        Debug.Log($"[VoiceRecognition] Parcial: {partialText}");
+    }
+
+    // Utilitários
+    private string RemoveAccents(string text)
+    {
+        string normalized = text.Normalize(System.Text.NormalizationForm.FormD);
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+        foreach (char c in normalized)
+        {
+            if (System.Globalization.CharUnicodeInfo.GetUnicodeCategory(c) != 
+                System.Globalization.UnicodeCategory.NonSpacingMark)
+            {
+                sb.Append(c);
+            }
+        }
+
+        return sb.ToString();
+    }
+
+    private int LevenshteinDistance(string s, string t)
+    {
+        int n = s.Length;
+        int m = t.Length;
+        int[,] d = new int[n + 1, m + 1];
+
+        if (n == 0) return m;
+        if (m == 0) return n;
+
+        for (int i = 0; i <= n; i++) d[i, 0] = i;
+        for (int j = 0; j <= m; j++) d[0, j] = j;
+
+        for (int j = 1; j <= m; j++)
+        {
+            for (int i = 1; i <= n; i++)
+            {
+                int cost = (s[i - 1] == t[j - 1]) ? 0 : 1;
+                d[i, j] = Mathf.Min(
+                    Mathf.Min(d[i - 1, j] + 1, d[i, j - 1] + 1),
+                    d[i - 1, j - 1] + cost
+                );
+            }
+        }
+
+        return d[n, m];
+    }
+
+    public void StopListening()
+    {
+        isListening = false;
+        StopAllCoroutines();
+    }
+
+    private void OnDestroy()
+    {
+        StopListening();
+    }
 }

@@ -6,16 +6,22 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Collider2D))]
 public class BalloonClickable : MonoBehaviour
 {
-    [Header("Renderers (select one)")]
+    [Header("Renderers")]
     public SpriteRenderer balloonSpriteRenderer;   // sprite do balão (root child)
     public SpriteRenderer innerSyllableRenderer;   // sprite no centro (SpriteRenderer)
     public Image innerSyllableImageUI;             // alternativa: UI Image (opcional)
 
     [Header("Syllable steps (0 = initial syllable)")]
     public Sprite[] syllableStepSprites;           // primeiro elemento será substituído com a sílaba atual
-    public AudioClip[] syllableClips;              // opcional: sons por etapa
+    
+    [Header("🔊 ÁUDIO - Configure aqui os sons do balão")]
+    [Tooltip("Som tocado quando o balão estoura (POP)")]
+    public AudioClip popSound;                     // ← SOM DE ESTOURO DO BALÃO
+    
+    [Tooltip("Sons tocados em cada clique (se vazio, usa o som da sílaba do MainGameManager)")]
+    public AudioClip[] syllableClickSounds;        // ← SONS DAS SÍLABAS POR CLIQUE (opcional)
 
-    [Header("Pop/Movement")]
+    [Header("Pop Animation")]
     public Sprite[] popAnimationFrames;
     public float popFrameRate = 0.06f;
     public float upSpeed = 1.0f;                   // velocidade de subida (units/sec)
@@ -30,13 +36,11 @@ public class BalloonClickable : MonoBehaviour
     {
         if (syllableStepSprites == null || syllableStepSprites.Length == 0)
         {
-            // Garante pelo menos 1 slot
             syllableStepSprites = new Sprite[] { syllableSprite };
             currentStep = 0;
         }
         else
         {
-            // sobrescreve o primeiro sprite com a sílaba atual
             syllableStepSprites[0] = syllableSprite;
             currentStep = 0;
         }
@@ -51,11 +55,11 @@ public class BalloonClickable : MonoBehaviour
 
     private void Update()
     {
-        // mover para cima (simples)
+        // mover para cima
         transform.Translate(Vector3.up * upSpeed * Time.deltaTime);
 
-        // auto-destroy se sair da tela (ajuste Y limite conforme camera)
-        if (transform.position.y > Camera.main.orthographicSize + 2f)
+        // auto-destroy se sair da tela
+        if (Camera.main != null && transform.position.y > Camera.main.orthographicSize + 2f)
             Destroy(gameObject);
     }
 
@@ -74,7 +78,7 @@ public class BalloonClickable : MonoBehaviour
             innerSyllableImageUI.sprite = s;
     }
 
-    // Touch / click handling: funciona no Editor (OnMouseDown) e mobile (toca com touch raycast)
+    // Touch / click handling
     private void OnMouseDown()
     {
         HandleClick();
@@ -84,24 +88,8 @@ public class BalloonClickable : MonoBehaviour
     {
         if (isPopping) return;
 
-        // toca som da etapa (se houver)
-        if (currentStep < syllableClips.Length && syllableClips[currentStep] != null)
-        {
-            var mm = MainGameManager.Instance;
-            if (mm != null && mm.syllableSource != null)
-                mm.syllableSource.PlayOneShot(syllableClips[currentStep]);
-            else
-                AudioSource.PlayClipAtPoint(syllableClips[currentStep], Camera.main.transform.position);
-        }
-        else
-        {
-            // alternativa: tocar o clip da sílaba via MainGameManager se disponível (primeiro)
-            var mm = MainGameManager.Instance;
-            if (mm != null && mm.syllableSource != null && syllableStepSprites.Length > 0)
-            {
-                // tenta tocar mm.syllableSource com o clip associado no MainGameManager list (opcional)
-            }
-        }
+        // 🔊 TOCAR SOM DA SÍLABA ao clicar
+        PlaySyllableSound();
 
         currentStep++;
         if (syllableStepSprites != null && currentStep < syllableStepSprites.Length)
@@ -110,22 +98,55 @@ public class BalloonClickable : MonoBehaviour
             return;
         }
 
-        // se passou do último passo: pop
+        // Se passou do último passo: pop
         StartCoroutine(PopSequence());
+    }
+
+    void PlaySyllableSound()
+    {
+        var mm = MainGameManager.Instance;
+        
+        // Prioridade 1: Som específico do array syllableClickSounds
+        if (syllableClickSounds != null && currentStep < syllableClickSounds.Length && syllableClickSounds[currentStep] != null)
+        {
+            if (mm != null && mm.syllableSource != null)
+                mm.syllableSource.PlayOneShot(syllableClickSounds[currentStep]);
+            else
+                AudioSource.PlayClipAtPoint(syllableClickSounds[currentStep], Camera.main.transform.position);
+            
+            return;
+        }
+
+        // Prioridade 2: Som da sílaba atual do MainGameManager
+        if (mm != null && mm.syllables != null && mm.currentSyllableIndex < mm.syllables.Count)
+        {
+            var currentSyllable = mm.syllables[mm.currentSyllableIndex];
+            if (currentSyllable.syllableClip != null && mm.syllableSource != null)
+            {
+                mm.syllableSource.PlayOneShot(currentSyllable.syllableClip);
+            }
+        }
     }
 
     IEnumerator PopSequence()
     {
         isPopping = true;
 
-        // tocar pop SFX via MainGameManager.sfxSource se disponível
-        var mm = MainGameManager.Instance;
-        if (mm != null && mm.sfxSource != null)
+        // 🔊 TOCAR SOM DE ESTOURO (POP)
+        if (popSound != null)
         {
-            // mm.sfxSource.PlayOneShot(mm.popClip) // se você tiver popClip no manager
+            var mm = MainGameManager.Instance;
+            if (mm != null && mm.sfxSource != null)
+            {
+                mm.sfxSource.PlayOneShot(popSound);
+            }
+            else
+            {
+                AudioSource.PlayClipAtPoint(popSound, Camera.main.transform.position);
+            }
         }
 
-        // animação de frames (se existirem)
+        // Animação de frames (se existirem)
         if (popAnimationFrames != null && popAnimationFrames.Length > 0 && balloonSpriteRenderer != null)
         {
             foreach (var f in popAnimationFrames)
@@ -135,7 +156,7 @@ public class BalloonClickable : MonoBehaviour
             }
         }
 
-        // notifica o manager (arc++ será feito por quem escuta esse evento)
+        // Notifica o manager (arc++ será feito por quem escuta esse evento)
         onFinalPop?.Invoke();
 
         Destroy(gameObject);
