@@ -24,9 +24,9 @@ TagManager:
   - UI
   - 
   - 
-  - Slingshot
-  - BallonDrop
-  - Ballon
+  - 
+  - 
+  - ' '
   - 
   - 
   - 
@@ -55,12 +55,9 @@ TagManager:
   - name: Background
     uniqueID: 1797530741
     locked: 0
-  - name: Prefab
-    uniqueID: 4135242145
+  - name: Drawing
+    uniqueID: 2087781919
     locked: 0
   - name: UI
-    uniqueID: 1496705285
-    locked: 0
-  - name: Ballon
-    uniqueID: 4142465819
+    uniqueID: 4017004401
     locked: 0
