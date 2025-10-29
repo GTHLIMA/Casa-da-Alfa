@@ -5,7 +5,7 @@ using UnityEngine;
 public class VoiceRecognitionManager : MonoBehaviour, ISpeechToTextListener
 {
     [Header("Settings")]
-    public int maxAttemptsBeforeReset = 4;
+    public int maxAttemptsBeforeReset = 3; // 🆕 Mudado de 4 para 3
     public float listeningTimeout = 5f;
     public float delayBetweenAttempts = 0.5f;
 

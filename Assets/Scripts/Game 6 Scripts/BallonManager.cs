@@ -17,6 +17,7 @@ public class BalloonManager : MonoBehaviour
     private Sprite currentSyllableSprite;
     private List<GameObject> activeBalloons = new List<GameObject>();
     private Coroutine spawnCoroutine;
+    private int targetPops = 5; // 🆕 Quantos balões precisam estourar para completar
 
     public void StartSpawning(Sprite syllableSprite)
     {
