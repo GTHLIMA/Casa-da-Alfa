@@ -14,17 +14,17 @@ public class LetterTracer : MonoBehaviour
     [Header("Stroke prefab")]
     public GameObject strokePrefab;
     public Transform strokeRoot;
-    public bool hideOnPause = true; 
+    public bool hideOnPause = true;
     public bool hideOnEndPhase = true;
 
     [Header("Config")]
     public float completionThreshold = 1f;
     public float pointSpacing = 0f;
-    public float drawingZOffset = -1f; 
+    public float drawingZOffset = -1f;
 
     [Header("Volume")]
-    public float scribbleVolume = 0.3f;   
-    
+    public float scribbleVolume = 0.3f;
+
     PolygonCollider2D poly;
     public List<Vector2> originalPoints;
     public List<bool> hitFlags;
@@ -76,7 +76,7 @@ public class LetterTracer : MonoBehaviour
         TouchManager.OnFingerMove += MoveDraw;
         TouchManager.OnFingerUp += EndDraw;
     }
-    
+
     void OnDisable()
     {
         TouchManager.OnFingerDown -= StartDraw;
@@ -86,32 +86,31 @@ public class LetterTracer : MonoBehaviour
 
     void StartDraw(Vector2 world)
     {
-        if (passCount == 2)               
-        {
-            ClearAllStrokes();
-            ResetTrace();
-            passCount = 0;                  
-            return;                         
-        }
-
         isDrawing = true;
         passCount++;
 
         GameObject go = Instantiate(strokePrefab, strokeRoot);
         currentStrokeLR = go.GetComponent<LineRenderer>();
-        
-        Vector3 worldPos = new Vector3(world.x, world.y, drawingZOffset);
-        
-        currentStrokeLR.positionCount = 1;
-        currentStrokeLR.SetPosition(0, worldPos);
+
+        if (poly.OverlapPoint(world))
+        {
+            Vector3 worldPos = new Vector3(world.x, world.y, drawingZOffset);
+            currentStrokeLR.positionCount = 1;
+            currentStrokeLR.SetPosition(0, worldPos);
+        }
+        else
+        {
+            currentStrokeLR.positionCount = 0;
+        }
+
         allStrokes.Add(currentStrokeLR);
 
-        if (passCount == 1)
-            currentStrokeLR.startColor = currentStrokeLR.endColor = Color.white;
-        else if (passCount == 2)
-            currentStrokeLR.startColor = currentStrokeLR.endColor = paintGradient.Evaluate(0);
+        currentStrokeLR.sortingOrder = 10;
+        currentStrokeLR.sortingLayerName = "Foreground";
 
-        fx.transform.position = worldPos;
+        currentStrokeLR.startColor = currentStrokeLR.endColor = paintGradient.Evaluate(0);
+
+        fx.transform.position = new Vector3(world.x, world.y, drawingZOffset);
         fx.Play();
 
         if (scribbleAudio != null)
@@ -125,9 +124,10 @@ public class LetterTracer : MonoBehaviour
     void MoveDraw(Vector2 world)
     {
         if (!isDrawing) return;
+        if (!poly.OverlapPoint(world)) return;
 
         Vector3 worldPos = new Vector3(world.x, world.y, drawingZOffset);
-        
+
         int count = currentStrokeLR.positionCount;
         currentStrokeLR.positionCount = count + 1;
         currentStrokeLR.SetPosition(count, worldPos);
@@ -142,14 +142,10 @@ public class LetterTracer : MonoBehaviour
         fx.Stop();
         if (scribbleAudio) scribbleAudio.Pause();
 
-        if (passCount == 2)             
+        float pct = (float)hitsSoFar / hitsNeeded;
+        if (pct >= completionThreshold)
         {
-            float pct = (float)hitsSoFar / hitsNeeded;
-            if (pct >= completionThreshold)
-            {
-                FinishLetter();
-                passCount = 2;             
-            }
+            FinishLetter();
         }
     }
 
