@@ -9,9 +9,9 @@ Assets/**/*.so filter=lfs diff=lfs merge=lfs -text
 Assets/**/*.bundle filter=lfs diff=lfs merge=lfs -text
 Assets/**/*.dll filter=lfs diff=lfs merge=lfs -text
 Assets/**/*.dylib filter=lfs diff=lfs merge=lfs -text
-
 *.dll binary
 Assets/ExternalDependencyManager/Editor/**/*.dll binary
 Assets/GUI/Firebase/Plugins/**/*.dll binary
 Assets/GUI/Firebase/Editor/*.dll binary
 *.dll filter=lfs diff=lfs merge=lfs -text
+*.resS filter=lfs diff=lfs merge=lfs -text
