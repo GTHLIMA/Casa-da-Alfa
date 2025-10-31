@@ -8,20 +8,12 @@ public class Card : MonoBehaviour
     [SerializeField] private Image iconImage;
     [SerializeField] private AudioClip cardAudio;
 
-    private AudioSource audioSource;
-
     public Sprite hiddenIconSprite;
     public Sprite iconSprite;
 
     public bool isSelected = true;
 
     [HideInInspector] public CardsController controller;
-
-    private void Awake()
-    {
-        audioSource = gameObject.AddComponent<AudioSource>();
-        audioSource.playOnAwake = false;
-    }
 
     public void Initialize(Sprite sp, AudioClip clip, CardsController ctrl)
     {
@@ -70,36 +62,32 @@ public class Card : MonoBehaviour
     /// </summary>
     public void CorrectMatch()
     {
-   // Flutua para cima
-    Tween.LocalPositionY(transform, transform.localPosition.y + 100f, 0.5f, ease: Ease.OutCubic);
+        // Flutua para cima
+        Tween.LocalPositionY(transform, transform.localPosition.y + 100f, 0.5f, ease: Ease.OutCubic);
 
-    // Faz fade out em todos os elementos gráficos do prefab
-    Graphic[] graphics = GetComponentsInChildren<Graphic>();
-    foreach (var g in graphics)
-    {
-        Tween.Alpha(g, 0f, 0.5f);
-    }
+        // Faz fade out em todos os elementos gráficos do prefab
+        Graphic[] graphics = GetComponentsInChildren<Graphic>();
+        foreach (var g in graphics)
+        {
+            Tween.Alpha(g, 0f, 0.5f);
+        }
     }
 
     public void SetAudio(AudioClip clip) => cardAudio = clip;
 
+    /// <summary>
+    /// Toca o áudio da carta usando o sistema de áudio do controller (syllableSource)
+    /// </summary>
     public void PlayAudio(System.Action onFinished)
     {
-        if (cardAudio != null)
+        if (controller != null && cardAudio != null)
         {
-            audioSource.clip = cardAudio;
-            audioSource.Play();
-            controller.StartCoroutine(WaitForAudio(onFinished));
+            // Usa o novo sistema de áudio centralizado do controller
+            controller.PlaySyllable(cardAudio, onFinished);
         }
         else
         {
             onFinished?.Invoke();
         }
-    }
-
-    private IEnumerator WaitForAudio(System.Action onFinished)
-    {
-        yield return new WaitWhile(() => audioSource.isPlaying);
-        onFinished?.Invoke();
     }
 }

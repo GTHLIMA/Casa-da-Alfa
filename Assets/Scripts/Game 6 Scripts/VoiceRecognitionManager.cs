@@ -79,7 +79,7 @@ public class VoiceRecognitionManager : MonoBehaviour, ISpeechToTextListener
         // Esgotou tentativas
         if (isListening)
         {
-            Debug.Log("[VoiceRecognition] Tentativas esgotadas.");
+            Debug.Log($"[VoiceRecognition] ⚠️ Esgotou {maxAttemptsBeforeReset} tentativas.");
             FinishWithResult(false);
         }
     }
@@ -121,12 +121,16 @@ public class VoiceRecognitionManager : MonoBehaviour, ISpeechToTextListener
         
         if (correct)
         {
+            Debug.Log("[VoiceRecognition] ✅ ACERTOU!");
             FinishWithResult(true);
         }
         else
         {
-            // Não acertou, mas ainda tem tentativas
-            PlayHintForAttempt(attemptCount);
+            Debug.Log($"[VoiceRecognition] ❌ ERROU (tentativa {attemptCount}/{maxAttemptsBeforeReset})");
+            
+            // 🆕 NÃO chama FinishWithResult aqui
+            // Deixa o ListenCycle continuar para próxima tentativa
+            // PlayHintForAttempt já será chamado no loop
         }
     }
 
@@ -141,10 +145,13 @@ public class VoiceRecognitionManager : MonoBehaviour, ISpeechToTextListener
     {
         if (string.IsNullOrEmpty(received)) return false;
 
-        string exp = RemoveAccents(expected).Trim().ToLower();
-        string rec = RemoveAccents(received).Trim().ToLower();
+        // 🆕 NORMALIZAÇÃO COMPLETA: Remove acentos + CAIXA ALTA
+        string exp = NormalizeText(expected);
+        string rec = NormalizeText(received);
 
-        // Exact match
+        Debug.Log($"[VoiceRecognition] Comparando: '{exp}' com '{rec}'");
+
+        // Exact match (após normalização)
         if (exp == rec) return true;
 
         // Levenshtein distance (tolerância para pequenos erros)
@@ -155,6 +162,23 @@ public class VoiceRecognitionManager : MonoBehaviour, ISpeechToTextListener
         Debug.Log($"[VoiceRecognition] Distance: {distance}, Tolerance: {tolerance}, Match: {match}");
         
         return match;
+    }
+
+    // 🆕 Normaliza texto: CAIXA ALTA + remove acentos
+    private string NormalizeText(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return "";
+        
+        // 1. Remove acentos
+        string withoutAccents = RemoveAccents(text);
+        
+        // 2. Converte para CAIXA ALTA
+        string normalized = withoutAccents.ToUpper();
+        
+        // 3. Remove espaços extras
+        normalized = normalized.Trim();
+        
+        return normalized;
     }
 
     private void PlayHintForAttempt(int attempt)

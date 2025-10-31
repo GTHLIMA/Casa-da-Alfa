@@ -22,6 +22,7 @@ public class CardsController : MonoBehaviour
     [SerializeField] private AudioClip roundTransitionAudio;
     [SerializeField] private AudioClip roundCompleteAudio;
     [SerializeField] private AudioClip endGameAudio;
+    [SerializeField] private AudioClip matchCorrectAudio;
 
     [Header("UI Panels")]
     [SerializeField] private GameObject pauseMenu;
@@ -41,13 +42,23 @@ public class CardsController : MonoBehaviour
     [Header("Game Logger")]
     [SerializeField] private CardGameLogger gameLogger;
     
-    [Header("--- ÁUDIO (SFX Controller) ---")]
-    [Tooltip("AudioSource dedicado para tocar efeitos sonoros (SFX).")]
-    [SerializeField] private AudioSource SFXSource;
-    [Tooltip("Define o volume inicial para os efeitos sonoros (SFX) nesta cena.")]
-    [SerializeField] private float initialSFXVolume = 1.0f; 
+    [Header("=== SISTEMA DE ÁUDIO ===")]
+    [Header("Audio Sources")]
+    [Tooltip("AudioSource dedicado para música de fundo")]
+    [SerializeField] private AudioSource musicSource;
+    [Tooltip("AudioSource dedicado para efeitos sonoros (SFX)")]
+    [SerializeField] private AudioSource sfxSource;
+    [Tooltip("AudioSource dedicado para sons de sílabas das cartas")]
+    [SerializeField] private AudioSource syllableSource;
+    
+    [Header("Volumes Iniciais")]
+    [Range(0f, 1f)]
+    [SerializeField] private float initialMusicVolume = 0.5f;
+    [Range(0f, 1f)]
+    [SerializeField] private float initialSFXVolume = 1.0f;
+    [Range(0f, 1f)]
+    [SerializeField] private float initialSyllableVolume = 1.0f;
 
-    private AudioSource audioSource;
     private List<Sprite> spritePairs;
     private List<AudioClip> audioPairs;
     private List<Card> allCards = new List<Card>();
@@ -69,11 +80,13 @@ public class CardsController : MonoBehaviour
     {
         Debug.Log("=== CARDS CONTROLLER START ===");
         
-        // Cria e anexa o AudioSource principal
-        audioSource = gameObject.AddComponent<AudioSource>();
+        // Inicializa os AudioSources se não foram atribuídos
+        InitializeAudioSources();
         
-        // Aplica a configuração inicial de volume SFX
+        // Aplica volumes iniciais
+        SetMusicVolume(initialMusicVolume);
         SetSFXVolume(initialSFXVolume);
+        SetSyllableVolume(initialSyllableVolume);
         
         // Verificar se o logger está configurado
         if (gameLogger == null)
@@ -95,6 +108,38 @@ public class CardsController : MonoBehaviour
 
         StartRound();
         UpdateAllScoreDisplays();
+    }
+
+    private void InitializeAudioSources()
+    {
+        // Se os AudioSources não foram atribuídos no Inspector, cria-os
+        if (musicSource == null)
+        {
+            GameObject musicObj = new GameObject("MusicSource");
+            musicObj.transform.SetParent(transform);
+            musicSource = musicObj.AddComponent<AudioSource>();
+            musicSource.loop = true;
+            musicSource.playOnAwake = false;
+            Debug.Log("✅ MusicSource criado automaticamente");
+        }
+        
+        if (sfxSource == null)
+        {
+            GameObject sfxObj = new GameObject("SFXSource");
+            sfxObj.transform.SetParent(transform);
+            sfxSource = sfxObj.AddComponent<AudioSource>();
+            sfxSource.playOnAwake = false;
+            Debug.Log("✅ SFXSource criado automaticamente");
+        }
+        
+        if (syllableSource == null)
+        {
+            GameObject syllableObj = new GameObject("SyllableSource");
+            syllableObj.transform.SetParent(transform);
+            syllableSource = syllableObj.AddComponent<AudioSource>();
+            syllableSource.playOnAwake = false;
+            Debug.Log("✅ SyllableSource criado automaticamente");
+        }
     }
 
     private void StartRound()
@@ -262,6 +307,12 @@ public class CardsController : MonoBehaviour
         {
             Debug.Log("✅ MATCH CORRETO!");
             
+            // TOCA SOM DE ACERTO (SFX)
+            if (matchCorrectAudio != null)
+            {
+                PlaySFX(matchCorrectAudio);
+            }
+            
             // LOG DO MATCH CORRETO
             if (gameLogger != null)
             {
@@ -281,8 +332,8 @@ public class CardsController : MonoBehaviour
             }
             else
             {
-                matchAttempts = 0; // Reset attempts for next match
-                matchStartTime = Time.time; // Reset match timer
+                matchAttempts = 0;
+                matchStartTime = Time.time;
                 Debug.Log($"📊 Progresso: {matchCounts}/{spritePairs.Count / 2} pares");
             }
         }
@@ -296,7 +347,7 @@ public class CardsController : MonoBehaviour
                 gameLogger.LogCardMatch(false, a.iconSprite.name, b.iconSprite.name, matchTime, matchAttempts);
             }
 
-            yield return new WaitForSeconds(0.5f); // Pequena pausa antes de esconder
+            yield return new WaitForSeconds(0.5f);
             
             a.Hide();
             b.Hide();
@@ -322,7 +373,7 @@ public class CardsController : MonoBehaviour
 
         if (roundCompleteAudio != null) 
         {
-            audioSource.PlayOneShot(roundCompleteAudio);
+            PlaySFX(roundCompleteAudio);
             Debug.Log("🔊 Tocando áudio de round completo");
         }
 
@@ -377,34 +428,130 @@ public class CardsController : MonoBehaviour
         Debug.Log($"🔀 {spritesList.Count} cartas embaralhadas");
     }
     
-    // ==== FUNÇÕES DE ÁUDIO ====
+    // ==== FUNÇÕES DE CONTROLE DE ÁUDIO ====
     
+    /// <summary>
+    /// Toca um efeito sonoro (SFX) como botões, acertos, erros, etc
+    /// </summary>
     public void PlaySFX(AudioClip clip)
     {
-        if (SFXSource != null && clip != null)
+        if (sfxSource != null && clip != null)
         {
-            SFXSource.PlayOneShot(clip);
-            Debug.Log($"🔊 Tocando SFX: {clip.name}");
+            sfxSource.PlayOneShot(clip);
+            Debug.Log($"🔊 [SFX] Tocando: {clip.name}");
+        }
+    }
+    
+    /// <summary>
+    /// Toca som de sílaba das cartas
+    /// </summary>
+    public void PlaySyllable(AudioClip clip, System.Action onComplete = null)
+    {
+        if (syllableSource != null && clip != null)
+        {
+            syllableSource.clip = clip;
+            syllableSource.Play();
+            Debug.Log($"🗣️ [SYLLABLE] Tocando: {clip.name}");
+            
+            if (onComplete != null)
+            {
+                StartCoroutine(WaitForSyllableComplete(onComplete));
+            }
+        }
+        else
+        {
+            onComplete?.Invoke();
+        }
+    }
+    
+    private IEnumerator WaitForSyllableComplete(System.Action onComplete)
+    {
+        yield return new WaitWhile(() => syllableSource.isPlaying);
+        onComplete?.Invoke();
+    }
+    
+    /// <summary>
+    /// Toca ou para música de fundo
+    /// </summary>
+    public void PlayMusic(AudioClip clip, bool loop = true)
+    {
+        if (musicSource != null && clip != null)
+        {
+            musicSource.clip = clip;
+            musicSource.loop = loop;
+            musicSource.Play();
+            Debug.Log($"🎵 [MUSIC] Tocando: {clip.name}");
+        }
+    }
+    
+    public void StopMusic()
+    {
+        if (musicSource != null)
+        {
+            musicSource.Stop();
+            Debug.Log("🎵 [MUSIC] Parada");
+        }
+    }
+    
+    public void PauseMusic()
+    {
+        if (musicSource != null)
+        {
+            musicSource.Pause();
+            Debug.Log("🎵 [MUSIC] Pausada");
+        }
+    }
+    
+    public void UnpauseMusic()
+    {
+        if (musicSource != null)
+        {
+            musicSource.UnPause();
+            Debug.Log("🎵 [MUSIC] Despausada");
+        }
+    }
+    
+    // ==== CONTROLES DE VOLUME ====
+    
+    public void SetMusicVolume(float volume)
+    {
+        if (musicSource != null)
+        {
+            musicSource.volume = Mathf.Clamp01(volume);
+            Debug.Log($"🎵 Volume Music ajustado para: {volume:F2}");
         }
     }
     
     public void SetSFXVolume(float volume)
     {
-        if (SFXSource != null)
+        if (sfxSource != null)
         {
-            SFXSource.volume = Mathf.Clamp01(volume);
-            Debug.Log($"🔊 Volume SFX ajustado para: {volume}");
+            sfxSource.volume = Mathf.Clamp01(volume);
+            Debug.Log($"🔊 Volume SFX ajustado para: {volume:F2}");
         }
     }
-
-    public void SetBackgroundVolume(float volume)
+    
+    public void SetSyllableVolume(float volume)
     {
-        if (audioSource != null)
+        if (syllableSource != null)
         {
-            audioSource.volume = Mathf.Clamp01(volume);
-            Debug.Log($"Volume background ajustado para: {volume}");
+            syllableSource.volume = Mathf.Clamp01(volume);
+            Debug.Log($"🗣️ Volume Syllable ajustado para: {volume:F2}");
         }
     }
+    
+    public void SetMasterVolume(float volume)
+    {
+        AudioListener.volume = Mathf.Clamp01(volume);
+        Debug.Log($"🔊 Volume Master ajustado para: {volume:F2}");
+    }
+    
+    // ==== GETTERS DE VOLUME ====
+    
+    public float GetMusicVolume() => musicSource != null ? musicSource.volume : 0f;
+    public float GetSFXVolume() => sfxSource != null ? sfxSource.volume : 0f;
+    public float GetSyllableVolume() => syllableSource != null ? syllableSource.volume : 0f;
+    public float GetMasterVolume() => AudioListener.volume;
 
     // ==== SCORE & UI ====
     public void AddScore(int amount)
@@ -433,7 +580,7 @@ public class CardsController : MonoBehaviour
         
         if (endGameAudio != null) 
         {
-            audioSource.PlayOneShot(endGameAudio);
+            PlaySFX(endGameAudio);
             Debug.Log("Tocando áudio de fim de jogo");
         }
         
@@ -465,9 +612,7 @@ public class CardsController : MonoBehaviour
         if (scorePause != null) 
             scorePause.text = "Score: " + score.ToString();
             
-        if (audioSource != null)
-            audioSource.Pause();
-            
+        PauseMusic();
         Time.timeScale = 0;
     }
 
@@ -480,8 +625,6 @@ public class CardsController : MonoBehaviour
         }
             
         Time.timeScale = 1f;
-        
-        if (audioSource != null)
-            audioSource.UnPause();
+        UnpauseMusic();
     }
 }

@@ -315,7 +315,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1496705285
-  m_SortingLayer: 3
+  m_SortingLayer: 0
   m_SortingOrder: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -5654,7 +5654,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 8
+          m_IntArgument: 7
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -6370,7 +6370,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 15
+          m_IntArgument: 14
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -6651,7 +6651,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 17
+          m_IntArgument: 16
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -6933,7 +6933,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 8
+          m_IntArgument: 7
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -8916,7 +8916,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 15
+          m_IntArgument: 14
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -9129,7 +9129,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 17
+          m_IntArgument: 16
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
