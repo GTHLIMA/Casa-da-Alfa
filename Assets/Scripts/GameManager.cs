@@ -125,11 +125,8 @@ public class GameManager : MonoBehaviour
     if (audioManager != null && audioManager.background != null)
         audioManager.PauseAudio(audioManager.background);
 
-    // Pausa o tempo do jogo (animações, físicas, coroutines baseadas em deltaTime)
     Time.timeScale = 0f;
 
-    // (Opcional) Pausa outros sistemas de som
-    AudioListener.pause = true;
 
     // Salva score se houver sistema de transferência
     if (ScoreTransfer.Instance != null)
@@ -142,8 +139,6 @@ public class GameManager : MonoBehaviour
     // Retoma o tempo do jogo
     Time.timeScale = 1f;
 
-    // Retoma todos os áudios pausados
-    AudioListener.pause = false;
     if (audioManager != null && audioManager.background != null)
         audioManager.ResumeAudio(audioManager.background);
 

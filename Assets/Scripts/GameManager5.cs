@@ -71,7 +71,6 @@ public class GameManager5 : MonoBehaviour
         }
     }
 
-    // 🔥🔥🔥 MÉTODOS PARA LOGGING 🔥🔥🔥
     
     public void StartNewQuestion(string syllable, string correctImage)
     {
@@ -135,9 +134,6 @@ public class GameManager5 : MonoBehaviour
         }
     }
 
-    // =====================================
-    // 🔊 SISTEMA DE ÁUDIO COMPLETO (ORIGINAL)
-    // =====================================
     private void EnsureAudioSources()
     {
         if (musicSource == null) musicSource = gameObject.AddComponent<AudioSource>();
