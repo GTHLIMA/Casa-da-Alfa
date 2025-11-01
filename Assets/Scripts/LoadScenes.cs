@@ -9,6 +9,10 @@ public class LoadScenes : MonoBehaviour {
             Debug.LogError($"Índice {index} inválido. Total de cenas: {SceneManager.sceneCountInBuildSettings}");
             return;
         }
+
+         // Garante que toda cena nova volte ao estado normal
+        Time.timeScale = 1f;
+        AudioListener.pause = false;
         
         SceneManager.LoadScene(index);
     }

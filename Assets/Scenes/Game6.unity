@@ -5986,16 +5986,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 723409380}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 13502.681}
+  m_LocalScale: {x: 192, y: 192, z: 192}
   m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 972790685}
+  m_Children:
+  - {fileID: 972790685}
+  m_Father: {fileID: 1715173767}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.6365, y: 3.2124}
+  m_AnchoredPosition: {x: -241.91, y: 763}
   m_SizeDelta: {x: 1.8242, y: 1.8509}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &723409382
@@ -6644,14 +6645,13 @@ Transform:
   m_GameObject: {fileID: 972790684}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -476.305, y: 153.62392, z: 13502.681}
-  m_LocalScale: {x: 192, y: 192, z: 192}
+  m_LocalPosition: {x: -0.63650024, y: -3.2124002, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 723409381}
   - {fileID: 1421432849}
   - {fileID: 769560907}
-  m_Father: {fileID: 1715173767}
+  m_Father: {fileID: 723409381}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &972790686
 MonoBehaviour:
@@ -7352,7 +7352,7 @@ Transform:
   m_GameObject: {fileID: 1368599303}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.82, y: 4.06, z: 7.271337}
+  m_LocalPosition: {x: -1.24, y: 3.94, z: 7.271337}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7544,7 +7544,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -4, y: 21}
+  m_AnchoredPosition: {x: 4, y: 21}
   m_SizeDelta: {x: 0, y: -849}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1446656304
@@ -7825,7 +7825,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 972790685}
+  - {fileID: 723409381}
   - {fileID: 761134871}
   - {fileID: 1446656303}
   - {fileID: 1775477999}

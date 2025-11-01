@@ -8399,7 +8399,7 @@ MonoBehaviour:
   scoreEndPhase: {fileID: 0}
   endOfLevelConfetti: {fileID: 136657292}
   roundOverlayImage: {fileID: 2104408928}
-  gameLogger: {fileID: 37925761}
+  gameLogger: {fileID: 0}
   musicSource: {fileID: 579049612}
   sfxSource: {fileID: 1613636057}
   syllableSource: {fileID: 1725158249}

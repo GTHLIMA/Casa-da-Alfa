@@ -31,31 +31,43 @@ public class GameManager5 : MonoBehaviour
     private bool isPaused = false;
 
     private void Awake()
+{
+    if (instance == null)
     {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        EnsureAudioSources();
-        ApplyVolumes();
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+        Debug.Log("GameManager5 persistente inicializado.");
     }
+    else
+    {
+        Debug.LogWarning("GameManager5 duplicado detectado. Removendo instância nova.");
+        Destroy(gameObject);
+        return;
+    }
+
+    EnsureAudioSources();
+    ApplyVolumes();
+}
 
     private void Start()
     {
-        // Buscar o RecognitionGameLogger automaticamente
-        FindGameLogger();
-        
-        if (backgroundMusic != null)
-        {
-            PlayMusic(backgroundMusic, true);
-        }
+      // Garante que o som global esteja ativo
+    AudioListener.pause = false;
+    Time.timeScale = 1f;
+
+    // Evita múltiplos AudioListeners (que silenciam tudo)
+    var listeners = FindObjectsOfType<AudioListener>();
+    if (listeners.Length > 1)
+    {
+        Debug.LogWarning("Mais de um AudioListener detectado. Desativando extras...");
+        for (int i = 1; i < listeners.Length; i++)
+            listeners[i].enabled = false;
+    }
+
+    FindGameLogger();
+
+    if (backgroundMusic != null)
+        PlayMusic(backgroundMusic, true);
     }
 
     private void FindGameLogger()

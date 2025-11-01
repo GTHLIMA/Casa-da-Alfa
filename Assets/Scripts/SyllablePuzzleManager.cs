@@ -105,6 +105,10 @@ public class SyllablePuzzleManager : MonoBehaviour
 
     private void Start()
     {
+
+         Time.timeScale = 1f;
+         AudioListener.pause = false;
+
         gameLogger = FindObjectOfType<SyllableGameLogger>();//firebase
 
         SetSFXVolume(initialSFXVolume);
