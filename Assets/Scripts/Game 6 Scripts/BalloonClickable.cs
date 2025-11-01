@@ -51,6 +51,14 @@ public class BalloonClickable : MonoBehaviour
     private void Start()
     {
         UpdateInnerSprite();
+        
+        // 🆕 GARANTIR que sílaba fica NA FRENTE do balão
+        if (innerSyllableRenderer != null && balloonSpriteRenderer != null)
+        {
+            // Sílaba tem sorting order maior = aparece na frente
+            innerSyllableRenderer.sortingOrder = balloonSpriteRenderer.sortingOrder + 1;
+            Debug.Log($"[BalloonClickable] Sílaba sortingOrder: {innerSyllableRenderer.sortingOrder}, Balão: {balloonSpriteRenderer.sortingOrder}");
+        }
     }
 
     private void Update()

@@ -253,34 +253,34 @@ public class RoundController_V2 : MonoBehaviour
             else
                 StartCoroutine(StartRoundCoroutine());
         }
-        else
+       else
+{
+    button.ShowFeedback(false, wrongSprite);
+
+    if (gm != null)
+    {
+        gm.ShakeCamera(0.35f, 12f);
+        gm.PlayWrong();
+
+        yield return new WaitForSeconds(1.8f); 
+
+        if (currentSyllable != null && currentSyllable.syllableAudio != null)
         {
-            button.ShowFeedback(false, wrongSprite);
-
-            if (gm != null)
-            {
-                gm.ShakeCamera(0.35f, 12f);
-                gm.PlayWrong();
-
-                // NOVO: toca o som do botão clicado (se tiver)
-                if (clicked.optionAudio != null)
-                {
-                    gm.PlayOption(clicked.optionAudio);
-                    yield return new WaitWhile(() => gm.IsOptionPlaying());
-                }
-            }
-
-            yield return new WaitForSeconds(button.feedbackDuration + button.fadeDuration + 0.25f);
-
-            inputLocked = false;
-            foreach (var b in currentOptionButtons)
-            {
-                b.SetInteractable(true);
-                b.SetPressedVisual(false);
-            }
+            gm.PlaySyllable(currentSyllable.syllableAudio);
+            yield return new WaitWhile(() => gm.IsSyllablePlaying());
         }
     }
 
+    yield return new WaitForSeconds(button.feedbackDuration + button.fadeDuration + 0.25f);
+
+    inputLocked = false;
+    foreach (var b in currentOptionButtons)
+    {
+        b.SetInteractable(true);
+        b.SetPressedVisual(false);
+    }
+}
+    }
     void ClearOptions()
     {
         foreach (Transform child in optionsParent)

@@ -337,59 +337,74 @@ public class MainGameManager : MonoBehaviour
             }
         }
 
-        SetMicrophoneState(false);
+        SetMicrophoneState(true);
         yield return new WaitForSeconds(0.5f);
 
         if (voiceManager != null)
-        {
-            Debug.Log($"[MainGameManager] 🎤 Iniciando reconhecimento para: {data.syllableText}");
-            voiceManager.StartListening(data.syllableText, OnVoiceResult);
-        }
+            {
+        Debug.Log($"[MainGameManager] 🎤 Iniciando reconhecimento para: {data.syllableText}");
+        voiceManager.StartListening(data.syllableText, OnVoiceResult);
+            }
         else
-        {
-            Debug.LogError("[MainGameManager] VoiceManager não atribuído!");
-            OnVoiceResult(false);
+            {
+        Debug.LogError("[MainGameManager] VoiceManager não atribuído!");
+        OnVoiceResult(false);
+            }
         }
-    }
 
     public void SetMicrophoneState(bool isActive)
     {
-        if (microphoneIcon == null) return;
+        if (microphoneIcon == null)
+        {
+            Debug.LogError("[MainGameManager] ❌ microphoneIcon é NULL! Atribua no Inspector!");
+            return;
+        }
 
         microphoneIcon.gameObject.SetActive(true);
 
-        if (isActive && microphoneOnSprite != null)
+        if (isActive)
         {
+            if (microphoneOnSprite == null)
+            {
+                Debug.LogError("[MainGameManager] ❌ microphoneOnSprite (verde) é NULL! Atribua no Inspector!");
+                return;
+            }
+            
             microphoneIcon.sprite = microphoneOnSprite;
-            Debug.Log("[MainGameManager] 🎤 Microfone ATIVADO (verde)");
+            Debug.Log("[MainGameManager] 🎤🟢 Microfone ATIVADO (verde)");
         }
-        else if (!isActive && microphoneOffSprite != null)
+        else
         {
+            if (microphoneOffSprite == null)
+            {
+                Debug.LogError("[MainGameManager] ❌ microphoneOffSprite (cinza) é NULL! Atribua no Inspector!");
+                return;
+            }
+            
             microphoneIcon.sprite = microphoneOffSprite;
-            Debug.Log("[MainGameManager] 🎤 Microfone DESATIVADO (cinza)");
+            Debug.Log("[MainGameManager] 🎤⚪ Microfone DESATIVADO (cinza)");
         }
     }
 
     void OnVoiceResult(bool correct)
+{
+    if (!inVoicePhase) return;
+
+    // 🔊 Mantém o microfone ativo enquanto fala
+    if (correct)
     {
-        if (!inVoicePhase) return;
-
-        HideMicrophone();
-
-        if (correct)
-        {
-            Debug.Log("[MainGameManager] ✅ Resposta correta! Avançando para próxima sílaba...");
-            
-            StartCoroutine(FadeOutSyllableAndAdvance());
-        }
-        else
-        {
-            Debug.Log("[MainGameManager] ❌ Esgotou 3 tentativas - reinicia round de balões");
-            Debug.Log("[MainGameManager] 🔄 Criança precisa estourar 5 balões novamente para tentar falar");
-            
-            StartCoroutine(RestartSameSyllable());
-        }
+        SetMicrophoneState(false); // desliga quando acerta
+        Debug.Log("[MainGameManager] ✅ Resposta correta! Avançando para próxima sílaba...");
+        StartCoroutine(FadeOutSyllableAndAdvance());
     }
+    else
+    {
+        SetMicrophoneState(false); // desliga temporariamente
+        Debug.Log("[MainGameManager] ❌ Esgotou 3 tentativas - reinicia round de balões");
+        Debug.Log("[MainGameManager] 🔄 Criança precisa estourar 5 balões novamente para tentar falar");
+        StartCoroutine(RestartSameSyllable());
+    }
+}
 
     IEnumerator FadeOutSyllableAndAdvance()
     {
