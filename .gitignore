@@ -22,7 +22,6 @@ Assets/AssetStoreTools*
 *.booproj
 *.svd
 
-
 # ===== IDEs =====
 .vscode/
 .vs/
@@ -51,3 +50,13 @@ Mobile.sln
 .gitignore
 *.sln
 StreamingAssets/
+
+# ===== Firebase e EDM - Arquivos gerados automaticamente =====
+Assets/Editor Default Resources/
+Assets/Editor Default Resources.meta
+Assets/ExternalDependencyManager/
+Assets/ExternalDependencyManager.meta
+ProjectSettings/AndroidResolverDependencies.xml
+ProjectSettings/AndroidResolverDependencies.xml.meta
+ProjectSettings/GvhProjectSettings.xml
+ProjectSettings/GvhProjectSettings.xml.meta
