@@ -22,7 +22,6 @@ Assets/AssetStoreTools*
 *.booproj
 *.svd
 
-
 # ===== IDEs =====
 .vscode/
 .vs/
@@ -33,6 +32,8 @@ Assets/AssetStoreTools*
 *.log
 Logs/
 logs/
+google-services.json
+google-services.json.meta
 
 # ===== Outros arquivos e pastas =====
 sysinfo.txt
@@ -48,3 +49,14 @@ test/
 Mobile.sln
 .gitignore
 *.sln
+StreamingAssets/
+
+# ===== Firebase e EDM - Arquivos gerados automaticamente =====
+Assets/Editor Default Resources/
+Assets/Editor Default Resources.meta
+Assets/ExternalDependencyManager/
+Assets/ExternalDependencyManager.meta
+ProjectSettings/AndroidResolverDependencies.xml
+ProjectSettings/AndroidResolverDependencies.xml.meta
+ProjectSettings/GvhProjectSettings.xml
+ProjectSettings/GvhProjectSettings.xml.meta
