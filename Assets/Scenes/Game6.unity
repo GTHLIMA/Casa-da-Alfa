@@ -8453,7 +8453,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1976159625}
-  - component: {fileID: 1976159624}
+  - component: {fileID: 1976159626}
   m_Layer: 0
   m_Name: VoiceManager
   m_TagString: Untagged
@@ -8461,21 +8461,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1976159624
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1976159623}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0da1d87eda3e7e341ac36dc043e455da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxAttemptsBeforeReset: 2
-  listeningTimeout: 5
-  delayBetweenAttempts: 1
 --- !u!4 &1976159625
 Transform:
   m_ObjectHideFlags: 0
@@ -8491,6 +8476,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1976159626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1976159623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5287f8903dd35f4984be98518346758, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxRecordingTime: 3
+  sampleRate: 22050
+  backendURL: 
+  openAIKey: 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
+  useBackend: 0
+  maxAttemptsBeforeReset: 3
+  whisperPrompt: "Transcreva em portugu\xEAs brasileiro exatamente como o som, mesmo
+    que sejam s\xEDlabas curtas como BA, CA, DA, FA, GA, LA, MA,  etc."
+  hintAudioSource: {fileID: 0}
 --- !u!1 &1994280734
 GameObject:
   m_ObjectHideFlags: 0
@@ -8871,7 +8877,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   balloonManager: {fileID: 210375388}
   arcController: {fileID: 972790686}
-  voiceManager: {fileID: 1976159624}
+  voiceManager: {fileID: 1976159626}
   musicSource: {fileID: 2003650166}
   sfxSource: {fileID: 1879931140}
   syllableSource: {fileID: 1787665807}

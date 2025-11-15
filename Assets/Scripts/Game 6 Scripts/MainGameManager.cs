@@ -19,7 +19,7 @@ public class MainGameManager : MonoBehaviour
     [Header("References")]
     public BalloonManager balloonManager;
     public ArcProgressController arcController;
-    public VoiceRecognitionManager voiceManager;
+    public WhisperVoiceRecognition voiceManager;
 
     [Header("AudioSources")]
     public AudioSource musicSource;
