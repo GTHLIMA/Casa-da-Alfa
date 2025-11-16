@@ -12,16 +12,15 @@ public class BalloonManager : MonoBehaviour
     public int maxBalloons = 6;
 
     [HideInInspector] public System.Action onBalloonPopped;
+    [HideInInspector] public System.Action<Vector2> onBalloonPoppedWithPosition;
 
     private bool spawning = false;
     private Sprite currentSyllableSprite;
     private List<GameObject> activeBalloons = new List<GameObject>();
     private Coroutine spawnCoroutine;
-    private int targetPops = 5; // 🆕 Quantos balões precisam estourar para completar
 
     public void StartSpawning(Sprite syllableSprite)
     {
-        // Previne múltiplas coroutines
         if (spawning)
         {
             Debug.LogWarning("[BalloonManager] Já está spawnando. Ignorando chamada duplicada.");
@@ -52,7 +51,6 @@ public class BalloonManager : MonoBehaviour
     {
         while (spawning)
         {
-            // Só spawna se não ultrapassar limite
             if (activeBalloons.Count < maxBalloons)
             {
                 SpawnOne(currentSyllableSprite);
@@ -81,6 +79,7 @@ public class BalloonManager : MonoBehaviour
         {
             clickable.SetSyllableSprite(syllableSprite);
             clickable.onFinalPop += () => OnBalloonDestroyed(go);
+            clickable.onBalloonPoppedWithPosition += (position) => OnBalloonPoppedWithPosition(position);
         }
         else
         {
@@ -92,7 +91,11 @@ public class BalloonManager : MonoBehaviour
     {
         if (activeBalloons.Contains(go))
             activeBalloons.Remove(go);
+    }
 
+    void OnBalloonPoppedWithPosition(Vector2 position)
+    {
+        onBalloonPoppedWithPosition?.Invoke(position);
         onBalloonPopped?.Invoke();
     }
 
@@ -109,7 +112,6 @@ public class BalloonManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        // Cleanup ao destruir objeto
         StopSpawning();
     }
 }

@@ -28,6 +28,7 @@ public class BalloonClickable : MonoBehaviour
 
     [HideInInspector] public int currentStep = 0;
     public event Action onFinalPop;                 // notifica o BalloonManager/MainGameManager
+    public event Action<Vector2> onBalloonPoppedWithPosition; // 🔥 NOVO: evento com posição
 
     private bool isPopping = false;
 
@@ -96,6 +97,10 @@ public class BalloonClickable : MonoBehaviour
     {
         if (isPopping) return;
 
+        // 🔥 CAPTURA POSIÇÃO DO TOQUE
+        Vector2 touchPosition = GetTouchPosition();
+        Debug.Log($"🎯 Balão clicado na posição: {touchPosition}");
+
         // 🔊 TOCAR SOM DA SÍLABA ao clicar
         PlaySyllableSound();
 
@@ -107,7 +112,22 @@ public class BalloonClickable : MonoBehaviour
         }
 
         // Se passou do último passo: pop
-        StartCoroutine(PopSequence());
+        StartCoroutine(PopSequence(touchPosition)); // 🔥 Passa a posição
+    }
+
+    // 🔥 NOVO MÉTODO: Captura posição do toque
+    private Vector2 GetTouchPosition()
+    {
+        #if UNITY_EDITOR
+        // No Editor: posição do mouse
+        return Input.mousePosition;
+        #else
+        // No dispositivo: posição do toque
+        if (Input.touchCount > 0)
+            return Input.GetTouch(0).position;
+        else
+            return Vector2.zero;
+        #endif
     }
 
     void PlaySyllableSound()
@@ -136,7 +156,8 @@ public class BalloonClickable : MonoBehaviour
         }
     }
 
-    IEnumerator PopSequence()
+    // 🔥 MODIFICADO: Agora recebe a posição do toque
+    IEnumerator PopSequence(Vector2 touchPosition)
     {
         isPopping = true;
 
@@ -164,6 +185,9 @@ public class BalloonClickable : MonoBehaviour
             }
         }
 
+        // 🔥 NOTIFICA COM POSIÇÃO
+        onBalloonPoppedWithPosition?.Invoke(touchPosition);
+        
         // Notifica o manager (arc++ será feito por quem escuta esse evento)
         onFinalPop?.Invoke();
 

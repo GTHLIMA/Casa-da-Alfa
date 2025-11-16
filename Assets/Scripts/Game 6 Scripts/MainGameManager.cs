@@ -42,13 +42,13 @@ public class MainGameManager : MonoBehaviour
     [Header("Voice Phase UI")]
     [Tooltip("Áudios perguntando para falar a sílaba (escolhe aleatório)")]
     public AudioClip[] voicePromptClips;
-    
+
     [Tooltip("Ícone do microfone (Image no Canvas)")]
     public Image microphoneIcon;
-    
+
     [Tooltip("Sprite do microfone DESATIVADO (cinza)")]
     public Sprite microphoneOffSprite;
-    
+
     [Tooltip("Sprite do microfone ATIVADO (verde)")]
     public Sprite microphoneOnSprite;
 
@@ -71,6 +71,8 @@ public class MainGameManager : MonoBehaviour
     private bool isPaused = false;
     private int balloonsPopped = 0;
 
+    private BalloonVoiceGameLogger gameLogger;
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -91,8 +93,16 @@ public class MainGameManager : MonoBehaviour
 
     private void Start()
     {
+        gameLogger = FindObjectOfType<BalloonVoiceGameLogger>();
+
+        // Registrar o novo evento com posição
+        if (balloonManager != null)
+        {
+            balloonManager.onBalloonPoppedWithPosition += OnBalloonPoppedWithPosition;
+        }
+
         if (musicSource != null) musicSource.Play();
-        
+
         if (!ValidateReferences())
         {
             Debug.LogError("[MainGameManager] Referências críticas não atribuídas! Verifique o Inspector.");
@@ -111,7 +121,7 @@ public class MainGameManager : MonoBehaviour
 
         if (pauseMenu != null)
             pauseMenu.SetActive(false);
-        
+
         if (endGamePanel != null)
             endGamePanel.SetActive(false);
 
@@ -163,10 +173,10 @@ public class MainGameManager : MonoBehaviour
 
         if (mainCanvas == null)
             Debug.LogWarning("[MainGameManager] mainCanvas não atribuído - animação de movimento desabilitada");
-        
+
         if (syllableStartPosition == null)
             Debug.LogWarning("[MainGameManager] syllableStartPosition não atribuído");
-        
+
         if (syllableArcPosition == null)
             Debug.LogWarning("[MainGameManager] syllableArcPosition não atribuído");
 
@@ -271,7 +281,7 @@ public class MainGameManager : MonoBehaviour
 
         float fadeDuration = 0.8f;
         Color color = arcController.centerSyllableImage.color;
-        
+
         for (float t = 0; t < fadeDuration; t += Time.deltaTime)
         {
             color.a = Mathf.Lerp(0f, 1f, t / fadeDuration);
@@ -283,12 +293,27 @@ public class MainGameManager : MonoBehaviour
         arcController.centerSyllableImage.color = color;
     }
 
-    void OnBalloonPopped()
+    // NOVO MÉTODO: Captura posição do toque
+    void OnBalloonPoppedWithPosition(Vector2 position)
     {
         balloonsPopped++;
         arcController.IncrementProgress();
 
-        Debug.Log($"[MainGameManager] Balões estourados: {balloonsPopped}/{popsToComplete}");
+        // LOG FIREBASE COM POSIÇÃO
+        if (gameLogger != null)
+        {
+            string currentSyllable = syllables[currentSyllableIndex].syllableText;
+            
+            // Converte coordenadas de tela para coordenadas normalizadas (0-1)
+            Vector2 normalizedPosition = new Vector2(
+                position.x / Screen.width,
+                position.y / Screen.height
+            );
+            
+            gameLogger.LogBalloonPopWithPosition(currentSyllable, currentSyllableIndex, normalizedPosition);
+        }
+
+        Debug.Log($"[MainGameManager] Balão estourado na posição: {position} | Total: {balloonsPopped}/{popsToComplete}");
 
         HideMicrophone();
 
@@ -298,6 +323,12 @@ public class MainGameManager : MonoBehaviour
             spawningActive = false;
             StartCoroutine(BeginVoicePhase());
         }
+    }
+
+    // Mantém o método original para compatibilidade
+    void OnBalloonPopped()
+    {
+        OnBalloonPoppedWithPosition(Vector2.zero);
     }
 
     IEnumerator BeginVoicePhase()
@@ -312,7 +343,7 @@ public class MainGameManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         var data = syllables[currentSyllableIndex];
-        
+
         introPanelGroup.alpha = 1f;
         introPanelGroup.gameObject.SetActive(true);
         if (syllableIntroImage != null)
@@ -327,12 +358,12 @@ public class MainGameManager : MonoBehaviour
         {
             int randomIndex = Random.Range(0, voicePromptClips.Length);
             AudioClip promptClip = voicePromptClips[randomIndex];
-            
+
             if (promptClip != null && syllableSource != null)
             {
                 Debug.Log($"[MainGameManager] Tocando pergunta {randomIndex + 1}/{voicePromptClips.Length}");
                 syllableSource.PlayOneShot(promptClip);
-                
+
                 yield return new WaitForSeconds(promptClip.length + 0.3f);
             }
         }
@@ -341,16 +372,16 @@ public class MainGameManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         if (voiceManager != null)
-            {
-        Debug.Log($"[MainGameManager] 🎤 Iniciando reconhecimento para: {data.syllableText}");
-        voiceManager.StartListening(data.syllableText, OnVoiceResult);
-            }
-        else
-            {
-        Debug.LogError("[MainGameManager] VoiceManager não atribuído!");
-        OnVoiceResult(false);
-            }
+        {
+            Debug.Log($"[MainGameManager] 🎤 Iniciando reconhecimento para: {data.syllableText}");
+            voiceManager.StartListening(data.syllableText, OnVoiceResult);
         }
+        else
+        {
+            Debug.LogError("[MainGameManager] VoiceManager não atribuído!");
+            OnVoiceResult(false);
+        }
+    }
 
     public void SetMicrophoneState(bool isActive)
     {
@@ -369,7 +400,7 @@ public class MainGameManager : MonoBehaviour
                 Debug.LogError("[MainGameManager] ❌ microphoneOnSprite (verde) é NULL! Atribua no Inspector!");
                 return;
             }
-            
+
             microphoneIcon.sprite = microphoneOnSprite;
             Debug.Log("[MainGameManager] 🎤🟢 Microfone ATIVADO (verde)");
         }
@@ -380,31 +411,44 @@ public class MainGameManager : MonoBehaviour
                 Debug.LogError("[MainGameManager] ❌ microphoneOffSprite (cinza) é NULL! Atribua no Inspector!");
                 return;
             }
-            
+
             microphoneIcon.sprite = microphoneOffSprite;
             Debug.Log("[MainGameManager] 🎤⚪ Microfone DESATIVADO (cinza)");
         }
     }
 
     void OnVoiceResult(bool correct)
-{
-    if (!inVoicePhase) return;
+    {
+        if (!inVoicePhase) return;
 
-    // 🔊 Mantém o microfone ativo enquanto fala
-    if (correct)
-    {
-        SetMicrophoneState(false); // desliga quando acerta
-        Debug.Log("[MainGameManager] ✅ Resposta correta! Avançando para próxima sílaba...");
-        StartCoroutine(FadeOutSyllableAndAdvance());
+        // LOG FIREBASE
+        if (gameLogger != null)
+        {
+            string expectedSyllable = syllables[currentSyllableIndex].syllableText;
+            
+            // Log da tentativa de voz
+            gameLogger.LogVoiceAttempt(expectedSyllable, "recognized", currentSyllableIndex, 1, correct);
+            
+            // Log quando completa uma sílaba com sucesso
+            if (correct)
+            {
+                gameLogger.LogSyllableCompleted(expectedSyllable, currentSyllableIndex, true, balloonsPopped, 1);
+            }
+        }
+
+        if (correct)
+        {
+            SetMicrophoneState(false);
+            Debug.Log("[MainGameManager] ✅ Resposta correta! Avançando para próxima sílaba...");
+            StartCoroutine(FadeOutSyllableAndAdvance());
+        }
+        else
+        {
+            SetMicrophoneState(false);
+            Debug.Log("[MainGameManager] ❌ Esgotou 3 tentativas - reinicia round de balões");
+            StartCoroutine(RestartSameSyllable());
+        }
     }
-    else
-    {
-        SetMicrophoneState(false); // desliga temporariamente
-        Debug.Log("[MainGameManager] ❌ Esgotou 3 tentativas - reinicia round de balões");
-        Debug.Log("[MainGameManager] 🔄 Criança precisa estourar 5 balões novamente para tentar falar");
-        StartCoroutine(RestartSameSyllable());
-    }
-}
 
     IEnumerator FadeOutSyllableAndAdvance()
     {
@@ -427,9 +471,9 @@ public class MainGameManager : MonoBehaviour
         yield return new WaitForSeconds(0.6f);
 
         balloonManager.onBalloonPopped -= OnBalloonPopped;
-        
+
         currentSyllableIndex++;
-        
+
         if (currentSyllableIndex >= syllables.Count)
         {
             EndGame();
@@ -437,16 +481,16 @@ public class MainGameManager : MonoBehaviour
         }
 
         if (musicSource != null) musicSource.UnPause();
-        
+
         ShowCurrentSyllableAtCenter();
     }
 
     IEnumerator RestartSameSyllable()
     {
         inVoicePhase = false;
-        
+
         yield return new WaitForSeconds(0.5f);
-        
+
         float fadeTime = 0.6f;
         for (float t = 0; t < fadeTime; t += Time.deltaTime)
         {
@@ -455,29 +499,37 @@ public class MainGameManager : MonoBehaviour
         }
         introPanelGroup.alpha = 0f;
         introPanelGroup.gameObject.SetActive(false);
-        
+
         balloonsPopped = 0;
         arcController.ResetArc();
-        
+
         var data = syllables[currentSyllableIndex];
         Debug.Log($"[MainGameManager] ♻️ Voltando para fase de balões da sílaba '{data.syllableText}'");
-        Debug.Log($"[MainGameManager] 🎈 Criança precisa estourar 5 balões para tentar falar novamente");
-        
+
         HideMicrophone();
-        
+
         if (musicSource != null) musicSource.UnPause();
-        
+
         balloonManager.StartSpawning(data.syllableSprite);
         spawningActive = true;
     }
 
     void EndGame()
     {
+        if (gameLogger != null)
+        {
+            int successfulSyllables = currentSyllableIndex;
+            int totalBalloons = balloonsPopped;
+            int totalVoiceAttempts = successfulSyllables;
+            
+            gameLogger.LogGameCompleted(syllables.Count, totalBalloons, totalVoiceAttempts, successfulSyllables);
+        }
+
         Debug.Log("🎉 Jogo concluído!");
-        
+
         balloonManager.StopSpawning();
         balloonManager.ClearAllBalloons();
-        
+
         StartCoroutine(ShowEndGamePanel());
     }
 
@@ -564,7 +616,7 @@ public class MainGameManager : MonoBehaviour
         AudioListener.pause = false;
 
         int currentSceneIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
-        LoadScenes.LoadSceneByIndex(currentSceneIndex);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(currentSceneIndex);
     }
 
     public void RestartGameInPlace()
@@ -594,13 +646,13 @@ public class MainGameManager : MonoBehaviour
 
         if (pauseMenu != null)
             pauseMenu.SetActive(false);
-        
+
         if (endGamePanel != null)
             endGamePanel.SetActive(false);
-        
+
         if (introPanelGroup != null)
             introPanelGroup.gameObject.SetActive(false);
-        
+
         HideMicrophone();
 
         if (confettiEffect != null && confettiEffect.isPlaying)
@@ -637,7 +689,7 @@ public class MainGameManager : MonoBehaviour
         Time.timeScale = 1f;
         AudioListener.pause = false;
         
-        LoadScenes.LoadSceneByIndex(menuSceneIndex);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(menuSceneIndex);
     }
 
     private void Update()

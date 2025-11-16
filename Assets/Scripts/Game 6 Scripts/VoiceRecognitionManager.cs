@@ -5,7 +5,7 @@ using UnityEngine;
 public class VoiceRecognitionManager : MonoBehaviour, ISpeechToTextListener
 {
     [Header("Settings")]
-    public int maxAttemptsBeforeReset = 3; // 🆕 Mudado de 4 para 3
+    public int maxAttemptsBeforeReset = 3; 
     public float listeningTimeout = 5f;
     public float delayBetweenAttempts = 0.5f;
 
@@ -41,7 +41,6 @@ public class VoiceRecognitionManager : MonoBehaviour, ISpeechToTextListener
 
             Debug.Log($"[VoiceRecognition] Tentativa {attemptCount}/{maxAttemptsBeforeReset}");
 
-            // Inicia reconhecimento - SEM try-catch com yield
             bool sttStarted = StartSTT();
             
             if (!sttStarted)
@@ -51,7 +50,6 @@ public class VoiceRecognitionManager : MonoBehaviour, ISpeechToTextListener
                 yield break;
             }
 
-            // Aguarda resultado ou timeout
             float elapsed = 0f;
             while (elapsed < listeningTimeout && !resultReceived && isListening)
             {
@@ -59,24 +57,18 @@ public class VoiceRecognitionManager : MonoBehaviour, ISpeechToTextListener
                 yield return null;
             }
 
-            // Se não recebeu resultado, conta como falha
             if (!resultReceived && isListening)
             {
                 Debug.Log("[VoiceRecognition] Timeout - nenhum resultado recebido.");
-                
-                // Toca hint se disponível
                 PlayHintForAttempt(attemptCount);
-                
                 yield return new WaitForSeconds(delayBetweenAttempts);
             }
             else if (resultReceived)
             {
-                // Resultado foi processado em OnResultReceived
                 yield break;
             }
         }
 
-        // Esgotou tentativas
         if (isListening)
         {
             Debug.Log($"[VoiceRecognition] ⚠️ Esgotou {maxAttemptsBeforeReset} tentativas.");
@@ -99,7 +91,7 @@ public class VoiceRecognitionManager : MonoBehaviour, ISpeechToTextListener
         }
 #else
         Debug.LogWarning("[VoiceRecognition] STT disponível apenas no Android. Use hotkeys C/X no Editor.");
-        return true; // Retorna true no Editor para permitir testes
+        return true;
 #endif
     }
 
@@ -112,7 +104,7 @@ public class VoiceRecognitionManager : MonoBehaviour, ISpeechToTextListener
         if (errorCode.HasValue && errorCode.Value != 0)
         {
             Debug.LogWarning($"[VoiceRecognition] Erro STT: {errorCode}");
-            return; // Deixa timeout lidar
+            return;
         }
 
         Debug.Log($"[VoiceRecognition] Reconhecido: '{recognizedText}' | Esperado: '{expectedWord}'");
@@ -127,10 +119,6 @@ public class VoiceRecognitionManager : MonoBehaviour, ISpeechToTextListener
         else
         {
             Debug.Log($"[VoiceRecognition] ❌ ERROU (tentativa {attemptCount}/{maxAttemptsBeforeReset})");
-            
-            // 🆕 NÃO chama FinishWithResult aqui
-            // Deixa o ListenCycle continuar para próxima tentativa
-            // PlayHintForAttempt já será chamado no loop
         }
     }
 
@@ -145,18 +133,15 @@ public class VoiceRecognitionManager : MonoBehaviour, ISpeechToTextListener
     {
         if (string.IsNullOrEmpty(received)) return false;
 
-        // 🆕 NORMALIZAÇÃO COMPLETA: Remove acentos + CAIXA ALTA
         string exp = NormalizeText(expected);
         string rec = NormalizeText(received);
 
         Debug.Log($"[VoiceRecognition] Comparando: '{exp}' com '{rec}'");
 
-        // Exact match (após normalização)
         if (exp == rec) return true;
 
-        // Levenshtein distance (tolerância para pequenos erros)
         int distance = LevenshteinDistance(exp, rec);
-        int tolerance = Mathf.Max(1, expected.Length / 3); // 33% de tolerância
+        int tolerance = Mathf.Max(1, expected.Length / 3);
         
         bool match = distance <= tolerance;
         Debug.Log($"[VoiceRecognition] Distance: {distance}, Tolerance: {tolerance}, Match: {match}");
@@ -164,18 +149,12 @@ public class VoiceRecognitionManager : MonoBehaviour, ISpeechToTextListener
         return match;
     }
 
-    // 🆕 Normaliza texto: CAIXA ALTA + remove acentos
     private string NormalizeText(string text)
     {
         if (string.IsNullOrEmpty(text)) return "";
         
-        // 1. Remove acentos
         string withoutAccents = RemoveAccents(text);
-        
-        // 2. Converte para CAIXA ALTA
         string normalized = withoutAccents.ToUpper();
-        
-        // 3. Remove espaços extras
         normalized = normalized.Trim();
         
         return normalized;
@@ -200,7 +179,6 @@ public class VoiceRecognitionManager : MonoBehaviour, ISpeechToTextListener
         }
     }
 
-    // Implementação dos outros métodos da interface
     public void OnReadyForSpeech() 
     { 
         Debug.Log("[VoiceRecognition] Pronto para ouvir");
@@ -212,12 +190,12 @@ public class VoiceRecognitionManager : MonoBehaviour, ISpeechToTextListener
     }
     
     public void OnVoiceLevelChanged(float level) { }
+    
     public void OnPartialResultReceived(string partialText) 
     { 
         Debug.Log($"[VoiceRecognition] Parcial: {partialText}");
     }
 
-    // Utilitários
     private string RemoveAccents(string text)
     {
         string normalized = text.Normalize(System.Text.NormalizationForm.FormD);
