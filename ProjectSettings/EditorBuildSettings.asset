@@ -9,135 +9,138 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: 2fb8529de7cd0bc468e053c2632ec265
   - enabled: 1
-    path: "Assets/Scenes/G1/G1 Bal\xF5es gerais.unity"
+    path: Assets/Scenes/Menu Inicial.unity
+    guid: 2903f5b7f217cfa4db36bf2e449154b5
+  - enabled: 1
+    path: "Assets/Scenes/G1/1 - G1 Bal\xF5es gerais.unity"
     guid: ffacf041692604f45b463208a5525eca
   - enabled: 1
-    path: Assets/Scenes/G1/G1 Puxar e Arrastar.unity
+    path: Assets/Scenes/G1/2 - G1 Puxar e Arrastar.unity
     guid: bd0146887b0a626428096ca6c860c5e6
   - enabled: 1
-    path: "Assets/Scenes/G1/G1 Bal\xE3o Microfone Silaba Figura.unity"
+    path: "Assets/Scenes/G1/3 - G1 Bal\xE3o Microfone Silaba Figura.unity"
     guid: 532134e2dd2ec4a449d697e680105a3d
   - enabled: 1
-    path: Assets/Scenes/G1/G1 Memoria Figura e Silaba.unity
+    path: Assets/Scenes/G1/4 - G1 Memoria Figura e Silaba.unity
     guid: 51ffbfd5769e3b146b24a16b4c84b080
   - enabled: 1
-    path: Assets/Scenes/G1/G1 Figura Correspondente.unity
+    path: Assets/Scenes/G1/5 - G1 Figura Correspondente.unity
     guid: 9bd81dda3631a1b4683455bc34304e14
   - enabled: 1
-    path: Assets/Scenes/G1/G1 Puxar e Arrastar azul.unity
+    path: Assets/Scenes/G1/6 - G1 Puxar e Arrastar azul.unity
     guid: 5365ef16f673cd24eb235bc96a3921f1
   - enabled: 1
-    path: Assets/Scenes/G1/G1 Memoria Silaba.unity
+    path: Assets/Scenes/G1/7 - G1 Memoria Silaba.unity
     guid: 169f9ff6d2a74534fbddbf7e14b7a603
   - enabled: 1
-    path: "Assets/Scenes/G1/G1 Bal\xE3o Microfone e silaba.unity"
+    path: "Assets/Scenes/G1/8 - G1 Bal\xE3o Microfone e silaba.unity"
     guid: 037634f4d258453448f4d69ca6572162
   - enabled: 1
-    path: Assets/Scenes/G1/G1 Silaba Correspondente.unity
+    path: Assets/Scenes/G1/9 - G1 Silaba Correspondente.unity
     guid: a0e25088a63e64341b99944896cdadbb
   - enabled: 1
-    path: "Assets/Scenes/G1/G1 Forma\xE7\xE3o de Palavra 1.unity"
+    path: "Assets/Scenes/G1/10 - G1 Forma\xE7\xE3o de Palavra 1.unity"
     guid: aaea9f2ab229007458d2dfc8fa8a4687
   - enabled: 1
-    path: "Assets/Scenes/G1/G1 Forma\xE7\xE3o de Palavra 2.unity"
+    path: "Assets/Scenes/G1/11 - G1 Forma\xE7\xE3o de Palavra 2.unity"
     guid: 22bff8197dac0d945b7fbc40a67fb2b1
   - enabled: 1
-    path: "Assets/Scenes/G2/G2 Bal\xF5es gerais.unity"
+    path: "Assets/Scenes/G2/1 - G2 Bal\xF5es gerais.unity"
     guid: 8a29afe4ad00a904d8b41cda4fae4c0c
   - enabled: 1
-    path: Assets/Scenes/G2/G2 Puxar e Arrastar.unity
+    path: Assets/Scenes/G2/2 - G2 Puxar e Arrastar.unity
     guid: 97c28f1cba54e7645981b59b38c45176
   - enabled: 1
-    path: "Assets/Scenes/G2/G2 Bal\xE3o Microfone Silaba e Figura.unity"
+    path: "Assets/Scenes/G2/3 - G2 Bal\xE3o Microfone Silaba e Figura.unity"
     guid: b893ac7f525e21c4b90801a21b8fa46c
   - enabled: 1
-    path: Assets/Scenes/G2/G2 Memoria Figura e Silaba.unity
+    path: Assets/Scenes/G2/4 - G2 Memoria Figura e Silaba.unity
     guid: e75723403780bae43ba1e06a92698a09
   - enabled: 1
-    path: Assets/Scenes/G2/G2 Figura Correspondente.unity
+    path: Assets/Scenes/G2/5 - G2 Figura Correspondente.unity
     guid: d426dc4b72078074c9b01d4317bf4338
   - enabled: 1
-    path: Assets/Scenes/G2/G2 Puxar e Arrastar azul.unity
+    path: Assets/Scenes/G2/6 - G2 Puxar e Arrastar azul.unity
     guid: 31fc8ee5770ca064e93a0a3b76e042b1
   - enabled: 1
-    path: Assets/Scenes/G2/G2 Memoria Silaba.unity
+    path: Assets/Scenes/G2/7 - G2 Memoria Silaba.unity
     guid: f8d91209853fa994db9749ece6e815d2
   - enabled: 1
-    path: "Assets/Scenes/G2/G2 Bal\xE3o Microfone e silaba.unity"
+    path: "Assets/Scenes/G2/8 - G2 Bal\xE3o Microfone e silaba.unity"
     guid: d598e27ae09ab2d49a3fcfa46757d9f7
   - enabled: 1
-    path: Assets/Scenes/G2/G2 Silaba Correspondente.unity
+    path: Assets/Scenes/G2/9 - G2 Silaba Correspondente.unity
     guid: 127a34ad0d7692845bde0dec7911e26a
   - enabled: 1
-    path: "Assets/Scenes/G2/G2 Forma\xE7\xE3o de Palavra.unity"
+    path: "Assets/Scenes/G2/10 - G2 Forma\xE7\xE3o de Palavra.unity"
     guid: d346b556110515140abfab0ac652ee2b
   - enabled: 1
-    path: "Assets/Scenes/G2/G2 Forma\xE7\xE3o de Palavra 2.unity"
+    path: "Assets/Scenes/G2/11 - G2 Forma\xE7\xE3o de Palavra 2.unity"
     guid: 498ce8c02c4184e44b2f6e37fcfe63f4
   - enabled: 1
-    path: "Assets/Scenes/G3/G3 Bal\xF5es gerais.unity"
+    path: "Assets/Scenes/G3/1 - G3 Bal\xF5es gerais.unity"
     guid: 5040feb859fc51143995f11af31e874f
   - enabled: 1
-    path: Assets/Scenes/G3/G3 Puxar e Arrastar.unity
+    path: Assets/Scenes/G3/2 - G3 Puxar e Arrastar.unity
     guid: ee350c346e78d464abb4e037d643ae5a
   - enabled: 1
-    path: "Assets/Scenes/G3/G3 Bal\xE3o Microfone Silaba Figura.unity"
+    path: "Assets/Scenes/G3/3 - G3 Bal\xE3o Microfone Silaba Figura.unity"
     guid: 159f8056ffdd54941a5e65e339f6e057
   - enabled: 1
-    path: Assets/Scenes/G3/G3 Memoria Figura e Silaba.unity
+    path: Assets/Scenes/G3/4 - G3 Memoria Figura e Silaba.unity
     guid: ae4aef9f58f46f847ba9c10f8a649ec6
   - enabled: 1
-    path: Assets/Scenes/G3/G3 Figura Correspondente.unity
+    path: Assets/Scenes/G3/5 - G3 Figura Correspondente.unity
     guid: ff98008e15337ad4d879f9992f50f432
   - enabled: 1
-    path: Assets/Scenes/G3/G3 Puxar e Arrastar azul.unity
+    path: Assets/Scenes/G3/6 - G3 Puxar e Arrastar azul.unity
     guid: e3e86fbb6e660df469effee68cf68503
   - enabled: 1
-    path: Assets/Scenes/G3/G3 Memoria Silaba.unity
+    path: Assets/Scenes/G3/7 - G3 Memoria Silaba.unity
     guid: efbc7f168c6cb8c41b944ffefa0e5479
   - enabled: 1
-    path: "Assets/Scenes/G3/G3 Bal\xE3o Microfone e silaba.unity"
+    path: "Assets/Scenes/G3/8 - G3 Bal\xE3o Microfone e silaba.unity"
     guid: aab6dcf289731da4f8187518a8424a41
   - enabled: 1
-    path: Assets/Scenes/G3/G3 Silaba Correspondente.unity
+    path: Assets/Scenes/G3/9 - G3 Silaba Correspondente.unity
     guid: f267944ddf532194f8d776ec7219e9fb
   - enabled: 1
-    path: "Assets/Scenes/G3/G3 Forma\xE7\xE3o de Palavra.unity"
+    path: "Assets/Scenes/G3/10 - G3 Forma\xE7\xE3o de Palavra.unity"
     guid: b3861b504ba86d44a813bfc3d4507741
   - enabled: 1
-    path: "Assets/Scenes/G3/G3 Forma\xE7\xE3o de Palavra 2.unity"
+    path: "Assets/Scenes/G3/11 - G3 Forma\xE7\xE3o de Palavra 2.unity"
     guid: efa7db857fa526f408a7edd57e66ba09
   - enabled: 1
-    path: "Assets/Scenes/G4/G4 Bal\xF5es gerais.unity"
+    path: "Assets/Scenes/G4/1 - G4 Bal\xF5es gerais.unity"
     guid: 2fc9473916e4be24b8544807a2393fda
   - enabled: 1
-    path: Assets/Scenes/G4/G4 Puxar e Arrastar.unity
+    path: Assets/Scenes/G4/2 - G4 Puxar e Arrastar.unity
     guid: 64a01dd4928cd0145971d5e7684a9488
   - enabled: 1
-    path: "Assets/Scenes/G4/G4 Bal\xE3o Microfone Silaba Figura.unity"
+    path: "Assets/Scenes/G4/3 - G4 Bal\xE3o Microfone Silaba Figura.unity"
     guid: a373e5dc04af06544a367b7e4e75f915
   - enabled: 1
-    path: Assets/Scenes/G4/G4 Memoria Figura e Silaba.unity
+    path: Assets/Scenes/G4/4 - G4 Memoria Figura e Silaba.unity
     guid: f265daae2e29072408aa51d2e0459406
   - enabled: 1
-    path: Assets/Scenes/G4/G4 Figura Correspondente.unity
+    path: Assets/Scenes/G4/5 - G4 Figura Correspondente.unity
     guid: 1b4f7a742a3abfe4288fd12f813b5dc5
   - enabled: 1
-    path: Assets/Scenes/G4/G4 Puxar e Arrastar azul.unity
+    path: Assets/Scenes/G4/6 - G4 Puxar e Arrastar azul.unity
     guid: 6c3eed8d0b1da234fa9ffe510807dc39
   - enabled: 1
-    path: Assets/Scenes/G4/G4 Memoria Silaba.unity
+    path: Assets/Scenes/G4/7 - G4 Memoria Silaba.unity
     guid: 7776884f03bd26246bab52b9dfa0c5ff
   - enabled: 1
-    path: "Assets/Scenes/G4/G4 Bal\xE3o Microfone e silaba.unity"
+    path: "Assets/Scenes/G4/8 - G4 Bal\xE3o Microfone e silaba.unity"
     guid: 85c9e3c7f5b687046aeb9144d769ca52
   - enabled: 1
-    path: Assets/Scenes/G4/G4 Silaba Correspondente.unity
+    path: Assets/Scenes/G4/9 - G4 Silaba Correspondente.unity
     guid: a963d4942f987e34bafe4b17786c2058
   - enabled: 1
-    path: "Assets/Scenes/G4/G4 Forma\xE7\xE3o de Palavra.unity"
+    path: "Assets/Scenes/G4/10 - G4 Forma\xE7\xE3o de Palavra.unity"
     guid: 773b090b97232ad4c9ccd900cc475f8d
   - enabled: 1
-    path: "Assets/Scenes/G4/G4 Forma\xE7\xE3o de Palavra 2.unity"
+    path: "Assets/Scenes/G4/11 - G4 Forma\xE7\xE3o de Palavra 2.unity"
     guid: e39cd68dd263f8b478bcde1dee2ce289
   m_configObjects: {}
