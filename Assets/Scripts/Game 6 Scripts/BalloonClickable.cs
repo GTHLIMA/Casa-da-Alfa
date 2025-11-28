@@ -7,44 +7,64 @@ using UnityEngine.UI;
 public class BalloonClickable : MonoBehaviour
 {
     [Header("Renderers")]
-    public SpriteRenderer balloonSpriteRenderer;   // sprite do balão (root child)
-    public SpriteRenderer innerSyllableRenderer;   // sprite no centro (SpriteRenderer)
-    public Image innerSyllableImageUI;             // alternativa: UI Image (opcional)
+    [Tooltip("SpriteRenderer do BALÃO INTEIRO (corpo colorido - NÃO será alterado, mantém animação)")]
+    public SpriteRenderer balloonBodyRenderer;
+    
+    [Tooltip("SpriteRenderer da SÍLABA no centro (ex: 'BA', 'CA')")]
+    public SpriteRenderer innerSyllableRenderer;
+    
+    [Tooltip("Alternativa UI: Image da sílaba (se usar Canvas)")]
+    public Image innerSyllableImageUI;
 
+    [Header("⚠️ NÃO MEXER - Sprites de Estouro")]
+    [Tooltip("Sprites das etapas de ESTOURO do BALÃO (mantidos do prefab original)")]
+    public Sprite[] balloonPopSteps;
+    
     [Header("Syllable steps (0 = initial syllable)")]
-    public Sprite[] syllableStepSprites;           // primeiro elemento será substituído com a sílaba atual
+    [Tooltip("Sprites das etapas da sílaba (primeiro será substituído pela sílaba do balão)")]
+    public Sprite[] syllableStepSprites;
     
     [Header("🔊 ÁUDIO - Configure aqui os sons do balão")]
     [Tooltip("Som tocado quando o balão estoura (POP)")]
-    public AudioClip popSound;                     // ← SOM DE ESTOURO DO BALÃO
+    public AudioClip popSound;
     
     [Tooltip("Sons tocados em cada clique (se vazio, usa o som da sílaba do MainGameManager)")]
-    public AudioClip[] syllableClickSounds;        // ← SONS DAS SÍLABAS POR CLIQUE (opcional)
+    public AudioClip[] syllableClickSounds;
 
     [Header("Pop Animation")]
+    [Tooltip("Frames da animação de estouro (aplicados no CORPO do balão)")]
     public Sprite[] popAnimationFrames;
     public float popFrameRate = 0.06f;
-    public float upSpeed = 1.0f;                   // velocidade de subida (units/sec)
+    public float upSpeed = 1.0f;
 
     [HideInInspector] public int currentStep = 0;
-    public event Action onFinalPop;                 // notifica o BalloonManager/MainGameManager
-    public event Action<Vector2> onBalloonPoppedWithPosition; // 🔥 NOVO: evento com posição
+    public event Action onFinalPop;
+    public event Action<Vector2> onBalloonPoppedWithPosition;
 
     private bool isPopping = false;
+    
+    // 🆕 DADOS DA SÍLABA ATUAL
+    private SyllableDado currentSyllableData;
 
-    // --- API pública chamada pelo BalloonManager ao instanciar ---
-    public void SetSyllableSprite(Sprite syllableSprite)
+    // 🆕 NOVO MÉTODO PÚBLICO: Recebe todos os dados da sílaba
+    public void SetSyllableData(SyllableDado syllableData)
     {
+        currentSyllableData = syllableData;
+        
+        // ✅ Configura APENAS o sprite da sílaba no centro do balão
         if (syllableStepSprites == null || syllableStepSprites.Length == 0)
         {
-            syllableStepSprites = new Sprite[] { syllableSprite };
+            syllableStepSprites = new Sprite[] { syllableData.balloonSyllableSprite };
             currentStep = 0;
         }
         else
         {
-            syllableStepSprites[0] = syllableSprite;
+            syllableStepSprites[0] = syllableData.balloonSyllableSprite;
             currentStep = 0;
         }
+
+        // ⚠️ NÃO alteramos o sprite do corpo do balão para manter a animação de estouro
+        // A cor/variação do balão é definida pelo PREFAB que foi instanciado
 
         UpdateInnerSprite();
     }
@@ -54,11 +74,10 @@ public class BalloonClickable : MonoBehaviour
         UpdateInnerSprite();
         
         // 🆕 GARANTIR que sílaba fica NA FRENTE do balão
-        if (innerSyllableRenderer != null && balloonSpriteRenderer != null)
+        if (innerSyllableRenderer != null && balloonBodyRenderer != null)
         {
-            // Sílaba tem sorting order maior = aparece na frente
-            innerSyllableRenderer.sortingOrder = balloonSpriteRenderer.sortingOrder + 1;
-            Debug.Log($"[BalloonClickable] Sílaba sortingOrder: {innerSyllableRenderer.sortingOrder}, Balão: {balloonSpriteRenderer.sortingOrder}");
+            innerSyllableRenderer.sortingOrder = balloonBodyRenderer.sortingOrder + 1;
+            Debug.Log($"[BalloonClickable] Sílaba sortingOrder: {innerSyllableRenderer.sortingOrder}, Balão: {balloonBodyRenderer.sortingOrder}");
         }
     }
 
@@ -87,7 +106,6 @@ public class BalloonClickable : MonoBehaviour
             innerSyllableImageUI.sprite = s;
     }
 
-    // Touch / click handling
     private void OnMouseDown()
     {
         HandleClick();
@@ -105,24 +123,35 @@ public class BalloonClickable : MonoBehaviour
         PlaySyllableSound();
 
         currentStep++;
+        
+        // ✅ ATUALIZA SPRITE DA SÍLABA (não do balão)
         if (syllableStepSprites != null && currentStep < syllableStepSprites.Length)
         {
             UpdateInnerSprite();
             return;
         }
 
-        // Se passou do último passo: pop
-        StartCoroutine(PopSequence(touchPosition)); // 🔥 Passa a posição
+        // ✅ ATUALIZA SPRITE DO CORPO DO BALÃO (animação de estouro)
+        if (balloonPopSteps != null && balloonBodyRenderer != null && currentStep < balloonPopSteps.Length + syllableStepSprites.Length)
+        {
+            int popStepIndex = currentStep - syllableStepSprites.Length;
+            if (popStepIndex >= 0 && popStepIndex < balloonPopSteps.Length)
+            {
+                balloonBodyRenderer.sprite = balloonPopSteps[popStepIndex];
+                return;
+            }
+        }
+
+        // Se passou de todas as etapas: pop final
+        StartCoroutine(PopSequence(touchPosition));
     }
 
-    // 🔥 NOVO MÉTODO: Captura posição do toque
+    // 🔥 MÉTODO: Captura posição do toque
     private Vector2 GetTouchPosition()
     {
         #if UNITY_EDITOR
-        // No Editor: posição do mouse
         return Input.mousePosition;
         #else
-        // No dispositivo: posição do toque
         if (Input.touchCount > 0)
             return Input.GetTouch(0).position;
         else
@@ -156,7 +185,7 @@ public class BalloonClickable : MonoBehaviour
         }
     }
 
-    // 🔥 MODIFICADO: Agora recebe a posição do toque
+    // 🔥 ANIMAÇÃO DE POP
     IEnumerator PopSequence(Vector2 touchPosition)
     {
         isPopping = true;
@@ -175,12 +204,12 @@ public class BalloonClickable : MonoBehaviour
             }
         }
 
-        // Animação de frames (se existirem)
-        if (popAnimationFrames != null && popAnimationFrames.Length > 0 && balloonSpriteRenderer != null)
+        // 🆕 Animação de frames (aplicada no CORPO do balão)
+        if (popAnimationFrames != null && popAnimationFrames.Length > 0 && balloonBodyRenderer != null)
         {
             foreach (var f in popAnimationFrames)
             {
-                balloonSpriteRenderer.sprite = f;
+                balloonBodyRenderer.sprite = f;
                 yield return new WaitForSeconds(popFrameRate);
             }
         }
@@ -188,7 +217,7 @@ public class BalloonClickable : MonoBehaviour
         // 🔥 NOTIFICA COM POSIÇÃO
         onBalloonPoppedWithPosition?.Invoke(touchPosition);
         
-        // Notifica o manager (arc++ será feito por quem escuta esse evento)
+        // Notifica o manager
         onFinalPop?.Invoke();
 
         Destroy(gameObject);

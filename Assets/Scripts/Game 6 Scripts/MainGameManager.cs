@@ -6,10 +6,18 @@ using UnityEngine.UI;
 [System.Serializable]
 public class SyllableDado
 {
+    [Header("=== TEXTOS E ÁUDIOS ===")]
     public string syllableText;
-    public Sprite syllableSprite;
     public AudioClip syllableClip;
     public AudioClip correctClip;
+    
+    [Header("=== SPRITE DA SÍLABA NO BALÃO ===")]
+    [Tooltip("Sprite da SÍLABA que aparece DENTRO do balão (ex: 'BA', 'CA')")]
+    public Sprite balloonSyllableSprite;
+    
+    [Header("=== SPRITE DO ARCO ===")]
+    [Tooltip("Sprite que aparece NO ARCO (pode ser dica visual, imagem, etc)")]
+    public Sprite arcHintSprite;
 }
 
 public class MainGameManager : MonoBehaviour
@@ -95,7 +103,6 @@ public class MainGameManager : MonoBehaviour
     {
         gameLogger = FindObjectOfType<BalloonVoiceGameLogger>();
 
-        // Registrar o novo evento com posição
         if (balloonManager != null)
         {
             balloonManager.onBalloonPoppedWithPosition += OnBalloonPoppedWithPosition;
@@ -193,8 +200,9 @@ public class MainGameManager : MonoBehaviour
 
         var data = syllables[currentSyllableIndex];
 
+        // 🆕 USA O SPRITE DO BALÃO PARA A INTRO
         if (syllableIntroImage != null)
-            syllableIntroImage.sprite = data.syllableSprite;
+            syllableIntroImage.sprite = data.balloonSyllableSprite;
 
         StartCoroutine(ShowIntroSequence(data));
     }
@@ -222,14 +230,16 @@ public class MainGameManager : MonoBehaviour
 
         if (mainCanvas != null && syllableStartPosition != null && syllableArcPosition != null)
         {
-            yield return StartCoroutine(MoveSyllableToArc(data.syllableSprite));
+            // 🆕 ANIMA O SPRITE DO ARCO (não o do balão)
+            yield return StartCoroutine(MoveSyllableToArc(data.arcHintSprite));
         }
         else
         {
             Debug.LogWarning("[MainGameManager] Pulando animação de movimento - referências faltando");
         }
 
-        arcController.SetSyllable(data.syllableSprite);
+        // 🆕 ARCO RECEBE O SPRITE DE DICA
+        arcController.SetSyllable(data.arcHintSprite);
         arcController.ResetArc();
 
         balloonsPopped = 0;
@@ -245,7 +255,8 @@ public class MainGameManager : MonoBehaviour
 
         HideMicrophone();
 
-        balloonManager.StartSpawning(data.syllableSprite);
+        // 🆕 PASSA DADOS COMPLETOS PARA O BALLOON MANAGER
+        balloonManager.StartSpawning(data);
         spawningActive = true;
     }
 
@@ -293,18 +304,15 @@ public class MainGameManager : MonoBehaviour
         arcController.centerSyllableImage.color = color;
     }
 
-    // NOVO MÉTODO: Captura posição do toque
     void OnBalloonPoppedWithPosition(Vector2 position)
     {
         balloonsPopped++;
         arcController.IncrementProgress();
 
-        // LOG FIREBASE COM POSIÇÃO
         if (gameLogger != null)
         {
             string currentSyllable = syllables[currentSyllableIndex].syllableText;
             
-            // Converte coordenadas de tela para coordenadas normalizadas (0-1)
             Vector2 normalizedPosition = new Vector2(
                 position.x / Screen.width,
                 position.y / Screen.height
@@ -325,7 +333,6 @@ public class MainGameManager : MonoBehaviour
         }
     }
 
-    // Mantém o método original para compatibilidade
     void OnBalloonPopped()
     {
         OnBalloonPoppedWithPosition(Vector2.zero);
@@ -346,8 +353,10 @@ public class MainGameManager : MonoBehaviour
 
         introPanelGroup.alpha = 1f;
         introPanelGroup.gameObject.SetActive(true);
+        
+        // 🆕 MOSTRA SPRITE DO BALÃO NA INTRO DE VOZ
         if (syllableIntroImage != null)
-            syllableIntroImage.sprite = data.syllableSprite;
+            syllableIntroImage.sprite = data.balloonSyllableSprite;
 
         if (syllableSource && data.syllableClip)
             syllableSource.PlayOneShot(data.syllableClip);
@@ -421,15 +430,12 @@ public class MainGameManager : MonoBehaviour
     {
         if (!inVoicePhase) return;
 
-        // LOG FIREBASE
         if (gameLogger != null)
         {
             string expectedSyllable = syllables[currentSyllableIndex].syllableText;
             
-            // Log da tentativa de voz
             gameLogger.LogVoiceAttempt(expectedSyllable, "recognized", currentSyllableIndex, 1, correct);
             
-            // Log quando completa uma sílaba com sucesso
             if (correct)
             {
                 gameLogger.LogSyllableCompleted(expectedSyllable, currentSyllableIndex, true, balloonsPopped, 1);
@@ -510,7 +516,7 @@ public class MainGameManager : MonoBehaviour
 
         if (musicSource != null) musicSource.UnPause();
 
-        balloonManager.StartSpawning(data.syllableSprite);
+        balloonManager.StartSpawning(data);
         spawningActive = true;
     }
 
@@ -740,7 +746,7 @@ public class MainGameManager : MonoBehaviour
             {
                 if (syllables.Count > 0)
                 {
-                    balloonManager.StartSpawning(syllables[currentSyllableIndex].syllableSprite);
+                    balloonManager.StartSpawning(syllables[currentSyllableIndex]);
                     spawningActive = true;
                 }
             }
