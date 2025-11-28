@@ -143,4 +143,7 @@ EditorBuildSettings:
   - enabled: 1
     path: "Assets/Scenes/G4/11 - G4 Forma\xE7\xE3o de Palavra 2.unity"
     guid: e39cd68dd263f8b478bcde1dee2ce289
+  - enabled: 1
+    path: "Assets/Scenes/puzzle/Quebra Cabe\xE7a.unity"
+    guid: 915c5ba523580c5459befdd98092f4dd
   m_configObjects: {}
