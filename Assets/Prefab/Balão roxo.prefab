@@ -73,7 +73,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a50bfe2dae72ae041b99022c7a63d2c0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 80ccc4239476d6f4f8520f51aaa1b771, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -180,7 +180,7 @@ GameObject:
   - component: {fileID: 636391610746599029}
   - component: {fileID: 1222963935677117008}
   m_Layer: 10
-  m_Name: "Bal\xE3o"
+  m_Name: "Bal\xE3o roxo"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -250,18 +250,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d33ba035afd46544b3b984a56db2853, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  balloonSpriteRenderer: {fileID: 3365069633413261711}
+  balloonBodyRenderer: {fileID: 0}
   innerSyllableRenderer: {fileID: 5598283607003502408}
   innerSyllableImageUI: {fileID: 0}
+  balloonPopSteps: []
   syllableStepSprites: []
   popSound: {fileID: 8300000, guid: b94f048cab48bd346bc322c3e7ee9606, type: 3}
   syllableClickSounds: []
   popAnimationFrames:
-  - {fileID: 21300000, guid: ca445b8bb1281ed4cb154fcfff691623, type: 3}
-  - {fileID: 21300000, guid: b71cd0f68b3ab7e4991a90357aea6ab9, type: 3}
-  - {fileID: 21300000, guid: f97ff917e9b25bd4b8a239dfff0712d1, type: 3}
-  - {fileID: 21300000, guid: b2a34a0ae47bba148928bf8c33850c16, type: 3}
-  - {fileID: 21300000, guid: 704c058dd186f234d8b5bce2532432bc, type: 3}
+  - {fileID: 21300000, guid: 0cb9fbb3031d39b4bb26821bc6394d06, type: 3}
+  - {fileID: 21300000, guid: cc55a8150c90af1489e82b6f8b802f0e, type: 3}
+  - {fileID: 21300000, guid: 314da494129ebf54c91e90db15a3d69d, type: 3}
+  - {fileID: 21300000, guid: 3a2fd8d621a5ac7489067ae8539398d0, type: 3}
+  - {fileID: 21300000, guid: c3cb70ea92e09c54b8bcedff41cb9baa, type: 3}
   popFrameRate: 0.1
   upSpeed: 3
   currentStep: 0

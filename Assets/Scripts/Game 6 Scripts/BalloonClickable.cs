@@ -214,7 +214,7 @@ public class BalloonClickable : MonoBehaviour
             }
         }
 
-        // 🔥 NOTIFICA COM POSIÇÃO
+        //  NOTIFICA COM POSIÇÃO
         onBalloonPoppedWithPosition?.Invoke(touchPosition);
         
         // Notifica o manager

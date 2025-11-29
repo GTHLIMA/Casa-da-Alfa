@@ -11,13 +11,19 @@ public class SyllableDado
     public AudioClip syllableClip;
     public AudioClip correctClip;
     
-    [Header("=== SPRITE DA SÍLABA NO BALÃO ===")]
-    [Tooltip("Sprite da SÍLABA que aparece DENTRO do balão (ex: 'BA', 'CA')")]
+    [Header("=== SPRITE DENTRO DO BALÃO ===")]
+    [Tooltip("Sprite que aparece DENTRO do balão quando ele está subindo (ex: texto 'BA', 'CA')")]
     public Sprite balloonSyllableSprite;
     
+    [Header("=== SPRITE DA TELA DE INTRODUÇÃO ===")]
+    [Tooltip("Sprite que aparece NA TELA DE INTRODUÇÃO no centro (pode ser imagem grande, ilustração)")]
+    public Sprite introSprite;
+    [Tooltip("☑️ Marque para inverter horizontalmente a imagem da introdução")]
+    public bool flipIntroSprite = false;
+    
     [Header("=== SPRITE DO ARCO ===")]
-    [Tooltip("Sprite que aparece NO ARCO (pode ser dica visual, imagem, etc)")]
-    public Sprite arcHintSprite;
+    [Tooltip("Sprite que aparece NO CENTRO DO ARCO (pode ser diferente da intro, ex: ícone menor)")]
+    public Sprite arcSprite;
 }
 
 public class MainGameManager : MonoBehaviour
@@ -200,9 +206,16 @@ public class MainGameManager : MonoBehaviour
 
         var data = syllables[currentSyllableIndex];
 
-        // 🆕 USA O SPRITE DO BALÃO PARA A INTRO
+        // ✅ USA O SPRITE DE INTRODUÇÃO (pode ser diferente do arco)
         if (syllableIntroImage != null)
-            syllableIntroImage.sprite = data.balloonSyllableSprite;
+        {
+            syllableIntroImage.sprite = data.introSprite;
+            
+            // 🔄 APLICA FLIP HORIZONTAL se necessário
+            Vector3 scale = syllableIntroImage.rectTransform.localScale;
+            scale.x = data.flipIntroSprite ? -Mathf.Abs(scale.x) : Mathf.Abs(scale.x);
+            syllableIntroImage.rectTransform.localScale = scale;
+        }
 
         StartCoroutine(ShowIntroSequence(data));
     }
@@ -230,16 +243,16 @@ public class MainGameManager : MonoBehaviour
 
         if (mainCanvas != null && syllableStartPosition != null && syllableArcPosition != null)
         {
-            // 🆕 ANIMA O SPRITE DO ARCO (não o do balão)
-            yield return StartCoroutine(MoveSyllableToArc(data.arcHintSprite));
+            // ✅ ANIMA O SPRITE DO ARCO (sem flip)
+            yield return StartCoroutine(MoveSyllableToArc(data.arcSprite));
         }
         else
         {
             Debug.LogWarning("[MainGameManager] Pulando animação de movimento - referências faltando");
         }
 
-        // 🆕 ARCO RECEBE O SPRITE DE DICA
-        arcController.SetSyllable(data.arcHintSprite);
+        // ✅ ARCO RECEBE SEU PRÓPRIO SPRITE (sem flip)
+        arcController.SetSyllable(data.arcSprite);
         arcController.ResetArc();
 
         balloonsPopped = 0;
@@ -354,9 +367,16 @@ public class MainGameManager : MonoBehaviour
         introPanelGroup.alpha = 1f;
         introPanelGroup.gameObject.SetActive(true);
         
-        // 🆕 MOSTRA SPRITE DO BALÃO NA INTRO DE VOZ
+        // ✅ MOSTRA O SPRITE DE INTRODUÇÃO na fase de voz
         if (syllableIntroImage != null)
-            syllableIntroImage.sprite = data.balloonSyllableSprite;
+        {
+            syllableIntroImage.sprite = data.introSprite;
+            
+            // 🔄 APLICA FLIP HORIZONTAL se necessário
+            Vector3 scale = syllableIntroImage.rectTransform.localScale;
+            scale.x = data.flipIntroSprite ? -Mathf.Abs(scale.x) : Mathf.Abs(scale.x);
+            syllableIntroImage.rectTransform.localScale = scale;
+        }
 
         if (syllableSource && data.syllableClip)
             syllableSource.PlayOneShot(data.syllableClip);

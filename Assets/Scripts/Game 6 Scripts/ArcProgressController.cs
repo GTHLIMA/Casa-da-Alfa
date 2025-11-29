@@ -19,11 +19,18 @@ public class ArcProgressController : MonoBehaviour
             arcFillImage.fillAmount = 0;
     }
 
-    // Define a sílaba no centro
-    public void SetSyllable(Sprite s)
+    // 🔄 Define a sílaba no centro COM OPÇÃO DE FLIP
+    public void SetSyllable(Sprite s, bool flipHorizontal = false)
     {
         if (centerSyllableImage != null)
+        {
             centerSyllableImage.sprite = s;
+            
+            // 🔄 APLICA FLIP HORIZONTAL se necessário
+            Vector3 scale = centerSyllableImage.rectTransform.localScale;
+            scale.x = flipHorizontal ? -Mathf.Abs(scale.x) : Mathf.Abs(scale.x);
+            centerSyllableImage.rectTransform.localScale = scale;
+        }
     }
 
     // Incrementa o progresso
