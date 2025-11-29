@@ -122,16 +122,16 @@ public class RoundController : MonoBehaviour
 
     void Update()
     {
-        // 🔥 CONTROLE DE PAUSA COM TECLA (OPCIONAL)
+        
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             TogglePause();
         }
     }
 
-    // =====================================
-    // 💾 CONTROLE DE PAUSA (ORIGINAL)
-    // =====================================
+    // ====================================
+    // CONTROLE DE PAUSA 
+    // ====================================
     public void TogglePause()
     {
         if (isPaused)
@@ -146,10 +146,10 @@ public class RoundController : MonoBehaviour
         isPaused = true;
         Time.timeScale = 0f;
         
-        // Pausar música
+       
         if (gm != null) gm.PauseMusic();
 
-        // Atualizar score no painel de pause
+       
         if (scoreTextPause != null)
             scoreTextPause.text = "Score: " + score;
     }
@@ -165,7 +165,7 @@ public class RoundController : MonoBehaviour
     }
 
     // =====================================
-    // 🎮 LÓGICA DO ROUND (COM LOGGING)
+    // LÓGICA DO ROUND (COM LOGGING)
     // =====================================
     IEnumerator StartRoundCoroutine()
     {
@@ -179,15 +179,14 @@ public class RoundController : MonoBehaviour
 
         currentSyllable = syllables[currentRound];
         
-        // Log do início da pergunta
+        
         if (gm != null)
         {
             gm.StartNewQuestion(currentSyllable.syllableName, currentSyllable.correctOption.optionName);
         }
         
-        questionStartTime = Time.time; // Marcar tempo de início
+        questionStartTime = Time.time; 
 
-        // atualiza a imagem da sílaba
         if (syllablePanel != null) syllablePanel.sprite = currentSyllable.syllableImage;
 
         // animação de entrada da sílaba (fade in)
@@ -201,10 +200,9 @@ public class RoundController : MonoBehaviour
             yield return new WaitWhile(() => gm.IsSyllablePlaying());
         }
 
-        // gera opções
+        
         GenerateOptions(currentSyllable);
 
-        // small delay then enable
         yield return new WaitForSeconds(0.18f);
         inputLocked = false;
         foreach (var b in currentOptionButtons) b.SetInteractable(true);
