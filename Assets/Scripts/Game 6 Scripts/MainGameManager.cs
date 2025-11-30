@@ -206,6 +206,12 @@ public class MainGameManager : MonoBehaviour
 
         var data = syllables[currentSyllableIndex];
 
+        // ✅ LOGGER: Início de nova sílaba
+        if (gameLogger != null)
+        {
+            gameLogger.OnSyllableStarted(data.syllableText, currentSyllableIndex);
+        }
+
         // ✅ USA O SPRITE DE INTRODUÇÃO (pode ser diferente do arco)
         if (syllableIntroImage != null)
         {
@@ -322,16 +328,10 @@ public class MainGameManager : MonoBehaviour
         balloonsPopped++;
         arcController.IncrementProgress();
 
+        // ✅ LOGGER: Balão estourado
         if (gameLogger != null)
         {
-            string currentSyllable = syllables[currentSyllableIndex].syllableText;
-            
-            Vector2 normalizedPosition = new Vector2(
-                position.x / Screen.width,
-                position.y / Screen.height
-            );
-            
-            gameLogger.LogBalloonPopWithPosition(currentSyllable, currentSyllableIndex, normalizedPosition);
+            gameLogger.OnBalloonPopped(position);
         }
 
         Debug.Log($"[MainGameManager] Balão estourado na posição: {position} | Total: {balloonsPopped}/{popsToComplete}");
@@ -450,16 +450,11 @@ public class MainGameManager : MonoBehaviour
     {
         if (!inVoicePhase) return;
 
+        // ✅ LOGGER: Tentativa de voz e conclusão da sílaba
         if (gameLogger != null)
         {
-            string expectedSyllable = syllables[currentSyllableIndex].syllableText;
-            
-            gameLogger.LogVoiceAttempt(expectedSyllable, "recognized", currentSyllableIndex, 1, correct);
-            
-            if (correct)
-            {
-                gameLogger.LogSyllableCompleted(expectedSyllable, currentSyllableIndex, true, balloonsPopped, 1);
-            }
+            gameLogger.OnVoiceAttempt("recognized", correct);
+            gameLogger.OnSyllableCompleted(correct);
         }
 
         if (correct)
@@ -542,13 +537,10 @@ public class MainGameManager : MonoBehaviour
 
     void EndGame()
     {
+        // ✅ LOGGER: Fim do jogo
         if (gameLogger != null)
         {
-            int successfulSyllables = currentSyllableIndex;
-            int totalBalloons = balloonsPopped;
-            int totalVoiceAttempts = successfulSyllables;
-            
-            gameLogger.LogGameCompleted(syllables.Count, totalBalloons, totalVoiceAttempts, successfulSyllables);
+            gameLogger.OnGameCompleted(syllables.Count);
         }
 
         Debug.Log("🎉 Jogo concluído!");
