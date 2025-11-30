@@ -7746,7 +7746,7 @@ MonoBehaviour:
   usernameField: {fileID: 1601685151}
   passwordField: {fileID: 443252899}
   statusText: {fileID: 804399224}
-  index: 1
+  index: 46
 --- !u!4 &2104237854
 Transform:
   m_ObjectHideFlags: 0
