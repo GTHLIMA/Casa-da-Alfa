@@ -57,6 +57,18 @@ PrefabInstance:
       value: A1 Variant
       objectReference: {fileID: 0}
     - target: {fileID: 7392748227095150209, guid: 6e4f57d260eb3d340a7680062ed286c6, type: 3}
+      propertyPath: m_Color.b
+      value: 0.43529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 7392748227095150209, guid: 6e4f57d260eb3d340a7680062ed286c6, type: 3}
+      propertyPath: m_Color.g
+      value: 0.22352941
+      objectReference: {fileID: 0}
+    - target: {fileID: 7392748227095150209, guid: 6e4f57d260eb3d340a7680062ed286c6, type: 3}
+      propertyPath: m_Color.r
+      value: 0.96862745
+      objectReference: {fileID: 0}
+    - target: {fileID: 7392748227095150209, guid: 6e4f57d260eb3d340a7680062ed286c6, type: 3}
       propertyPath: m_SortingOrder
       value: -4
       objectReference: {fileID: 0}

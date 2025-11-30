@@ -144,6 +144,15 @@ EditorBuildSettings:
     path: "Assets/Scenes/G4/11 - G4 Forma\xE7\xE3o de Palavra 2.unity"
     guid: e39cd68dd263f8b478bcde1dee2ce289
   - enabled: 1
-    path: "Assets/Scenes/puzzle/Quebra Cabe\xE7a.unity"
-    guid: 915c5ba523580c5459befdd98092f4dd
+    path: "Assets/Scenes/G1/12 - G1 Quebra Cabe\xE7a.unity"
+    guid: b262f25be74808344b5cd77044191025
+  - enabled: 1
+    path: "Assets/Scenes/G2/12 - G2 Quebra Cabe\xE7a.unity"
+    guid: d0e257ba203794d4499e84a27693463a
+  - enabled: 1
+    path: "Assets/Scenes/G3/12 - G3 Quebra Cabe\xE7a.unity"
+    guid: 31f073c045c0af4419211dc735080c6f
+  - enabled: 1
+    path: "Assets/Scenes/G4/12 - G4 Quebra Cabe\xE7a.unity"
+    guid: 6d8fdd3473313474d9c0ed1cd0800784
   m_configObjects: {}
