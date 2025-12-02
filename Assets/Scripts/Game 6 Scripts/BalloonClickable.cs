@@ -16,7 +16,7 @@ public class BalloonClickable : MonoBehaviour
     [Tooltip("Alternativa UI: Image da sílaba (se usar Canvas)")]
     public Image innerSyllableImageUI;
 
-    [Header("⚠️ NÃO MEXER - Sprites de Estouro")]
+    [Header("NÃO MEXER - Sprites de Estouro")]
     [Tooltip("Sprites das etapas de ESTOURO do BALÃO (mantidos do prefab original)")]
     public Sprite[] balloonPopSteps;
     
@@ -24,7 +24,7 @@ public class BalloonClickable : MonoBehaviour
     [Tooltip("Sprites das etapas da sílaba (primeiro será substituído pela sílaba do balão)")]
     public Sprite[] syllableStepSprites;
     
-    [Header("🔊 ÁUDIO - Configure aqui os sons do balão")]
+    [Header("ÁUDIO - Configure aqui os sons do balão")]
     [Tooltip("Som tocado quando o balão estoura (POP)")]
     public AudioClip popSound;
     
@@ -43,15 +43,15 @@ public class BalloonClickable : MonoBehaviour
 
     private bool isPopping = false;
     
-    // 🆕 DADOS DA SÍLABA ATUAL
+    // DADOS DA SÍLABA ATUAL
     private SyllableDado currentSyllableData;
 
-    // 🆕 NOVO MÉTODO PÚBLICO: Recebe todos os dados da sílaba
+    // NOVO MÉTODO PÚBLICO: Recebe todos os dados da sílaba
     public void SetSyllableData(SyllableDado syllableData)
     {
         currentSyllableData = syllableData;
         
-        // ✅ Configura APENAS o sprite da sílaba no centro do balão
+        // Configura APENAS o sprite da sílaba no centro do balão
         if (syllableStepSprites == null || syllableStepSprites.Length == 0)
         {
             syllableStepSprites = new Sprite[] { syllableData.balloonSyllableSprite };
@@ -63,21 +63,37 @@ public class BalloonClickable : MonoBehaviour
             currentStep = 0;
         }
 
-        // ⚠️ NÃO alteramos o sprite do corpo do balão para manter a animação de estouro
+        // NÃO alteramos o sprite do corpo do balão para manter a animação de estouro
         // A cor/variação do balão é definida pelo PREFAB que foi instanciado
 
         UpdateInnerSprite();
+        
+        // GARANTE que a sílaba fica na frente depois de configurar
+        EnsureSyllableInFront();
     }
 
     private void Start()
     {
         UpdateInnerSprite();
         
-        // 🆕 GARANTIR que sílaba fica NA FRENTE do balão
+        // GARANTIR que sílaba fica NA FRENTE do balão
+        EnsureSyllableInFront();
+    }
+    
+    // MÉTODO para garantir que a sílaba sempre fica na frente
+    private void EnsureSyllableInFront()
+    {
         if (innerSyllableRenderer != null && balloonBodyRenderer != null)
         {
-            innerSyllableRenderer.sortingOrder = balloonBodyRenderer.sortingOrder + 1;
-            Debug.Log($"[BalloonClickable] Sílaba sortingOrder: {innerSyllableRenderer.sortingOrder}, Balão: {balloonBodyRenderer.sortingOrder}");
+            // Garante que a sílaba tem sorting order maior
+            innerSyllableRenderer.sortingLayerName = balloonBodyRenderer.sortingLayerName;
+            innerSyllableRenderer.sortingOrder = balloonBodyRenderer.sortingOrder + 10;
+            
+            Debug.Log($"[BalloonClickable] ✅ Sílaba sorting: Layer='{innerSyllableRenderer.sortingLayerName}' Order={innerSyllableRenderer.sortingOrder}, Balão Order={balloonBodyRenderer.sortingOrder}");
+        }
+        else
+        {
+            Debug.LogWarning("[BalloonClickable] ⚠️ Não foi possível configurar sorting - verifique se balloonBodyRenderer e innerSyllableRenderer estão atribuídos!");
         }
     }
 
@@ -115,23 +131,23 @@ public class BalloonClickable : MonoBehaviour
     {
         if (isPopping) return;
 
-        // 🔥 CAPTURA POSIÇÃO DO TOQUE
+        // CAPTURA POSIÇÃO DO TOQUE
         Vector2 touchPosition = GetTouchPosition();
         Debug.Log($"🎯 Balão clicado na posição: {touchPosition}");
 
-        // 🔊 TOCAR SOM DA SÍLABA ao clicar
+        // TOCAR SOM DA SÍLABA ao clicar
         PlaySyllableSound();
 
         currentStep++;
         
-        // ✅ ATUALIZA SPRITE DA SÍLABA (não do balão)
+        // ATUALIZA SPRITE DA SÍLABA (não do balão)
         if (syllableStepSprites != null && currentStep < syllableStepSprites.Length)
         {
             UpdateInnerSprite();
             return;
         }
 
-        // ✅ ATUALIZA SPRITE DO CORPO DO BALÃO (animação de estouro)
+        // ATUALIZA SPRITE DO CORPO DO BALÃO (animação de estouro)
         if (balloonPopSteps != null && balloonBodyRenderer != null && currentStep < balloonPopSteps.Length + syllableStepSprites.Length)
         {
             int popStepIndex = currentStep - syllableStepSprites.Length;
@@ -146,7 +162,7 @@ public class BalloonClickable : MonoBehaviour
         StartCoroutine(PopSequence(touchPosition));
     }
 
-    // 🔥 MÉTODO: Captura posição do toque
+    // MÉTODO: Captura posição do toque
     private Vector2 GetTouchPosition()
     {
         #if UNITY_EDITOR
@@ -185,12 +201,12 @@ public class BalloonClickable : MonoBehaviour
         }
     }
 
-    // 🔥 ANIMAÇÃO DE POP
+    // ANIMAÇÃO DE POP
     IEnumerator PopSequence(Vector2 touchPosition)
     {
         isPopping = true;
 
-        // 🔊 TOCAR SOM DE ESTOURO (POP)
+        // TOCAR SOM DE ESTOURO (POP)
         if (popSound != null)
         {
             var mm = MainGameManager.Instance;
@@ -204,7 +220,7 @@ public class BalloonClickable : MonoBehaviour
             }
         }
 
-        // 🆕 Animação de frames (aplicada no CORPO do balão)
+        // Animação de frames (aplicada no CORPO do balão)
         if (popAnimationFrames != null && popAnimationFrames.Length > 0 && balloonBodyRenderer != null)
         {
             foreach (var f in popAnimationFrames)
@@ -214,7 +230,7 @@ public class BalloonClickable : MonoBehaviour
             }
         }
 
-        //  NOTIFICA COM POSIÇÃO
+        // NOTIFICA COM POSIÇÃO
         onBalloonPoppedWithPosition?.Invoke(touchPosition);
         
         // Notifica o manager
