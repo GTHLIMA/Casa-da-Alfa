@@ -397,7 +397,7 @@ MonoBehaviour:
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 200, y: 210}
-  m_Spacing: {x: 90, y: 60}
+  m_Spacing: {x: 110, y: 70}
   m_Constraint: 1
   m_ConstraintCount: 2
 --- !u!1 &136657289
@@ -8362,6 +8362,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 68ac4d0621d309442a3e812bd24680ab, type: 3}
   - {fileID: 8300000, guid: 2b9f6f666e86ae345a83803135e63f52, type: 3}
   pairsPerRound: 04000000
+  fixMirroredCards: 1
   roundTransitionAudio: {fileID: 8300000, guid: 8f76564627e685a49b50bac8f4d069b9, type: 3}
   roundCompleteAudio: {fileID: 8300000, guid: 8f76564627e685a49b50bac8f4d069b9, type: 3}
   endGameAudio: {fileID: 8300000, guid: 74d5dc0c5fa7f7144b6923e39a624b64, type: 3}

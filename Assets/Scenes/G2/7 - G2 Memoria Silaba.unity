@@ -8433,16 +8433,17 @@ MonoBehaviour:
   gridTransform: {fileID: 119550160}
   gridLayout: {fileID: 0}
   sprites:
-  - {fileID: 21300000, guid: 5afedfa46333ae7429ff3468852328a8, type: 3}
-  - {fileID: 21300000, guid: 703f0896fb0e42d4da58b67cdcfdb8ee, type: 3}
-  - {fileID: 21300000, guid: 0eb969802867bc8438a209beda6ee03a, type: 3}
-  - {fileID: 21300000, guid: a3513cd119999ee4a9e097e624f8c845, type: 3}
+  - {fileID: 21300000, guid: 573d897f93b95a8469fffc4c8259f003, type: 3}
+  - {fileID: 21300000, guid: 1b7c7f8b41b5d0e4f9b756e242a10510, type: 3}
+  - {fileID: 21300000, guid: 48bba921ad04aed4fadaf468c66c3850, type: 3}
+  - {fileID: 21300000, guid: 52c215ba658955944813b77314c6a7fb, type: 3}
   cardAudios:
   - {fileID: 8300000, guid: e8ac2564d0fa2274fbb75b0410be4f14, type: 3}
   - {fileID: 8300000, guid: c96e17bef7505bb4892d3739af4ecdca, type: 3}
   - {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
   - {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
   pairsPerRound: 04000000
+  fixMirroredCards: 1
   roundTransitionAudio: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
   roundCompleteAudio: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
   endGameAudio: {fileID: 8300000, guid: 74d5dc0c5fa7f7144b6923e39a624b64, type: 3}

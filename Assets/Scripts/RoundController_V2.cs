@@ -30,6 +30,16 @@ public class RoundController_V2 : MonoBehaviour
     public Transform spawnPoint;
     public int score = 0;
 
+    [Header("--- Configurações de Tempo (Speed) ---")]
+    [Tooltip("Tempo de espera após errar antes de liberar o input novamente.")]
+    [SerializeField] private float delayAfterWrong = 0.5f; // Era 1.8f fixo
+
+    [Tooltip("Tempo extra após o feedback visual de acerto antes de ir para o próximo round.")]
+    [SerializeField] private float bufferAfterCorrect = 0.2f; // Tempo curto para transição
+
+    [Tooltip("Se deve tocar o áudio da sílaba novamente após errar.")]
+    [SerializeField] private bool replayAudioOnWrong = true;
+
     private List<OptionButton> currentOptionButtons = new List<OptionButton>();
     private int currentRound = 0;
     private SyllableData currentSyllable;
@@ -40,11 +50,9 @@ public class RoundController_V2 : MonoBehaviour
 
     void Start()
     {
-        
         Time.timeScale = 1f;
         isPaused = false;
         
-       
         StartCoroutine(WaitForGameManagerAndStart());
     }
 
@@ -59,19 +67,16 @@ public class RoundController_V2 : MonoBehaviour
 
         yield return new WaitForEndOfFrame();
 
-   
         if (gm != null)
         {
             gm.PlayMusic(gm.backgroundMusic, true);
         }
 
-      
         StartCoroutine(StartRoundCoroutine());
     }
 
     void Update()
     {
-       
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             TogglePause();
@@ -114,7 +119,7 @@ public class RoundController_V2 : MonoBehaviour
     }
 
     // =====================================
-    // 🎮 LÓGICA DO ROUND (ORIGINAL)
+    // 🎮 LÓGICA DO ROUND
     // =====================================
     IEnumerator StartRoundCoroutine()
     {
@@ -135,7 +140,9 @@ public class RoundController_V2 : MonoBehaviour
         }
 
         GenerateOptions(currentSyllable);
-        yield return new WaitForSeconds(0.18f);
+        
+        // Pequeno delay para garantir que UI foi criada antes de liberar input
+        yield return new WaitForSeconds(0.1f); 
 
         inputLocked = false;
         foreach (var b in currentOptionButtons)
@@ -201,7 +208,9 @@ public class RoundController_V2 : MonoBehaviour
 
             localOb.Setup(localOpt.optionImage, localOpt.syllableSprite, () => OnOptionPressed(localOb, localOpt));
             localOb.SetInteractable(false);
-            Tween.Alpha(cg, 1f, 0.45f, Ease.OutQuad);
+            
+            // Tween de entrada um pouco mais rápido (0.3s)
+            Tween.Alpha(cg, 1f, 0.3f, Ease.OutQuad);
         }
     }
 
@@ -215,6 +224,7 @@ public class RoundController_V2 : MonoBehaviour
     {
         inputLocked = true;
 
+        // Desabilita interação imediatamente para evitar cliques duplos
         foreach (var b in currentOptionButtons)
         {
             b.SetInteractable(false);
@@ -230,18 +240,24 @@ public class RoundController_V2 : MonoBehaviour
 
         if (isCorrect)
         {
+            // === LÓGICA DE ACERTO ===
             button.ShowFeedback(true, checkSprite);
 
+            // Toca o áudio da opção
             if (gm != null && clicked.optionAudio != null)
             {
                 gm.PlayOption(clicked.optionAudio);
+                // Espera o áudio, mas se for muito longo e quiser agilizar, 
+                // você pode remover esse WaitWhile ou limitar o tempo.
                 yield return new WaitWhile(() => gm.IsOptionPlaying());
             }
 
-            yield return new WaitForSeconds(0.15f);
+            // Toca som de "Plim"
             if (gm != null) gm.PlayCorrect();
 
-            yield return new WaitForSeconds(button.feedbackDuration + button.fadeDuration + 0.25f);
+            // Espera só o tempo necessário da animação de feedback + um buffer pequeno
+            float waitTime = Mathf.Max(0.5f, button.feedbackDuration) + bufferAfterCorrect;
+            yield return new WaitForSeconds(waitTime);
 
             currentRound++;
             score++;
@@ -253,34 +269,44 @@ public class RoundController_V2 : MonoBehaviour
             else
                 StartCoroutine(StartRoundCoroutine());
         }
-       else
-{
-    button.ShowFeedback(false, wrongSprite);
-
-    if (gm != null)
-    {
-        gm.ShakeCamera(0.35f, 12f);
-        gm.PlayWrong();
-
-        yield return new WaitForSeconds(1.8f); 
-
-        if (currentSyllable != null && currentSyllable.syllableAudio != null)
+        else
         {
-            gm.PlaySyllable(currentSyllable.syllableAudio);
-            yield return new WaitWhile(() => gm.IsSyllablePlaying());
+            // === LÓGICA DE ERRO ===
+            button.ShowFeedback(false, wrongSprite);
+
+            if (gm != null)
+            {
+                gm.ShakeCamera(0.35f, 12f);
+                gm.PlayWrong();
+
+                // OTIMIZAÇÃO: Espera reduzida (controlada pelo Inspector)
+                yield return new WaitForSeconds(delayAfterWrong);
+
+                // Opcional: Replay da pergunta
+                if (replayAudioOnWrong && currentSyllable != null && currentSyllable.syllableAudio != null)
+                {
+                    gm.PlaySyllable(currentSyllable.syllableAudio);
+                    yield return new WaitWhile(() => gm.IsSyllablePlaying());
+                }
+            }
+            else
+            {
+                // Fallback se não tiver GM
+                yield return new WaitForSeconds(delayAfterWrong);
+            }
+
+            // Remove o feedback visual (opcional esperar o fade ou cortar)
+            // Aqui estamos assumindo que o ShowFeedback já lidou com a animação de saída ou que vamos resetar o estado.
+            
+            inputLocked = false;
+            foreach (var b in currentOptionButtons)
+            {
+                b.SetInteractable(true);
+                b.SetPressedVisual(false);
+            }
         }
     }
 
-    yield return new WaitForSeconds(button.feedbackDuration + button.fadeDuration + 0.25f);
-
-    inputLocked = false;
-    foreach (var b in currentOptionButtons)
-    {
-        b.SetInteractable(true);
-        b.SetPressedVisual(false);
-    }
-}
-    }
     void ClearOptions()
     {
         foreach (Transform child in optionsParent)
