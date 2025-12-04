@@ -8957,7 +8957,7 @@ MonoBehaviour:
   - syllableText: FA
     syllableClip: {fileID: 8300000, guid: 129794c8ee0dc12408c51fd88ac9e2bb, type: 3}
     correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
-    balloonSyllableSprite: {fileID: 21300000, guid: b18c62169f43fb642be41fcde7de511a, type: 3}
+    balloonSyllableSprite: {fileID: 21300000, guid: 03b89fd5eb24bdf44bc11363ff633130, type: 3}
     introSprite: {fileID: 21300000, guid: de953d39f0330934e9fed6f46c8bf907, type: 3}
     flipIntroSprite: 1
     arcSprite: {fileID: 21300000, guid: 39c7aa4f7e0347b4da7ac0d033858aef, type: 3}

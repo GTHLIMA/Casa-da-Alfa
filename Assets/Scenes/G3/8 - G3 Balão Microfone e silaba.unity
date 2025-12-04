@@ -8936,31 +8936,31 @@ MonoBehaviour:
   - syllableText: NA
     syllableClip: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
     correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
-    balloonSyllableSprite: {fileID: 21300000, guid: 5652afc20630de146a98cb9985bf59f7, type: 3}
-    introSprite: {fileID: 21300000, guid: 5652afc20630de146a98cb9985bf59f7, type: 3}
+    balloonSyllableSprite: {fileID: 21300000, guid: 544fb619a54e7d148984fb2c810fd32a, type: 3}
+    introSprite: {fileID: 21300000, guid: 544fb619a54e7d148984fb2c810fd32a, type: 3}
     flipIntroSprite: 0
-    arcSprite: {fileID: 21300000, guid: 5652afc20630de146a98cb9985bf59f7, type: 3}
+    arcSprite: {fileID: 21300000, guid: 544fb619a54e7d148984fb2c810fd32a, type: 3}
   - syllableText: PA
     syllableClip: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
     correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
-    balloonSyllableSprite: {fileID: 21300000, guid: 7c047ee3ff4220547ad4ca68e395c7c3, type: 3}
-    introSprite: {fileID: 21300000, guid: 7c047ee3ff4220547ad4ca68e395c7c3, type: 3}
+    balloonSyllableSprite: {fileID: 21300000, guid: cb47391074732b74bbe502eca36d9d86, type: 3}
+    introSprite: {fileID: 21300000, guid: cb47391074732b74bbe502eca36d9d86, type: 3}
     flipIntroSprite: 0
-    arcSprite: {fileID: 21300000, guid: 7c047ee3ff4220547ad4ca68e395c7c3, type: 3}
+    arcSprite: {fileID: 21300000, guid: cb47391074732b74bbe502eca36d9d86, type: 3}
   - syllableText: QUA
     syllableClip: {fileID: 8300000, guid: 87cc05ac624dbea49b336e82ea8ee833, type: 3}
     correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
-    balloonSyllableSprite: {fileID: 21300000, guid: d77b177d9dde2234388b17bb4961811f, type: 3}
-    introSprite: {fileID: 21300000, guid: d77b177d9dde2234388b17bb4961811f, type: 3}
+    balloonSyllableSprite: {fileID: 21300000, guid: 950c9eb8dd389dc40b4113f5eba32670, type: 3}
+    introSprite: {fileID: 21300000, guid: 950c9eb8dd389dc40b4113f5eba32670, type: 3}
     flipIntroSprite: 0
-    arcSprite: {fileID: 21300000, guid: d77b177d9dde2234388b17bb4961811f, type: 3}
+    arcSprite: {fileID: 21300000, guid: 950c9eb8dd389dc40b4113f5eba32670, type: 3}
   - syllableText: RA
     syllableClip: {fileID: 8300000, guid: ec5f88918413db0499c5cfe14436284d, type: 3}
     correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
-    balloonSyllableSprite: {fileID: 21300000, guid: 2c5bed1eb0b43a143a28ade2605385b5, type: 3}
-    introSprite: {fileID: 21300000, guid: 2c5bed1eb0b43a143a28ade2605385b5, type: 3}
+    balloonSyllableSprite: {fileID: 21300000, guid: 1c58b6397a2f5cf458c4200f5d6e09f5, type: 3}
+    introSprite: {fileID: 21300000, guid: 1c58b6397a2f5cf458c4200f5d6e09f5, type: 3}
     flipIntroSprite: 0
-    arcSprite: {fileID: 21300000, guid: 2c5bed1eb0b43a143a28ade2605385b5, type: 3}
+    arcSprite: {fileID: 21300000, guid: 1c58b6397a2f5cf458c4200f5d6e09f5, type: 3}
   currentSyllableIndex: 0
   introPanelGroup: {fileID: 1446656306}
   syllableIntroImage: {fileID: 1370523269}
