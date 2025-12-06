@@ -155,4 +155,16 @@ EditorBuildSettings:
   - enabled: 1
     path: "Assets/Scenes/A/G4/12 - G4 Quebra Cabe\xE7a.unity"
     guid: 6d8fdd3473313474d9c0ed1cd0800784
+  - enabled: 1
+    path: Assets/Scenes/A/G1/6 - G1 Trem.unity
+    guid: 330afd58a5d0052438cf5dd841ceb1b0
+  - enabled: 1
+    path: Assets/Scenes/A/G2/6 - G2 Trem.unity
+    guid: b86f17b6947d2dc49871575ef52ca174
+  - enabled: 1
+    path: Assets/Scenes/A/G3/6 - G3 Trem.unity
+    guid: eac3329977302d94b882aabe0f4dba5d
+  - enabled: 1
+    path: Assets/Scenes/A/G4/G4 Trem.unity
+    guid: 3be1b3d700cf6ce4cb1f5887b6324054
   m_configObjects: {}
