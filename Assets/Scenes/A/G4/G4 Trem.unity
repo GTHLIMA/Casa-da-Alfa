@@ -204,7 +204,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1633909294}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ImageVoiceMatcher, Assembly-CSharp
         m_MethodName: OpenPauseMenu
         m_Mode: 1
@@ -3077,7 +3077,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1633909294}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: VoiceGameManager, Assembly-CSharp
         m_MethodName: ClosePauseMenu
         m_Mode: 1
@@ -3143,7 +3143,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1386064740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3990,7 +3990,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1633909293}
-  - component: {fileID: 1633909294}
+  - component: {fileID: 1633909296}
+  - component: {fileID: 1633909295}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -4013,7 +4014,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1633909294
+--- !u!114 &1633909295
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4022,36 +4023,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 1633909291}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 141b09fe92672034e81814a73b8dfb74, type: 3}
+  m_Script: {fileID: 11500000, guid: aad6f4de37ab0cf4581e8c10592187e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   vowelIndexToPlay: 0
   allVowelData:
-  - groupName: A
+  - groupName: G4 - A
     syllables:
-    - word: balao
-      image: {fileID: 21300000, guid: e630823da395193488033f1cce68cbe8, type: 3}
-      hintBasicAudio: {fileID: 8300000, guid: 47896a440eb2a2a4998fe710a0743cc8, type: 3}
-      hintFinalAudio: {fileID: 8300000, guid: 9ea9de83d3b43f9418ef619ab2069af9, type: 3}
-    - word: casa
-      image: {fileID: 21300000, guid: 48f4db9758b527a428ef0e3b5e796c24, type: 3}
-      hintBasicAudio: {fileID: 8300000, guid: 95eda41cf470402499841c83f3af5c41, type: 3}
-      hintFinalAudio: {fileID: 8300000, guid: 91f9e8153ae336342893fd95db300bc6, type: 3}
-    - word: dado
-      image: {fileID: 21300000, guid: e9b6d7e5f0c7df74f809bf086bee1f1a, type: 3}
-      hintBasicAudio: {fileID: 8300000, guid: e085172fb8bd7dc47be2e18e8e621778, type: 3}
-      hintFinalAudio: {fileID: 8300000, guid: c6adef595f1255d49b8e40a72fba531a, type: 3}
-    - word: faca
-      image: {fileID: 21300000, guid: 6c5cbd34b012337429b5de4f70f74f41, type: 3}
-      hintBasicAudio: {fileID: 8300000, guid: a6a16f4d4e484144ba704957f365fec0, type: 3}
-      hintFinalAudio: {fileID: 8300000, guid: f2a7548be3ed9db4cbd483a6c4aa120b, type: 3}
-    - word: gato
-      image: {fileID: 21300000, guid: 5620984dad1205742a19abacca77c4ad, type: 3}
-      hintBasicAudio: {fileID: 8300000, guid: 71eac4d154dd1654890ab5adc4880d4e, type: 3}
-      hintFinalAudio: {fileID: 8300000, guid: 0e2def001c4290443b21b89877f9b83b, type: 3}
-  languageCode: pt-BR
-  similarityThreshold: 0.747
-  zacaSimilarityThreshold: 0.718
+    - word: sapo
+      image: {fileID: 21300000, guid: 9e97978f96f8f9040a9ba3e7b1d6d320, type: 3}
+      hintBasicAudio: {fileID: 8300000, guid: bf0a32733d9e94544aabcf6bf3e5b807, type: 3}
+      hintFinalAudio: {fileID: 8300000, guid: 549970ada9aca1740b0e8b962d24c180, type: 3}
+    - word: TATU
+      image: {fileID: 21300000, guid: 82538c4ed3b58134c8d5aeb296b06070, type: 3}
+      hintBasicAudio: {fileID: 8300000, guid: 2979d84f7080bf94385b1d91834491d3, type: 3}
+      hintFinalAudio: {fileID: 8300000, guid: 9c5d32043fb72af469b9647978d5fba6, type: 3}
+    - word: VACA
+      image: {fileID: 21300000, guid: f77f17b2b8a20464db81e987d7f8b3ce, type: 3}
+      hintBasicAudio: {fileID: 8300000, guid: 59b1dc71af839314b94d96f764210e52, type: 3}
+      hintFinalAudio: {fileID: 8300000, guid: 26e24d3cd0668eb44ba4df2d5e9587ba, type: 3}
+    - word: XADREZ
+      image: {fileID: 21300000, guid: 15e737d532375754eadffae8e52c753c, type: 3}
+      hintBasicAudio: {fileID: 8300000, guid: bfc7ffc71aa15d84183f612d64c1dad8, type: 3}
+      hintFinalAudio: {fileID: 8300000, guid: dd320313065e3eb49b15eb30ee56d362, type: 3}
+    - word: ZACA
+      image: {fileID: 21300000, guid: 3c9c05a6538709b4d8f79e5d423ed52b, type: 3}
+      hintBasicAudio: {fileID: 8300000, guid: 20976104697ad7049956c836fde73930, type: 3}
+      hintFinalAudio: {fileID: 8300000, guid: ee486b1b732135e47bec7f055ecf2e44, type: 3}
+  whisperVoice: {fileID: 1633909296}
+  maxAttempts: 3
   micIndicatorImage: {fileID: 1876227425}
   micIndicatorAnimator: {fileID: 0}
   promptingColor: {r: 1, g: 0, b: 0, a: 1}
@@ -4072,8 +4072,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ac0794d3b2d9ce440bc8efdc5220c66f, type: 3}
   - {fileID: 8300000, guid: 67a23b313603f77409484f5a80db3836, type: 3}
   - {fileID: 8300000, guid: d022df88f85b2974fb304e318d798482, type: 3}
-  zacaPrompt1: {fileID: 8300000, guid: 64511f31ecc972a42aa5372f3356243a, type: 3}
-  zacaPrompt2: {fileID: 8300000, guid: 588b6bbf05e3484439484f168193d4b9, type: 3}
   endOfLevelConfetti: {fileID: 1470149249}
   initialDelay: 0.1
   delayAfterCorrect: 1
@@ -4085,9 +4083,28 @@ MonoBehaviour:
   scoreHUD: {fileID: 1743877870}
   PauseMenu: {fileID: 1028751454}
   endPhasePanel: {fileID: 156379506}
-  numberCounter: {fileID: 1743877869}
-  activateMicrophone: 1
-  micActivationDelay: 1
+  numberCounter: {fileID: 0}
+--- !u!114 &1633909296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1633909291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5287f8903dd35f4984be98518346758, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxRecordingTime: 3
+  sampleRate: 22050
+  backendURL: 
+  openAIKey: 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
+  useBackend: 0
+  maxAttemptsBeforeReset: 2
+  whisperPrompt: "\"Transcreva em portugu\xEAs brasileiro o nome do objeto falado.
+    Exemplos: pato, vaca, bola, sapo, etc.\""
+  hintAudioSource: {fileID: 0}
 --- !u!1 &1706186865
 GameObject:
   m_ObjectHideFlags: 0
