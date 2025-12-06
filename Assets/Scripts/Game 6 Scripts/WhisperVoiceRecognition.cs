@@ -56,7 +56,7 @@ public class WhisperVoiceRecognition : MonoBehaviour
     private int attemptCount = 0;
     private bool isListening = false;
 
-    private void Start()
+   private void Start()
     {
         // Verifica se há microfone disponível
         if (Microphone.devices.Length == 0)
@@ -68,6 +68,18 @@ public class WhisperVoiceRecognition : MonoBehaviour
         currentDeviceName = Microphone.devices[0];
         Debug.Log($"[WhisperVoice] 🎤 Microfone detectado: {currentDeviceName}");
 
+        // --- MODIFICAÇÃO DE SEGURANÇA (Adicione isso) ---
+        // Se estiver no Editor, não usando Backend, e a chave estiver vazia no Inspector:
+#if UNITY_EDITOR
+        if (!useBackend && string.IsNullOrEmpty(openAIKey))
+        {
+            // Pega a chave do arquivo secreto que o Git ignora
+            openAIKey = GameSecrets.OPENAI_KEY;
+            Debug.Log("[WhisperVoice] 🔑 Usando chave segura do GameSecrets.cs");
+        }
+#endif
+        // ------------------------------------------------
+
         // Validação de configuração
         if (useBackend && string.IsNullOrEmpty(backendURL))
         {
@@ -75,7 +87,7 @@ public class WhisperVoiceRecognition : MonoBehaviour
         }
         else if (!useBackend && string.IsNullOrEmpty(openAIKey))
         {
-            Debug.LogError("[WhisperVoice] ❌ OpenAI API Key não configurada! Configure no Inspector.");
+            Debug.LogError("[WhisperVoice] ❌ OpenAI API Key não configurada! Configure no Inspector ou no GameSecrets.cs.");
         }
     }
 

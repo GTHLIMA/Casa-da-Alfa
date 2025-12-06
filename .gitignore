@@ -50,6 +50,7 @@ Mobile.sln
 .gitignore
 *.sln
 StreamingAssets/
+Assets/Scripts/GameSecrets.cs
 
 # ===== Firebase e EDM - Arquivos gerados automaticamente =====
 Assets/Editor Default Resources/
