@@ -1,5 +1,5 @@
 public static class GameSecrets
 {
     // COLE SUA CHAVE AQUI DENTRO DAS ASPAS
-    public const string OPENAI_KEY = "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"; 
+    public const string OPENAI_KEY = "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"; 
 }

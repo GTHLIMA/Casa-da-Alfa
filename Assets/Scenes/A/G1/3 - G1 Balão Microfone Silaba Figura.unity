@@ -5317,11 +5317,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   balloonPrefabs:
-  - {fileID: 4472700073610209810, guid: 80594df550ac50a448d901880841dc32, type: 3}
-  - {fileID: 4472700073610209810, guid: f08cce34bd16a3d4bba4cbba6d4c49e7, type: 3}
-  - {fileID: 4472700073610209810, guid: 2697e2134993002438e35a868e0bcc4f, type: 3}
-  - {fileID: 4472700073610209810, guid: 0476a60a235609f4b9dcba5cbf27154f, type: 3}
-  - {fileID: 4472700073610209810, guid: 6e0f1f82a7239944faa3ffa3b13fa9fc, type: 3}
+  - {fileID: 4472700073610209810, guid: 8c69159721eea6241905596d500374aa, type: 3}
+  - {fileID: 4472700073610209810, guid: 0a9728434ed84a94291fe111e2fc9ee5, type: 3}
+  - {fileID: 4472700073610209810, guid: 610876259ac68b94b8723db44966d275, type: 3}
+  - {fileID: 4472700073610209810, guid: fc4af30903214f24bb181cb571794cf7, type: 3}
   defaultBalloonPrefab: {fileID: 0}
   spawnPointCenter: {fileID: 624359484}
   spawnRate: 1
@@ -6122,8 +6121,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 9, y: -464}
-  m_SizeDelta: {x: 500, y: 500}
+  m_AnchoredPosition: {x: 4, y: -559.9}
+  m_SizeDelta: {x: 540, y: 650}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &761134872
 MonoBehaviour:
@@ -7443,8 +7442,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 126}
-  m_SizeDelta: {x: 442.88, y: 514.32}
+  m_AnchoredPosition: {x: 0, y: 166}
+  m_SizeDelta: {x: 500, y: 620}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1370523269
 MonoBehaviour:
@@ -7534,7 +7533,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9245283, g: 0.8360951, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -8542,7 +8541,7 @@ MonoBehaviour:
   maxRecordingTime: 3
   sampleRate: 22050
   backendURL: 
-  openAIKey: 
+  openAIKey: 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
   useBackend: 0
   maxAttemptsBeforeReset: 3
   whisperPrompt: "Transcreva em portugu\xEAs brasileiro exatamente como o som, mesmo
@@ -8939,28 +8938,36 @@ MonoBehaviour:
     balloonSyllableSprite: {fileID: 21300000, guid: 2d7c90b96a7d4e6418fa25132f4199da, type: 3}
     introSprite: {fileID: 21300000, guid: 673cf516224f33743a1a2f45f38d9018, type: 3}
     flipIntroSprite: 0
-    arcSprite: {fileID: 21300000, guid: 41cd00b389c65354ab8cf489d22fee87, type: 3}
+    voicePhaseSprite: {fileID: 21300000, guid: 2d7c90b96a7d4e6418fa25132f4199da, type: 3}
+    flipVoicePhaseSprite: 0
+    arcSprite: {fileID: 21300000, guid: 673cf516224f33743a1a2f45f38d9018, type: 3}
   - syllableText: CA
     syllableClip: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
     correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
     balloonSyllableSprite: {fileID: 21300000, guid: e25eb2282ad129b4b84238a258d65dcd, type: 3}
     introSprite: {fileID: 21300000, guid: 99f9cad7ea5238d48a2bc012cb866160, type: 3}
     flipIntroSprite: 0
-    arcSprite: {fileID: 21300000, guid: 02d2b68ba8464d44598496ef5dfbbff9, type: 3}
+    voicePhaseSprite: {fileID: 21300000, guid: e25eb2282ad129b4b84238a258d65dcd, type: 3}
+    flipVoicePhaseSprite: 0
+    arcSprite: {fileID: 21300000, guid: 99f9cad7ea5238d48a2bc012cb866160, type: 3}
   - syllableText: DA
     syllableClip: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
     correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
     balloonSyllableSprite: {fileID: 21300000, guid: 56b19e9f0db43f346ab09332bd88f755, type: 3}
     introSprite: {fileID: 21300000, guid: 1e0f43be4c23cfc4f9fca5b855fc71ec, type: 3}
     flipIntroSprite: 0
-    arcSprite: {fileID: 21300000, guid: 7ac550a7ae2b46b43bc979cb7e82844b, type: 3}
+    voicePhaseSprite: {fileID: 21300000, guid: 56b19e9f0db43f346ab09332bd88f755, type: 3}
+    flipVoicePhaseSprite: 0
+    arcSprite: {fileID: 21300000, guid: 1e0f43be4c23cfc4f9fca5b855fc71ec, type: 3}
   - syllableText: FA
     syllableClip: {fileID: 8300000, guid: 129794c8ee0dc12408c51fd88ac9e2bb, type: 3}
     correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
     balloonSyllableSprite: {fileID: 21300000, guid: 03b89fd5eb24bdf44bc11363ff633130, type: 3}
     introSprite: {fileID: 21300000, guid: de953d39f0330934e9fed6f46c8bf907, type: 3}
     flipIntroSprite: 0
-    arcSprite: {fileID: 21300000, guid: 39c7aa4f7e0347b4da7ac0d033858aef, type: 3}
+    voicePhaseSprite: {fileID: 21300000, guid: 03b89fd5eb24bdf44bc11363ff633130, type: 3}
+    flipVoicePhaseSprite: 0
+    arcSprite: {fileID: 21300000, guid: de953d39f0330934e9fed6f46c8bf907, type: 3}
   currentSyllableIndex: 0
   introPanelGroup: {fileID: 1446656306}
   syllableIntroImage: {fileID: 1370523269}
@@ -8980,6 +8987,7 @@ MonoBehaviour:
   scoreEndGameText: {fileID: 0}
   endGameClip: {fileID: 8300000, guid: 74d5dc0c5fa7f7144b6923e39a624b64, type: 3}
   popsToComplete: 20
+  flyingSyllableDuration: 0.6
 --- !u!4 &2018456478
 Transform:
   m_ObjectHideFlags: 0

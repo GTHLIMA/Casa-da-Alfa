@@ -12,17 +12,23 @@ public class SyllableDado
     public AudioClip correctClip;
     
     [Header("=== SPRITE DENTRO DO BALÃO ===")]
-    [Tooltip("Sprite que aparece DENTRO do balão quando ele está subindo (ex: texto 'BA', 'CA')")]
+    [Tooltip("Sprite que aparece DENTRO do balão e que vai voar para o arco")]
     public Sprite balloonSyllableSprite;
     
-    [Header("=== SPRITE DA TELA DE INTRODUÇÃO ===")]
-    [Tooltip("Sprite que aparece NA TELA DE INTRODUÇÃO no centro (pode ser imagem grande, ilustração)")]
+    [Header("=== SPRITE DA TELA DE INTRODUÇÃO (INÍCIO) ===")]
+    [Tooltip("Sprite que aparece APENAS na primeira tela de apresentação")]
     public Sprite introSprite;
-    [Tooltip("☑️ Marque para inverter horizontalmente a imagem da introdução")]
+    [Tooltip("☑️ Inverter intro sprite horizontalmente")]
     public bool flipIntroSprite = false;
+
+    [Header("=== SPRITE DA FASE DE VOZ (FINAL) ===")]
+    [Tooltip("Sprite que aparece quando o personagem pede para falar (pode ser diferente da intro)")]
+    public Sprite voicePhaseSprite; 
+    [Tooltip("☑️ Inverter sprite da fase de voz horizontalmente")]
+    public bool flipVoicePhaseSprite = false;
     
     [Header("=== SPRITE DO ARCO ===")]
-    [Tooltip("Sprite que aparece NO CENTRO DO ARCO (pode ser diferente da intro, ex: ícone menor)")]
+    [Tooltip("Sprite pequeno que fica no centro do hud de progresso")]
     public Sprite arcSprite;
 }
 
@@ -54,16 +60,9 @@ public class MainGameManager : MonoBehaviour
     public Canvas mainCanvas;
 
     [Header("Voice Phase UI")]
-    [Tooltip("Áudios perguntando para falar a sílaba (escolhe aleatório)")]
     public AudioClip[] voicePromptClips;
-
-    [Tooltip("Ícone do microfone (Image no Canvas)")]
     public Image microphoneIcon;
-
-    [Tooltip("Sprite do microfone DESATIVADO (cinza)")]
     public Sprite microphoneOffSprite;
-
-    [Tooltip("Sprite do microfone ATIVADO (verde)")]
     public Sprite microphoneOnSprite;
 
     [Header("UI Panels")]
@@ -78,6 +77,10 @@ public class MainGameManager : MonoBehaviour
 
     [Header("Gameplay")]
     public int popsToComplete = 5;
+
+    [Header("Animation Settings")]
+    [Tooltip("Velocidade da sílaba voando do balão para o arco")]
+    public float flyingSyllableDuration = 0.6f;
 
     private bool inVoicePhase = false;
     private bool spawningActive = false;
@@ -96,12 +99,8 @@ public class MainGameManager : MonoBehaviour
         try
         {
             SpeechToText.Initialize("pt-BR");
-            Debug.Log("[MainGameManager] SpeechToText inicializado");
         }
-        catch (System.Exception e)
-        {
-            Debug.LogWarning($"[MainGameManager] Erro ao inicializar STT: {e.Message}");
-        }
+        catch (System.Exception e) { Debug.LogWarning(e.Message); }
 #endif
     }
 
@@ -110,91 +109,41 @@ public class MainGameManager : MonoBehaviour
         gameLogger = FindObjectOfType<BalloonVoiceGameLogger>();
 
         if (balloonManager != null)
-        {
             balloonManager.onBalloonPoppedWithPosition += OnBalloonPoppedWithPosition;
-        }
 
         if (musicSource != null) musicSource.Play();
-
-        if (!ValidateReferences())
-        {
-            Debug.LogError("[MainGameManager] Referências críticas não atribuídas! Verifique o Inspector.");
-            enabled = false;
-            return;
-        }
+        if (!ValidateReferences()) return;
 
         if (arcController != null && arcController.centerSyllableImage != null)
         {
-            var arcSyllableColor = arcController.centerSyllableImage.color;
-            arcSyllableColor.a = 0f;
-            arcController.centerSyllableImage.color = arcSyllableColor;
+            var c = arcController.centerSyllableImage.color;
+            c.a = 0f;
+            arcController.centerSyllableImage.color = c;
         }
 
         HideMicrophone();
-
-        if (pauseMenu != null)
-            pauseMenu.SetActive(false);
-
-        if (endGamePanel != null)
-            endGamePanel.SetActive(false);
+        if (pauseMenu) pauseMenu.SetActive(false);
+        if (endGamePanel) endGamePanel.SetActive(false);
 
         ShowCurrentSyllableAtCenter();
     }
 
     void HideMicrophone()
     {
-        if (microphoneIcon != null)
-        {
-            microphoneIcon.gameObject.SetActive(false);
-            Debug.Log("[MainGameManager] 🎤 Microfone DESATIVADO");
-        }
+        if (microphoneIcon != null) microphoneIcon.gameObject.SetActive(false);
     }
 
     private bool ValidateReferences()
     {
-        bool valid = true;
-
-        if (balloonManager == null)
+        if (!balloonManager || !arcController || syllables.Count == 0 || !introPanelGroup || !syllableIntroImage)
         {
-            Debug.LogError("[MainGameManager] BalloonManager não atribuído!");
-            valid = false;
+            Debug.LogError("[MainGameManager] Referências críticas faltando!");
+            return false;
         }
-
-        if (arcController == null)
-        {
-            Debug.LogError("[MainGameManager] ArcProgressController não atribuído!");
-            valid = false;
-        }
-
-        if (syllables == null || syllables.Count == 0)
-        {
-            Debug.LogError("[MainGameManager] Lista de sílabas vazia!");
-            valid = false;
-        }
-
-        if (introPanelGroup == null)
-        {
-            Debug.LogError("[MainGameManager] introPanelGroup não atribuído!");
-            valid = false;
-        }
-
-        if (syllableIntroImage == null)
-        {
-            Debug.LogError("[MainGameManager] syllableIntroImage não atribuído!");
-            valid = false;
-        }
-
-        if (mainCanvas == null)
-            Debug.LogWarning("[MainGameManager] mainCanvas não atribuído - animação de movimento desabilitada");
-
-        if (syllableStartPosition == null)
-            Debug.LogWarning("[MainGameManager] syllableStartPosition não atribuído");
-
-        if (syllableArcPosition == null)
-            Debug.LogWarning("[MainGameManager] syllableArcPosition não atribuído");
-
-        return valid;
+        return true;
     }
+
+    // --- LÓGICA DE JOGO ---
 
     void ShowCurrentSyllableAtCenter()
     {
@@ -205,22 +154,13 @@ public class MainGameManager : MonoBehaviour
         }
 
         var data = syllables[currentSyllableIndex];
+        if (gameLogger) gameLogger.OnSyllableStarted(data.syllableText, currentSyllableIndex);
 
-        // ✅ LOGGER: Início de nova sílaba
-        if (gameLogger != null)
-        {
-            gameLogger.OnSyllableStarted(data.syllableText, currentSyllableIndex);
-        }
-
-        // ✅ USA O SPRITE DE INTRODUÇÃO (pode ser diferente do arco)
+        // USANDO SPRITE DE INTRODUÇÃO (INÍCIO)
         if (syllableIntroImage != null)
         {
-            syllableIntroImage.sprite = data.introSprite;
-            
-            // 🔄 APLICA FLIP HORIZONTAL se necessário
-            Vector3 scale = syllableIntroImage.rectTransform.localScale;
-            scale.x = data.flipIntroSprite ? -Mathf.Abs(scale.x) : Mathf.Abs(scale.x);
-            syllableIntroImage.rectTransform.localScale = scale;
+            syllableIntroImage.sprite = data.introSprite; // <--- AGORA USA O introSprite
+            ApplyFlip(syllableIntroImage, data.flipIntroSprite);
         }
 
         StartCoroutine(ShowIntroSequence(data));
@@ -229,7 +169,6 @@ public class MainGameManager : MonoBehaviour
     IEnumerator ShowIntroSequence(SyllableDado data)
     {
         HideMicrophone();
-
         introPanelGroup.alpha = 1f;
         introPanelGroup.gameObject.SetActive(true);
 
@@ -247,23 +186,14 @@ public class MainGameManager : MonoBehaviour
         introPanelGroup.alpha = 0f;
         introPanelGroup.gameObject.SetActive(false);
 
-        if (mainCanvas != null && syllableStartPosition != null && syllableArcPosition != null)
-        {
-            // ✅ ANIMA O SPRITE DO ARCO (sem flip)
+        if (mainCanvas && syllableStartPosition && syllableArcPosition)
             yield return StartCoroutine(MoveSyllableToArc(data.arcSprite));
-        }
-        else
-        {
-            Debug.LogWarning("[MainGameManager] Pulando animação de movimento - referências faltando");
-        }
 
-        // ✅ ARCO RECEBE SEU PRÓPRIO SPRITE (sem flip)
         arcController.SetSyllable(data.arcSprite);
         arcController.ResetArc();
-
         balloonsPopped = 0;
 
-        if (isFirstRound && arcController.centerSyllableImage != null)
+        if (isFirstRound)
         {
             yield return StartCoroutine(FadeInArcSyllable());
             isFirstRound = false;
@@ -273,19 +203,179 @@ public class MainGameManager : MonoBehaviour
         balloonManager.onBalloonPopped += OnBalloonPopped;
 
         HideMicrophone();
-
-        // 🆕 PASSA DADOS COMPLETOS PARA O BALLOON MANAGER
         balloonManager.StartSpawning(data);
         spawningActive = true;
     }
 
+    // --- NOVA LÓGICA DE ANIMAÇÃO DE ESTOURO ---
+
+    // Recebe a posição MUNDIAL do balão (World Position)
+    void OnBalloonPoppedWithPosition(Vector2 worldPosition)
+    {
+        // Chama a corrotina de animação passando a posição
+        StartCoroutine(AnimateFloatingSyllable(worldPosition));
+    }
+
+    IEnumerator AnimateFloatingSyllable(Vector2 worldPos)
+    {
+        // 1. Cria um objeto temporário no Canvas
+        GameObject flyingObj = new GameObject("FlyingSyllable");
+        Image img = flyingObj.AddComponent<Image>();
+        
+        // Pega o sprite da sílaba atual (que estava dentro do balão)
+        Sprite spriteToFly = syllables[currentSyllableIndex].balloonSyllableSprite;
+        img.sprite = spriteToFly;
+        img.preserveAspect = true;
+
+        // Configura o RectTransform
+        RectTransform rt = flyingObj.GetComponent<RectTransform>();
+        rt.SetParent(mainCanvas.transform, false);
+        
+        // 2. Converte Posição do Mundo (Balão) para Posição da Tela (UI)
+        Vector2 screenPoint = Camera.main.WorldToScreenPoint(worldPos);
+        
+        // Converte Screen Point para Local Point dentro do Canvas (importante para diferentes resoluções)
+        Vector2 localPoint;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            mainCanvas.GetComponent<RectTransform>(), 
+            screenPoint, 
+            mainCanvas.worldCamera, // Se o Canvas for Screen Space - Overlay, pode passar null aqui
+            out localPoint
+        );
+        rt.anchoredPosition = localPoint;
+        rt.localScale = Vector3.one; // Começa tamanho normal
+
+        // 3. Define o destino (O ícone do Arco)
+        // Precisamos da posição do ArcFillImage ou CenterSyllableImage no Canvas
+        RectTransform targetRT = arcController.centerSyllableImage.rectTransform;
+        
+        // Animação
+        float elapsed = 0f;
+        Vector2 startPos = rt.anchoredPosition;
+        
+        // Para pegar a posição ancorada de destino corretamente, as vezes é chato por causa de hierarquias
+        // Vamos usar position global do UI e converter de volta, é mais seguro
+        Vector3 targetWorldPos = targetRT.position; 
+        Vector2 targetLocalPoint;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            mainCanvas.GetComponent<RectTransform>(),
+            Camera.main.WorldToScreenPoint(targetWorldPos),
+            mainCanvas.worldCamera,
+            out targetLocalPoint
+        );
+
+        while (elapsed < flyingSyllableDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / flyingSyllableDuration;
+            
+            // Curva suave (Ease In Out)
+            t = t * t * (3f - 2f * t);
+
+            // Move
+            rt.anchoredPosition = Vector2.Lerp(startPos, targetLocalPoint, t);
+            
+            // Diminui (Scale de 1.0 para 0.3)
+            rt.localScale = Vector3.Lerp(Vector3.one, Vector3.one * 0.3f, t);
+
+            yield return null;
+        }
+
+        // Destroi o objeto voador
+        Destroy(flyingObj);
+
+        // 4. SÓ AGORA incrementa o progresso
+        ProcessPopLogic();
+    }
+
+    // Lógica que antes estava no OnBalloonPoppedWithPosition, agora isolada
+    void ProcessPopLogic()
+    {
+        balloonsPopped++;
+        arcController.IncrementProgress();
+
+        if (gameLogger) gameLogger.OnBalloonPopped(Vector2.zero); // Log genérico
+
+        Debug.Log($"[MainGameManager] Progresso: {balloonsPopped}/{popsToComplete}");
+
+        HideMicrophone();
+
+        if (balloonsPopped >= popsToComplete && !inVoicePhase)
+        {
+            spawningActive = false;
+            StartCoroutine(BeginVoicePhase());
+        }
+    }
+
+    void OnBalloonPopped() { } // Não usado diretamente mais, a lógica está no WithPosition
+
+    // --- FASE DE VOZ ---
+
+    IEnumerator BeginVoicePhase()
+    {
+        inVoicePhase = true;
+        balloonManager.StopSpawning();
+        balloonManager.ClearAllBalloons();
+
+        if (musicSource) musicSource.Pause();
+        yield return new WaitForSeconds(0.5f);
+
+        var data = syllables[currentSyllableIndex];
+
+        introPanelGroup.alpha = 1f;
+        introPanelGroup.gameObject.SetActive(true);
+        
+        // USANDO SPRITE DA FASE DE VOZ (FINAL) - Alterado aqui!
+        if (syllableIntroImage != null)
+        {
+            // Se tiver sprite específico, usa ele. Se não, usa o introSprite como fallback.
+            Sprite spriteToUse = (data.voicePhaseSprite != null) ? data.voicePhaseSprite : data.introSprite;
+            syllableIntroImage.sprite = spriteToUse;
+
+            // Usa a flag de flip específica da fase de voz
+            bool flipToUse = (data.voicePhaseSprite != null) ? data.flipVoicePhaseSprite : data.flipIntroSprite;
+            ApplyFlip(syllableIntroImage, flipToUse);
+        }
+
+        if (syllableSource && data.syllableClip)
+            syllableSource.PlayOneShot(data.syllableClip);
+
+        yield return new WaitForSeconds(1.5f);
+
+        // Toca pergunta aleatória
+        if (voicePromptClips != null && voicePromptClips.Length > 0)
+        {
+            int r = Random.Range(0, voicePromptClips.Length);
+            if (syllableSource)
+            {
+                syllableSource.PlayOneShot(voicePromptClips[r]);
+                yield return new WaitForSeconds(voicePromptClips[r].length + 0.3f);
+            }
+        }
+
+        SetMicrophoneState(true);
+        yield return new WaitForSeconds(0.5f);
+
+        if (voiceManager) voiceManager.StartListening(data.syllableText, OnVoiceResult);
+        else OnVoiceResult(false); // Bypass debug
+    }
+
+    // Helper para flip
+    void ApplyFlip(Image img, bool flip)
+    {
+        Vector3 s = img.rectTransform.localScale;
+        s.x = flip ? -Mathf.Abs(s.x) : Mathf.Abs(s.x);
+        img.rectTransform.localScale = s;
+    }
+
+    // --- MANIPULAÇÃO DE CORROTINAS E UI AUXILIAR ---
+
     IEnumerator MoveSyllableToArc(Sprite sprite)
     {
-        GameObject temp = new GameObject("MovingSyllable");
+        GameObject temp = new GameObject("MovingSyllableIntro");
         Image img = temp.AddComponent<Image>();
         img.sprite = sprite;
         img.preserveAspect = true;
-
         RectTransform rt = temp.GetComponent<RectTransform>();
         rt.SetParent(mainCanvas.transform, false);
         rt.position = syllableStartPosition.position;
@@ -300,158 +390,35 @@ public class MainGameManager : MonoBehaviour
             rt.position = Vector3.Lerp(start, end, t / duration);
             yield return null;
         }
-
-        if (temp != null)
-            Destroy(temp);
+        if (temp) Destroy(temp);
     }
 
     IEnumerator FadeInArcSyllable()
     {
-        if (arcController.centerSyllableImage == null) yield break;
-
-        float fadeDuration = 0.8f;
-        Color color = arcController.centerSyllableImage.color;
-
-        for (float t = 0; t < fadeDuration; t += Time.deltaTime)
+        if (!arcController.centerSyllableImage) yield break;
+        float dur = 0.8f;
+        Color c = arcController.centerSyllableImage.color;
+        for (float t = 0; t < dur; t += Time.deltaTime)
         {
-            color.a = Mathf.Lerp(0f, 1f, t / fadeDuration);
-            arcController.centerSyllableImage.color = color;
+            c.a = Mathf.Lerp(0f, 1f, t / dur);
+            arcController.centerSyllableImage.color = c;
             yield return null;
         }
-
-        color.a = 1f;
-        arcController.centerSyllableImage.color = color;
-    }
-
-    void OnBalloonPoppedWithPosition(Vector2 position)
-    {
-        balloonsPopped++;
-        arcController.IncrementProgress();
-
-        // ✅ LOGGER: Balão estourado
-        if (gameLogger != null)
-        {
-            gameLogger.OnBalloonPopped(position);
-        }
-
-        Debug.Log($"[MainGameManager] Balão estourado na posição: {position} | Total: {balloonsPopped}/{popsToComplete}");
-
-        HideMicrophone();
-
-        if (balloonsPopped >= popsToComplete && !inVoicePhase)
-        {
-            Debug.Log("[MainGameManager] ✓ Arco completo! Indo para fase de voz...");
-            spawningActive = false;
-            StartCoroutine(BeginVoicePhase());
-        }
-    }
-
-    void OnBalloonPopped()
-    {
-        OnBalloonPoppedWithPosition(Vector2.zero);
-    }
-
-    IEnumerator BeginVoicePhase()
-    {
-        inVoicePhase = true;
-
-        balloonManager.StopSpawning();
-        balloonManager.ClearAllBalloons();
-
-        if (musicSource) musicSource.Pause();
-
-        yield return new WaitForSeconds(0.5f);
-
-        var data = syllables[currentSyllableIndex];
-
-        introPanelGroup.alpha = 1f;
-        introPanelGroup.gameObject.SetActive(true);
-        
-        // ✅ MOSTRA O SPRITE DE INTRODUÇÃO na fase de voz
-        if (syllableIntroImage != null)
-        {
-            syllableIntroImage.sprite = data.introSprite;
-            
-            // 🔄 APLICA FLIP HORIZONTAL se necessário
-            Vector3 scale = syllableIntroImage.rectTransform.localScale;
-            scale.x = data.flipIntroSprite ? -Mathf.Abs(scale.x) : Mathf.Abs(scale.x);
-            syllableIntroImage.rectTransform.localScale = scale;
-        }
-
-        if (syllableSource && data.syllableClip)
-            syllableSource.PlayOneShot(data.syllableClip);
-
-        yield return new WaitForSeconds(1.5f);
-
-        if (voicePromptClips != null && voicePromptClips.Length > 0)
-        {
-            int randomIndex = Random.Range(0, voicePromptClips.Length);
-            AudioClip promptClip = voicePromptClips[randomIndex];
-
-            if (promptClip != null && syllableSource != null)
-            {
-                Debug.Log($"[MainGameManager] Tocando pergunta {randomIndex + 1}/{voicePromptClips.Length}");
-                syllableSource.PlayOneShot(promptClip);
-
-                yield return new WaitForSeconds(promptClip.length + 0.3f);
-            }
-        }
-
-        SetMicrophoneState(true);
-        yield return new WaitForSeconds(0.5f);
-
-        if (voiceManager != null)
-        {
-            Debug.Log($"[MainGameManager] 🎤 Iniciando reconhecimento para: {data.syllableText}");
-            voiceManager.StartListening(data.syllableText, OnVoiceResult);
-        }
-        else
-        {
-            Debug.LogError("[MainGameManager] VoiceManager não atribuído!");
-            OnVoiceResult(false);
-        }
+        c.a = 1f;
+        arcController.centerSyllableImage.color = c;
     }
 
     public void SetMicrophoneState(bool isActive)
     {
-        if (microphoneIcon == null)
-        {
-            Debug.LogError("[MainGameManager] ❌ microphoneIcon é NULL! Atribua no Inspector!");
-            return;
-        }
-
+        if (!microphoneIcon) return;
         microphoneIcon.gameObject.SetActive(true);
-
-        if (isActive)
-        {
-            if (microphoneOnSprite == null)
-            {
-                Debug.LogError("[MainGameManager] ❌ microphoneOnSprite (verde) é NULL! Atribua no Inspector!");
-                return;
-            }
-
-            microphoneIcon.sprite = microphoneOnSprite;
-            Debug.Log("[MainGameManager] 🎤🟢 Microfone ATIVADO (verde)");
-        }
-        else
-        {
-            if (microphoneOffSprite == null)
-            {
-                Debug.LogError("[MainGameManager] ❌ microphoneOffSprite (cinza) é NULL! Atribua no Inspector!");
-                return;
-            }
-
-            microphoneIcon.sprite = microphoneOffSprite;
-            Debug.Log("[MainGameManager] 🎤⚪ Microfone DESATIVADO (cinza)");
-        }
+        microphoneIcon.sprite = isActive ? microphoneOnSprite : microphoneOffSprite;
     }
 
     void OnVoiceResult(bool correct)
     {
         if (!inVoicePhase) return;
-
-        // ✅ LOGGER: Tentativa de voz e conclusão da sílaba
-        if (gameLogger != null)
+        if (gameLogger)
         {
             gameLogger.OnVoiceAttempt("recognized", correct);
             gameLogger.OnSyllableCompleted(correct);
@@ -460,13 +427,11 @@ public class MainGameManager : MonoBehaviour
         if (correct)
         {
             SetMicrophoneState(false);
-            Debug.Log("[MainGameManager] ✅ Resposta correta! Avançando para próxima sílaba...");
             StartCoroutine(FadeOutSyllableAndAdvance());
         }
         else
         {
             SetMicrophoneState(false);
-            Debug.Log("[MainGameManager] ❌ Esgotou 3 tentativas - reinicia round de balões");
             StartCoroutine(RestartSameSyllable());
         }
     }
@@ -474,42 +439,30 @@ public class MainGameManager : MonoBehaviour
     IEnumerator FadeOutSyllableAndAdvance()
     {
         inVoicePhase = false;
-
         if (sfxSource && syllables[currentSyllableIndex].correctClip)
             sfxSource.PlayOneShot(syllables[currentSyllableIndex].correctClip);
 
         yield return new WaitForSeconds(0.5f);
-
+        
         float fadeTime = 0.6f;
         for (float t = 0; t < fadeTime; t += Time.deltaTime)
         {
             introPanelGroup.alpha = Mathf.Lerp(1f, 0f, t / fadeTime);
             yield return null;
         }
-        introPanelGroup.alpha = 0f;
         introPanelGroup.gameObject.SetActive(false);
 
         yield return new WaitForSeconds(0.6f);
-
         balloonManager.onBalloonPopped -= OnBalloonPopped;
-
         currentSyllableIndex++;
-
-        if (currentSyllableIndex >= syllables.Count)
-        {
-            EndGame();
-            yield break;
-        }
-
-        if (musicSource != null) musicSource.UnPause();
-
+        
+        if (musicSource) musicSource.UnPause();
         ShowCurrentSyllableAtCenter();
     }
 
     IEnumerator RestartSameSyllable()
     {
         inVoicePhase = false;
-
         yield return new WaitForSeconds(0.5f);
 
         float fadeTime = 0.6f;
@@ -518,312 +471,64 @@ public class MainGameManager : MonoBehaviour
             introPanelGroup.alpha = Mathf.Lerp(1f, 0f, t / fadeTime);
             yield return null;
         }
-        introPanelGroup.alpha = 0f;
         introPanelGroup.gameObject.SetActive(false);
 
         balloonsPopped = 0;
         arcController.ResetArc();
-
         var data = syllables[currentSyllableIndex];
-        Debug.Log($"[MainGameManager] ♻️ Voltando para fase de balões da sílaba '{data.syllableText}'");
-
+        
         HideMicrophone();
-
-        if (musicSource != null) musicSource.UnPause();
-
+        if (musicSource) musicSource.UnPause();
         balloonManager.StartSpawning(data);
         spawningActive = true;
     }
 
     void EndGame()
     {
-        // ✅ LOGGER: Fim do jogo
-        if (gameLogger != null)
-        {
-            gameLogger.OnGameCompleted(syllables.Count);
-        }
-
-        Debug.Log("🎉 Jogo concluído!");
-
+        if (gameLogger) gameLogger.OnGameCompleted(syllables.Count);
         balloonManager.StopSpawning();
         balloonManager.ClearAllBalloons();
-
         StartCoroutine(ShowEndGamePanel());
-    }
-
-    public void OpenPauseMenu()
-    {
-        if (isPaused) return;
-
-        isPaused = true;
-
-        if (scorePauseText != null)
-            scorePauseText.text = $"Sílaba: {currentSyllableIndex + 1}/{syllables.Count}";
-
-        if (pauseMenu != null)
-        {
-            pauseMenu.SetActive(true);
-
-            CanvasGroup cg = pauseMenu.GetComponent<CanvasGroup>();
-            if (cg == null) cg = pauseMenu.AddComponent<CanvasGroup>();
-            cg.interactable = true;
-            cg.blocksRaycasts = true;
-        }
-
-        if (musicSource != null) musicSource.Pause();
-        if (sfxSource != null) sfxSource.Pause();
-        if (syllableSource != null) syllableSource.Pause();
-
-        Time.timeScale = 0f;
-        AudioListener.pause = true;
-
-        Debug.Log("🔇 Jogo pausado: tempo parado e áudios pausados.");
-    }
-
-    public void ClosePauseMenu()
-    {
-        if (!isPaused) return;
-
-        isPaused = false;
-
-        Time.timeScale = 1f;
-        AudioListener.pause = false;
-
-        if (musicSource != null && !inVoicePhase) musicSource.UnPause();
-        if (sfxSource != null) sfxSource.UnPause();
-        if (syllableSource != null) syllableSource.UnPause();
-
-        if (pauseMenu != null)
-            pauseMenu.SetActive(false);
-
-        Debug.Log("▶️ Jogo retomado.");
     }
 
     IEnumerator ShowEndGamePanel()
     {
         yield return new WaitForSeconds(0.5f);
-
-        if (scoreEndGameText != null)
-            scoreEndGameText.text = $"Completou {syllables.Count} sílabas!";
-
-        if (endGamePanel != null)
-            endGamePanel.SetActive(true);
-
-        if (confettiEffect != null)
-        {
-            confettiEffect.Play();
-            Debug.Log("🎊 Efeito de confete ativado!");
-        }
-
-        if (musicSource != null)
-            musicSource.Pause();
-
-        if (sfxSource != null && endGameClip != null)
-        {
-            sfxSource.PlayOneShot(endGameClip);
-        }
-
-        Debug.Log("🏆 Painel de vitória exibido!");
+        if (scoreEndGameText) scoreEndGameText.text = $"Completou {syllables.Count} sílabas!";
+        if (endGamePanel) endGamePanel.SetActive(true);
+        if (confettiEffect) confettiEffect.Play();
+        if (musicSource) musicSource.Pause();
+        if (sfxSource && endGameClip) sfxSource.PlayOneShot(endGameClip);
     }
 
-    public void RestartGame()
+    // --- MENUS E CONTROLES ---
+    public void OpenPauseMenu()
     {
-        Debug.Log("🔄 Reiniciando jogo...");
-
-        Time.timeScale = 1f;
-        AudioListener.pause = false;
-
-        int currentSceneIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
-        UnityEngine.SceneManagement.SceneManager.LoadScene(currentSceneIndex);
+        if (isPaused) return;
+        isPaused = true;
+        if (scorePauseText) scorePauseText.text = $"Sílaba: {currentSyllableIndex + 1}/{syllables.Count}";
+        if (pauseMenu) pauseMenu.SetActive(true);
+        if (musicSource) musicSource.Pause();
+        Time.timeScale = 0f;
     }
 
-    public void RestartGameInPlace()
+    public void ClosePauseMenu()
     {
-        Debug.Log("🔄 Reiniciando jogo (sem recarregar cena)...");
-
-        StopAllCoroutines();
-
-        if (balloonManager != null)
-        {
-            balloonManager.StopSpawning();
-            balloonManager.ClearAllBalloons();
-        }
-
-        if (voiceManager != null)
-            voiceManager.StopListening();
-
-        currentSyllableIndex = 0;
-        inVoicePhase = false;
-        spawningActive = false;
-        isFirstRound = true;
+        if (!isPaused) return;
         isPaused = false;
-        balloonsPopped = 0;
-
         Time.timeScale = 1f;
-        AudioListener.pause = false;
-
-        if (pauseMenu != null)
-            pauseMenu.SetActive(false);
-
-        if (endGamePanel != null)
-            endGamePanel.SetActive(false);
-
-        if (introPanelGroup != null)
-            introPanelGroup.gameObject.SetActive(false);
-
-        HideMicrophone();
-
-        if (confettiEffect != null && confettiEffect.isPlaying)
-            confettiEffect.Stop();
-
-        if (arcController != null)
-        {
-            arcController.ResetArc();
-            
-            if (arcController.centerSyllableImage != null)
-            {
-                var color = arcController.centerSyllableImage.color;
-                color.a = 0f;
-                arcController.centerSyllableImage.color = color;
-            }
-        }
-
-        if (musicSource != null)
-        {
-            musicSource.UnPause();
-            if (!musicSource.isPlaying)
-                musicSource.Play();
-        }
-
-        ShowCurrentSyllableAtCenter();
-
-        Debug.Log("✅ Jogo reiniciado com sucesso!");
+        if (musicSource && !inVoicePhase) musicSource.UnPause();
+        if (pauseMenu) pauseMenu.SetActive(false);
     }
 
-    public void GoToMainMenu(int menuSceneIndex = 0)
-    {
-        Debug.Log("🏠 Voltando ao menu principal...");
-        
-        Time.timeScale = 1f;
-        AudioListener.pause = false;
-        
-        UnityEngine.SceneManagement.SceneManager.LoadScene(menuSceneIndex);
-    }
+    public void RestartGame() => UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+    public void GoToMainMenu(int idx = 0) => UnityEngine.SceneManagement.SceneManager.LoadScene(idx);
 
     private void Update()
     {
-#if UNITY_EDITOR
-        if (Input.GetMouseButtonDown(0))
-        {
-            Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero);
-            
-            if (hit.collider != null)
-            {
-                var clickable = hit.collider.GetComponent<BalloonClickable>();
-                if (clickable != null)
-                    clickable.HandleClick();
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            Debug.Log("[DEBUG] Simulando voz CORRETA");
-            if (inVoicePhase && voiceManager != null)
-            {
-                voiceManager.StopListening();
-                OnVoiceResult(true);
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            Debug.Log("[DEBUG] Simulando voz INCORRETA");
-            if (inVoicePhase && voiceManager != null)
-            {
-                voiceManager.StopListening();
-                OnVoiceResult(false);
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            Debug.Log("[DEBUG] Toggle Spawn");
-            if (spawningActive)
-            {
-                balloonManager.StopSpawning();
-                spawningActive = false;
-            }
-            else
-            {
-                if (syllables.Count > 0)
-                {
-                    balloonManager.StartSpawning(syllables[currentSyllableIndex]);
-                    spawningActive = true;
-                }
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.N))
-        {
-            Debug.Log("[DEBUG] Forçar próxima sílaba");
-            if (!inVoicePhase)
-            {
-                balloonManager.onBalloonPopped -= OnBalloonPopped;
-                balloonManager.StopSpawning();
-                currentSyllableIndex++;
-                if (currentSyllableIndex < syllables.Count)
-                {
-                    ShowCurrentSyllableAtCenter();
-                }
-                else
-                {
-                    EndGame();
-                }
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            Debug.Log("[DEBUG] Resetar jogo (recarregar cena)");
-            RestartGame();
-        }
-
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            Debug.Log("[DEBUG] Resetar in-place (sem recarregar)");
-            RestartGameInPlace();
-        }
-
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            Debug.Log("[DEBUG] Completar arco instantaneamente");
-            for (int i = 0; i < 5; i++)
-            {
-                arcController.IncrementProgress();
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Debug.Log("[DEBUG] Toggle Pause");
-            if (isPaused)
-                ClosePauseMenu();
-            else
-                OpenPauseMenu();
-        }
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            Debug.Log("[DEBUG] Forçar End Game");
-            EndGame();
-        }
-
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            Debug.Log("[DEBUG] Voltar ao menu (cena 0)");
-            GoToMainMenu(0);
-        }
-#endif
+        #if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.C)) OnVoiceResult(true);
+        if (Input.GetKeyDown(KeyCode.X)) OnVoiceResult(false);
+        #endif
     }
 }
