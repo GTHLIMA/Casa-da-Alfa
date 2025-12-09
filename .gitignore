@@ -51,6 +51,7 @@ Mobile.sln
 *.sln
 StreamingAssets/
 Assets/Scripts/GameSecrets.cs
+Assets/Scripts/GameSecrets.cs.meta
 
 # ===== Firebase e EDM - Arquivos gerados automaticamente =====
 Assets/Editor Default Resources/
