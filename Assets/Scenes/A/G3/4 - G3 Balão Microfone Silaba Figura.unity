@@ -8538,8 +8538,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5287f8903dd35f4984be98518346758, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxRecordingTime: 5
-  sampleRate: 22050
+  maxRecordingTime: 4
+  sampleRate: 16000
   backendURL: 
   openAIKey: 
   useBackend: 0
