@@ -256,7 +256,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 45
+          m_IntArgument: 53
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -422,8 +422,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 2.5999756, y: 652.4}
-  m_SizeDelta: {x: -453.4, y: -1670}
+  m_AnchoredPosition: {x: 2.5999756, y: 686}
+  m_SizeDelta: {x: -453.4, y: -1708.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &180178876
 MonoBehaviour:
@@ -464,7 +464,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.87843144, g: 0.73333335, b: 0.5568628, a: 1}
+  m_Color: {r: 0.9843138, g: 0.6039216, b: 0.53333336, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -823,86 +823,111 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allPuzzles:
-  - targetWord: BALA
-    finalDrawingImage: {fileID: 21300000, guid: 1416ed7db0d6e4a4eaef65c6b990c681, type: 3}
-    finalWordImage: {fileID: 21300000, guid: 819998e234c7573469eded91828e0896, type: 3}
-    finalWordAudio: {fileID: 8300000, guid: 44950199f447f3941a0078ccc35a0267, type: 3}
+  - targetWord: SALADA
+    finalDrawingImage: {fileID: 21300000, guid: 116ebd8fa2981e348ba201a6f52d0ae3, type: 3}
+    finalWordImage: {fileID: 21300000, guid: 8bbf69ba197a0cd42bf16effeb504354, type: 3}
+    finalWordAudio: {fileID: 8300000, guid: 33b887fa47c3a974c869f6d96239a02a, type: 3}
     onScreenWords:
-    - drawingImage: {fileID: 21300000, guid: 1f2d9450f9bb1054bae8c417100cb82a, type: 3}
-      syllableImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
-      syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+    - drawingImage: {fileID: 21300000, guid: 2b20d13f1ebe1674eba83a77b4fcfa30, type: 3}
+      syllableImage: {fileID: 21300000, guid: c612877ee004d9a44ba84459bd5d28c2, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 3d305eca04e72fb4eae413ea7a7fb010, type: 3}
     - drawingImage: {fileID: 21300000, guid: 59dcb4581d488c548852807b45e4676b, type: 3}
       syllableImage: {fileID: 21300000, guid: 6f3b69fa5e38b734985fb2d32992b59e, type: 3}
       syllableAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
-    answerSequence:
-    - syllableImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
-      syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
-    - syllableImage: {fileID: 21300000, guid: 6f3b69fa5e38b734985fb2d32992b59e, type: 3}
-      syllableAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
-  - targetWord: CAPA
-    finalDrawingImage: {fileID: 21300000, guid: ada24ba552e29a442a09b606fcb49dc0, type: 3}
-    finalWordImage: {fileID: 21300000, guid: b60043b4033b82c4384ff8971d14e074, type: 3}
-    finalWordAudio: {fileID: 8300000, guid: 64016e06e4c860145bf5ca8ad44e146d, type: 3}
-    onScreenWords:
-    - drawingImage: {fileID: 21300000, guid: 0550470fb5aa7a1488ba873404c914bf, type: 3}
-      syllableImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
-      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
-    - drawingImage: {fileID: 21300000, guid: fa6f2881f4026dc43b02b99e1d91a522, type: 3}
-      syllableImage: {fileID: 21300000, guid: 3909d92f734a7124ab2a382f1b89eb0f, type: 3}
-      syllableAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
-    answerSequence:
-    - syllableImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
-      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
-    - syllableImage: {fileID: 21300000, guid: 3909d92f734a7124ab2a382f1b89eb0f, type: 3}
-      syllableAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
-  - targetWord: FADA
-    finalDrawingImage: {fileID: 21300000, guid: 26f99ebe22be5484aaebf8a57c49d2dc, type: 3}
-    finalWordImage: {fileID: 21300000, guid: b5add49cdaef1ca4e9d56492ceb3e475, type: 3}
-    finalWordAudio: {fileID: 8300000, guid: 094b05fd1d3c29448a32f5fdb5b2e0bf, type: 3}
-    onScreenWords:
-    - drawingImage: {fileID: 21300000, guid: 28a25452f06599745a5cd8cab78148e6, type: 3}
-      syllableImage: {fileID: 21300000, guid: 3295dc4b1ef57304194bb183a2baf36b, type: 3}
-      syllableAudio: {fileID: 8300000, guid: 129794c8ee0dc12408c51fd88ac9e2bb, type: 3}
     - drawingImage: {fileID: 21300000, guid: 5a0e5c1de27abcc4a988594ae2cd6454, type: 3}
       syllableImage: {fileID: 21300000, guid: b853cd58663860d4b90beafefbce3e77, type: 3}
       syllableAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
     answerSequence:
-    - syllableImage: {fileID: 21300000, guid: 3295dc4b1ef57304194bb183a2baf36b, type: 3}
-      syllableAudio: {fileID: 8300000, guid: 129794c8ee0dc12408c51fd88ac9e2bb, type: 3}
+    - syllableImage: {fileID: 21300000, guid: c612877ee004d9a44ba84459bd5d28c2, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 3d305eca04e72fb4eae413ea7a7fb010, type: 3}
+    - syllableImage: {fileID: 21300000, guid: 6f3b69fa5e38b734985fb2d32992b59e, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
     - syllableImage: {fileID: 21300000, guid: b853cd58663860d4b90beafefbce3e77, type: 3}
       syllableAudio: {fileID: 8300000, guid: 55bf966a170b6ad43b39f84bfda827bb, type: 3}
-  - targetWord: LAMA
-    finalDrawingImage: {fileID: 21300000, guid: 22cf1da0f22e04640b91a44378708d1f, type: 3}
-    finalWordImage: {fileID: 21300000, guid: 064ebfdde0e6877428e87fce512ad0dd, type: 3}
-    finalWordAudio: {fileID: 8300000, guid: 940804cec75cb2e4a9d3e2adc436a81b, type: 3}
+  - targetWord: MACACA
+    finalDrawingImage: {fileID: 21300000, guid: e60db5ebf3e0b374797b25045234832b, type: 3}
+    finalWordImage: {fileID: 21300000, guid: b848e4248c448154b80951f2056f6446, type: 3}
+    finalWordAudio: {fileID: 8300000, guid: 2e8876ef382b70749b2991f1df1ac1c3, type: 3}
     onScreenWords:
-    - drawingImage: {fileID: 21300000, guid: 59dcb4581d488c548852807b45e4676b, type: 3}
-      syllableImage: {fileID: 21300000, guid: 6f3b69fa5e38b734985fb2d32992b59e, type: 3}
-      syllableAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
     - drawingImage: {fileID: 21300000, guid: 2e94cefa8b7cbb64a8b3820582c746c8, type: 3}
       syllableImage: {fileID: 21300000, guid: 1e54b1d1330a874409c4a806f05caaba, type: 3}
       syllableAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
+    - drawingImage: {fileID: 21300000, guid: 0550470fb5aa7a1488ba873404c914bf, type: 3}
+      syllableImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+    - drawingImage: {fileID: 21300000, guid: 0550470fb5aa7a1488ba873404c914bf, type: 3}
+      syllableImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
     answerSequence:
-    - syllableImage: {fileID: 21300000, guid: 6f3b69fa5e38b734985fb2d32992b59e, type: 3}
-      syllableAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
     - syllableImage: {fileID: 21300000, guid: 1e54b1d1330a874409c4a806f05caaba, type: 3}
       syllableAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
-  - targetWord: PAPA
-    finalDrawingImage: {fileID: 21300000, guid: 0e55b8f5544f3eb418c1d8459f55de7d, type: 3}
-    finalWordImage: {fileID: 21300000, guid: ac7bf562f027e2141b4c3da715344e04, type: 3}
-    finalWordAudio: {fileID: 8300000, guid: 083e1b67d4e2af3478ce4b915dfe9ed8, type: 3}
+    - syllableImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+    - syllableImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+  - targetWord: CABANA
+    finalDrawingImage: {fileID: 21300000, guid: 35b423310c254ea49a1dc927227a060b, type: 3}
+    finalWordImage: {fileID: 21300000, guid: b5e71f6c1c162634ab2315df04660ba3, type: 3}
+    finalWordAudio: {fileID: 8300000, guid: ef52d40dea3cec14cbae8e20f8373b62, type: 3}
     onScreenWords:
-    - drawingImage: {fileID: 21300000, guid: fa6f2881f4026dc43b02b99e1d91a522, type: 3}
-      syllableImage: {fileID: 21300000, guid: 3909d92f734a7124ab2a382f1b89eb0f, type: 3}
-      syllableAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
-    - drawingImage: {fileID: 21300000, guid: fa6f2881f4026dc43b02b99e1d91a522, type: 3}
-      syllableImage: {fileID: 21300000, guid: 3909d92f734a7124ab2a382f1b89eb0f, type: 3}
-      syllableAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
+    - drawingImage: {fileID: 21300000, guid: 0550470fb5aa7a1488ba873404c914bf, type: 3}
+      syllableImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+    - drawingImage: {fileID: 21300000, guid: 1f2d9450f9bb1054bae8c417100cb82a, type: 3}
+      syllableImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+    - drawingImage: {fileID: 21300000, guid: d464cf4d1c6df2540a9227280071e4f1, type: 3}
+      syllableImage: {fileID: 21300000, guid: d7a47787471d29546aaf875379f81f66, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
     answerSequence:
-    - syllableImage: {fileID: 21300000, guid: 3909d92f734a7124ab2a382f1b89eb0f, type: 3}
-      syllableAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
-    - syllableImage: {fileID: 21300000, guid: 3909d92f734a7124ab2a382f1b89eb0f, type: 3}
-      syllableAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
+    - syllableImage: {fileID: 21300000, guid: 081dc4f020d82154c9dd99d486e96208, type: 3}
+      syllableAudio: {fileID: 8300000, guid: e11be81f02beb194f801841a20ef3aca, type: 3}
+    - syllableImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+    - syllableImage: {fileID: 21300000, guid: d7a47787471d29546aaf875379f81f66, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
+  - targetWord: BANANA
+    finalDrawingImage: {fileID: 21300000, guid: c0de1342120e5dc4c82754603c271469, type: 3}
+    finalWordImage: {fileID: 21300000, guid: bad9b29ed70f05c4992237dd84e8228d, type: 3}
+    finalWordAudio: {fileID: 8300000, guid: 1c57105621cbdfb4b8b5df237a1ae61d, type: 3}
+    onScreenWords:
+    - drawingImage: {fileID: 21300000, guid: 1f2d9450f9bb1054bae8c417100cb82a, type: 3}
+      syllableImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+    - drawingImage: {fileID: 21300000, guid: d464cf4d1c6df2540a9227280071e4f1, type: 3}
+      syllableImage: {fileID: 21300000, guid: d7a47787471d29546aaf875379f81f66, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
+    - drawingImage: {fileID: 21300000, guid: d464cf4d1c6df2540a9227280071e4f1, type: 3}
+      syllableImage: {fileID: 21300000, guid: d7a47787471d29546aaf875379f81f66, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
+    answerSequence:
+    - syllableImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+    - syllableImage: {fileID: 21300000, guid: d7a47787471d29546aaf875379f81f66, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
+    - syllableImage: {fileID: 21300000, guid: d7a47787471d29546aaf875379f81f66, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
+  - targetWord: BATATA
+    finalDrawingImage: {fileID: 21300000, guid: f3f5f56462a1f70439235e26ac0cfada, type: 3}
+    finalWordImage: {fileID: 21300000, guid: 5214ea80d78bf4349a685aa57d7b8aa4, type: 3}
+    finalWordAudio: {fileID: 8300000, guid: 2979d84f7080bf94385b1d91834491d3, type: 3}
+    onScreenWords:
+    - drawingImage: {fileID: 21300000, guid: 1f2d9450f9bb1054bae8c417100cb82a, type: 3}
+      syllableImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+    - drawingImage: {fileID: 21300000, guid: 21b8fb278aade0a4cbf7294d0e98a879, type: 3}
+      syllableImage: {fileID: 21300000, guid: a0d5ab77003a2274f919fcb594be6880, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
+    - drawingImage: {fileID: 21300000, guid: 21b8fb278aade0a4cbf7294d0e98a879, type: 3}
+      syllableImage: {fileID: 21300000, guid: a0d5ab77003a2274f919fcb594be6880, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
+    answerSequence:
+    - syllableImage: {fileID: 21300000, guid: 959181aaf0250414488d27c630d3d464, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 806d1a1609e35e047a1e0603236a1b8a, type: 3}
+    - syllableImage: {fileID: 21300000, guid: a0d5ab77003a2274f919fcb594be6880, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
+    - syllableImage: {fileID: 21300000, guid: a0d5ab77003a2274f919fcb594be6880, type: 3}
+      syllableAudio: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
   sourceButtonPrefab: {fileID: 3508561151896846508, guid: 3210351639b0d6945a037441c958beb4, type: 3}
   answerSlotPrefab: {fileID: 8081623427550115127, guid: 1cec63c1a3c0e9b498c99092b5cb68df, type: 3}
   questionMarkSprite: {fileID: 21300000, guid: f92c65be940858b4c8576ba5996a93f2, type: 3}
@@ -1092,7 +1117,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 44
+          m_IntArgument: 52
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -1237,7 +1262,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 43
+          m_IntArgument: 51
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -1478,8 +1503,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 2.6000366, y: -560}
-  m_SizeDelta: {x: -85.2, y: -1464.5}
+  m_AnchoredPosition: {x: 2.6000366, y: -555.30005}
+  m_SizeDelta: {x: -85.2, y: -1517.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &950467187
 MonoBehaviour:
@@ -1520,7 +1545,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8773585, g: 0.734601, b: 0.55869526, a: 1}
+  m_Color: {r: 0.9843138, g: 0.6039216, b: 0.53333336, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1635,7 +1660,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 44
+          m_IntArgument: 52
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -2858,8 +2883,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 21.399963, y: -89.30005}
+  m_SizeDelta: {x: 42.8, y: 178.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1376626317
 CanvasGroup:
@@ -2893,7 +2918,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1f3277876de1233419b6f5206f168d5c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e5dd21b2bd6e5a046bd7d0e903ee9c51, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3001,7 +3026,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 45
+          m_IntArgument: 53
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -3090,7 +3115,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 655.1}
+  m_AnchoredPosition: {x: 2.6, y: 686}
   m_SizeDelta: {x: 407.7, y: 367.34}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1419211591
@@ -3221,7 +3246,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 43
+          m_IntArgument: 51
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -4160,8 +4185,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 4.6000366, y: 135.90002}
-  m_SizeDelta: {x: -124.9, y: -1722.5}
+  m_AnchoredPosition: {x: 11, y: 112.5}
+  m_SizeDelta: {x: -102, y: -1744.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2046072130
 MonoBehaviour:
@@ -4202,7 +4227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.87843144, g: 0.73333335, b: 0.5568628, a: 1}
+  m_Color: {r: 0.9843138, g: 0.6039216, b: 0.53333336, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

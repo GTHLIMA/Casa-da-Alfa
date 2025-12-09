@@ -1344,7 +1344,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 2
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -1623,7 +1623,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 2
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -2442,7 +2442,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -3608,7 +3608,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 3
+          m_IntArgument: 4
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -4030,22 +4030,22 @@ MonoBehaviour:
   allVowelData:
   - groupName: G4 - A
     syllables:
-    - word: NAVIO
-      image: {fileID: 21300000, guid: d9b44c9113a9a9a459db3f5785a23782, type: 3}
-      hintBasicAudio: {fileID: 8300000, guid: e8241a80f5417e747b542d0616a71bbc, type: 3}
-      hintFinalAudio: {fileID: 8300000, guid: dbf08fda51032f14c98458b3bbfcb0c0, type: 3}
-    - word: PATO
-      image: {fileID: 21300000, guid: e72658e467a3012409db9b2e8d2310b1, type: 3}
-      hintBasicAudio: {fileID: 8300000, guid: 3e175cf35a214ed4093748da51a88940, type: 3}
-      hintFinalAudio: {fileID: 8300000, guid: f811b05ece4566b4cae0f31796c68597, type: 3}
-    - word: QUADRO
-      image: {fileID: 21300000, guid: c1a606cde1025c347a86c65ad287385b, type: 3}
-      hintBasicAudio: {fileID: 8300000, guid: d71e8583b33a9964caab1ef8e20d2f9a, type: 3}
-      hintFinalAudio: {fileID: 8300000, guid: 818ab46b60881364b85d563b188320c0, type: 3}
-    - word: RATO
-      image: {fileID: 21300000, guid: bc67a66d47394f24a982697e1310f89b, type: 3}
-      hintBasicAudio: {fileID: 8300000, guid: df7f895cca6f83b44a2c30b6db881a92, type: 3}
-      hintFinalAudio: {fileID: 8300000, guid: e08c54c8c75fe4a4aafc7413f73d9287, type: 3}
+    - word: "BAL\xC3O"
+      image: {fileID: 21300000, guid: 41cd00b389c65354ab8cf489d22fee87, type: 3}
+      hintBasicAudio: {fileID: 8300000, guid: 49c50922760da3f40899a2e990a84f5e, type: 3}
+      hintFinalAudio: {fileID: 8300000, guid: 9ea9de83d3b43f9418ef619ab2069af9, type: 3}
+    - word: CASA
+      image: {fileID: 21300000, guid: 02d2b68ba8464d44598496ef5dfbbff9, type: 3}
+      hintBasicAudio: {fileID: 8300000, guid: b9db6dc3ef79e854eb49f487014f87cc, type: 3}
+      hintFinalAudio: {fileID: 8300000, guid: 91f9e8153ae336342893fd95db300bc6, type: 3}
+    - word: DADO
+      image: {fileID: 21300000, guid: 7ac550a7ae2b46b43bc979cb7e82844b, type: 3}
+      hintBasicAudio: {fileID: 8300000, guid: c6adef595f1255d49b8e40a72fba531a, type: 3}
+      hintFinalAudio: {fileID: 8300000, guid: 86c71a67b478ce147a8291d03e4d3801, type: 3}
+    - word: FACA
+      image: {fileID: 21300000, guid: 39c7aa4f7e0347b4da7ac0d033858aef, type: 3}
+      hintBasicAudio: {fileID: 8300000, guid: f2a7548be3ed9db4cbd483a6c4aa120b, type: 3}
+      hintFinalAudio: {fileID: 8300000, guid: 86d1db070b2a07248bfb25f56042e3c0, type: 3}
   whisperVoice: {fileID: 1633909296}
   maxAttempts: 3
   micIndicatorImage: {fileID: 1876227425}
@@ -4092,10 +4092,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5287f8903dd35f4984be98518346758, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxRecordingTime: 3
+  maxRecordingTime: 2
   sampleRate: 22050
   backendURL: 
-  openAIKey: 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
+  openAIKey: 
   useBackend: 0
   maxAttemptsBeforeReset: 2
   whisperPrompt: "\"Transcreva em portugu\xEAs brasileiro o nome do objeto falado.
@@ -4429,7 +4429,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -5177,7 +5177,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 3
+          m_IntArgument: 4
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0

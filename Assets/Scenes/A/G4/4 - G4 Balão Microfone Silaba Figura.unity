@@ -5273,10 +5273,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   balloonPrefabs:
+  - {fileID: 4472700073610209810, guid: 401156bf8e4113948a25fdcf2d3d72f5, type: 3}
+  - {fileID: 4472700073610209810, guid: 610876259ac68b94b8723db44966d275, type: 3}
   - {fileID: 4472700073610209810, guid: 78cf864d1043a3549843b84091871a90, type: 3}
-  - {fileID: 4472700073610209810, guid: 93212b861fab7b64d9fee3998a8483d0, type: 3}
-  - {fileID: 4472700073610209810, guid: 692bfe0d56637734f84ff518f3f7ad31, type: 3}
-  - {fileID: 4472700073610209810, guid: 056ae0d276f10d14fa785ae66e61eacd, type: 3}
+  - {fileID: 4472700073610209810, guid: 3d7e9c681abfaa043a4542948767a5d1, type: 3}
+  - {fileID: 4472700073610209810, guid: 0a9728434ed84a94291fe111e2fc9ee5, type: 3}
   defaultBalloonPrefab: {fileID: 0}
   spawnPointCenter: {fileID: 624359484}
   spawnRate: 1
@@ -5532,7 +5533,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 47
+          m_IntArgument: 45
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -5827,7 +5828,7 @@ Transform:
   m_GameObject: {fileID: 624359483}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.15, y: -6.25, z: 160.32646}
+  m_LocalPosition: {x: -1.82, y: -6.13, z: 160.32646}
   m_LocalScale: {x: 100, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6077,7 +6078,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 4, y: -509}
+  m_AnchoredPosition: {x: 4, y: -542}
   m_SizeDelta: {x: 540, y: 650}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &761134872
@@ -6403,50 +6404,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 797621996}
   m_CullTransparentMesh: 1
---- !u!1 &800213215
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 800213217}
-  - component: {fileID: 800213216}
-  m_Layer: 0
-  m_Name: BallonVoiceGameLogger
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &800213216
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 800213215}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b06ce4dcb9e8d4469f2bd340e661b59, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &800213217
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 800213215}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.0477238, y: -0.058035776, z: -0.014116665}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &814980656
 GameObject:
   m_ObjectHideFlags: 0
@@ -6549,7 +6506,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 14
+          m_IntArgument: 43
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -6820,7 +6777,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 15
+          m_IntArgument: 44
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -6863,6 +6820,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 992389353}
   m_CullTransparentMesh: 1
+--- !u!1 &1008257877
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1008257879}
+  - component: {fileID: 1008257878}
+  m_Layer: 0
+  m_Name: BallonVoiceGameLogger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1008257878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1008257877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b06ce4dcb9e8d4469f2bd340e661b59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1008257879
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1008257877}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.0477238, y: -0.058035776, z: -0.014116665}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1014480972
 GameObject:
   m_ObjectHideFlags: 0
@@ -7102,7 +7103,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 47
+          m_IntArgument: 45
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -7442,7 +7443,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 167}
+  m_AnchoredPosition: {x: 0, y: 161}
   m_SizeDelta: {x: 500, y: 620}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1370523269
@@ -7533,7 +7534,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9811321, g: 0.9811321, b: 0.9811321, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -8853,7 +8854,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 14
+          m_IntArgument: 43
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -8932,42 +8933,51 @@ MonoBehaviour:
   sfxSource: {fileID: 1879931140}
   syllableSource: {fileID: 1787665807}
   syllables:
-  - syllableText: GA
-    syllableClip: {fileID: 8300000, guid: e8ac2564d0fa2274fbb75b0410be4f14, type: 3}
+  - syllableText: SA
+    syllableClip: {fileID: 8300000, guid: 3d305eca04e72fb4eae413ea7a7fb010, type: 3}
     correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
-    balloonSyllableSprite: {fileID: 21300000, guid: 573d897f93b95a8469fffc4c8259f003, type: 3}
-    introSprite: {fileID: 21300000, guid: ffae91c8d45619144a3e4c52a8722af9, type: 3}
+    balloonSyllableSprite: {fileID: 21300000, guid: b8e43101f32df644694965c7b531055e, type: 3}
+    introSprite: {fileID: 21300000, guid: ea2aac56bd557ba4089352541ef2aef3, type: 3}
     flipIntroSprite: 0
-    voicePhaseSprite: {fileID: 21300000, guid: 573d897f93b95a8469fffc4c8259f003, type: 3}
+    voicePhaseSprite: {fileID: 21300000, guid: b8e43101f32df644694965c7b531055e, type: 3}
     flipVoicePhaseSprite: 0
-    arcSprite: {fileID: 21300000, guid: ffae91c8d45619144a3e4c52a8722af9, type: 3}
-  - syllableText: JA
-    syllableClip: {fileID: 8300000, guid: c96e17bef7505bb4892d3739af4ecdca, type: 3}
+    arcSprite: {fileID: 21300000, guid: ea2aac56bd557ba4089352541ef2aef3, type: 3}
+  - syllableText: TA
+    syllableClip: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
     correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
-    balloonSyllableSprite: {fileID: 21300000, guid: 1b7c7f8b41b5d0e4f9b756e242a10510, type: 3}
-    introSprite: {fileID: 21300000, guid: 0266e3fe1760287449abb64b812db809, type: 3}
+    balloonSyllableSprite: {fileID: 21300000, guid: eb67af988fcd6a740b6e7f4781593231, type: 3}
+    introSprite: {fileID: 21300000, guid: 193f73dfcb483c347afd245184c1e2f0, type: 3}
     flipIntroSprite: 0
-    voicePhaseSprite: {fileID: 21300000, guid: 1b7c7f8b41b5d0e4f9b756e242a10510, type: 3}
+    voicePhaseSprite: {fileID: 21300000, guid: eb67af988fcd6a740b6e7f4781593231, type: 3}
     flipVoicePhaseSprite: 0
-    arcSprite: {fileID: 21300000, guid: 0266e3fe1760287449abb64b812db809, type: 3}
-  - syllableText: LA
-    syllableClip: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
+    arcSprite: {fileID: 21300000, guid: 193f73dfcb483c347afd245184c1e2f0, type: 3}
+  - syllableText: VA
+    syllableClip: {fileID: 8300000, guid: 1fd611b92e287a04bbf8e125612c1d21, type: 3}
     correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
-    balloonSyllableSprite: {fileID: 21300000, guid: 48bba921ad04aed4fadaf468c66c3850, type: 3}
-    introSprite: {fileID: 21300000, guid: bab6bfb72b034da40a80821193a986c0, type: 3}
+    balloonSyllableSprite: {fileID: 21300000, guid: b9a2b1832fbb29e459a1c81727f9c9de, type: 3}
+    introSprite: {fileID: 21300000, guid: bc2d639b803270f44b2096af01058c4e, type: 3}
     flipIntroSprite: 0
-    voicePhaseSprite: {fileID: 21300000, guid: 48bba921ad04aed4fadaf468c66c3850, type: 3}
+    voicePhaseSprite: {fileID: 21300000, guid: b9a2b1832fbb29e459a1c81727f9c9de, type: 3}
     flipVoicePhaseSprite: 0
-    arcSprite: {fileID: 21300000, guid: bab6bfb72b034da40a80821193a986c0, type: 3}
-  - syllableText: MA
-    syllableClip: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
+    arcSprite: {fileID: 21300000, guid: bc2d639b803270f44b2096af01058c4e, type: 3}
+  - syllableText: XA
+    syllableClip: {fileID: 8300000, guid: e0c7ccbffc70fde4ebc32eae6d3b6cee, type: 3}
     correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
-    balloonSyllableSprite: {fileID: 21300000, guid: 52c215ba658955944813b77314c6a7fb, type: 3}
-    introSprite: {fileID: 21300000, guid: 309638b5a7a205c4a9bec2b9994a35f4, type: 3}
+    balloonSyllableSprite: {fileID: 21300000, guid: 252301ea19275564eab2a16b0ecc8c23, type: 3}
+    introSprite: {fileID: 21300000, guid: 56f85e936ae1e614aac80e2b052ddcb7, type: 3}
     flipIntroSprite: 0
-    voicePhaseSprite: {fileID: 21300000, guid: 52c215ba658955944813b77314c6a7fb, type: 3}
+    voicePhaseSprite: {fileID: 21300000, guid: 252301ea19275564eab2a16b0ecc8c23, type: 3}
     flipVoicePhaseSprite: 0
-    arcSprite: {fileID: 21300000, guid: 309638b5a7a205c4a9bec2b9994a35f4, type: 3}
+    arcSprite: {fileID: 21300000, guid: 56f85e936ae1e614aac80e2b052ddcb7, type: 3}
+  - syllableText: ZA
+    syllableClip: {fileID: 8300000, guid: 440c31cdf6232e445b1e3735d4d02ad5, type: 3}
+    correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
+    balloonSyllableSprite: {fileID: 21300000, guid: 74b3904d9e214fb48a8df4884f489b13, type: 3}
+    introSprite: {fileID: 21300000, guid: 491f199caf5717a49b0cbfa29cff6985, type: 3}
+    flipIntroSprite: 0
+    voicePhaseSprite: {fileID: 21300000, guid: 74b3904d9e214fb48a8df4884f489b13, type: 3}
+    flipVoicePhaseSprite: 0
+    arcSprite: {fileID: 21300000, guid: 491f199caf5717a49b0cbfa29cff6985, type: 3}
   currentSyllableIndex: 0
   introPanelGroup: {fileID: 1446656306}
   syllableIntroImage: {fileID: 1370523269}
@@ -9176,7 +9186,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 15
+          m_IntArgument: 44
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -9233,4 +9243,4 @@ SceneRoots:
   - {fileID: 624359484}
   - {fileID: 1727915721}
   - {fileID: 1368599304}
-  - {fileID: 800213217}
+  - {fileID: 1008257879}

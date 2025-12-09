@@ -5273,10 +5273,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   balloonPrefabs:
-  - {fileID: 4472700073610209810, guid: 80594df550ac50a448d901880841dc32, type: 3}
-  - {fileID: 4472700073610209810, guid: 18e1bd3cc4b2b714c9df6acadcc78a1f, type: 3}
-  - {fileID: 4472700073610209810, guid: 76acce0cdf196b64db4cfc506a8319f2, type: 3}
-  - {fileID: 4472700073610209810, guid: 6f8ff4b6eba792f4fbd181607e665fae, type: 3}
+  - {fileID: 4472700073610209810, guid: 401156bf8e4113948a25fdcf2d3d72f5, type: 3}
+  - {fileID: 4472700073610209810, guid: 610876259ac68b94b8723db44966d275, type: 3}
+  - {fileID: 4472700073610209810, guid: 78cf864d1043a3549843b84091871a90, type: 3}
+  - {fileID: 4472700073610209810, guid: 3d7e9c681abfaa043a4542948767a5d1, type: 3}
+  - {fileID: 4472700073610209810, guid: 0a9728434ed84a94291fe111e2fc9ee5, type: 3}
   defaultBalloonPrefab: {fileID: 0}
   spawnPointCenter: {fileID: 624359484}
   spawnRate: 1
@@ -5293,50 +5294,6 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -3.353747, y: 4.233766, z: 13.425993}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &274446900
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 274446902}
-  - component: {fileID: 274446901}
-  m_Layer: 0
-  m_Name: BalloonVoiceGameLogger
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &274446901
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 274446900}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b06ce4dcb9e8d4469f2bd340e661b59, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &274446902
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 274446900}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.8144414, y: -0.9964265, z: -0.06671925}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5576,7 +5533,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 48
+          m_IntArgument: 50
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -6121,7 +6078,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.00012207, y: -497}
+  m_AnchoredPosition: {x: 4, y: -514}
   m_SizeDelta: {x: 540, y: 650}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &761134872
@@ -6549,7 +6506,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 25
+          m_IntArgument: 48
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -6820,7 +6777,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 26
+          m_IntArgument: 49
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -7102,7 +7059,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 48
+          m_IntArgument: 50
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -7442,7 +7399,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 175}
+  m_AnchoredPosition: {x: 0, y: 149}
   m_SizeDelta: {x: 500, y: 620}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1370523269
@@ -8290,6 +8247,50 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &1793963618
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1793963620}
+  - component: {fileID: 1793963619}
+  m_Layer: 0
+  m_Name: BallonVoiceGameLogger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1793963619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1793963618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b06ce4dcb9e8d4469f2bd340e661b59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1793963620
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1793963618}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.0477238, y: -0.058035776, z: -0.014116665}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1802625335
 GameObject:
   m_ObjectHideFlags: 0
@@ -8541,7 +8542,7 @@ MonoBehaviour:
   maxRecordingTime: 3
   sampleRate: 22050
   backendURL: 
-  openAIKey: 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
+  openAIKey: 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
   useBackend: 0
   maxAttemptsBeforeReset: 3
   whisperPrompt: "Transcreva em portugu\xEAs brasileiro exatamente como o som, mesmo
@@ -8853,7 +8854,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 25
+          m_IntArgument: 48
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -8932,42 +8933,51 @@ MonoBehaviour:
   sfxSource: {fileID: 1879931140}
   syllableSource: {fileID: 1787665807}
   syllables:
-  - syllableText: NA
-    syllableClip: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
+  - syllableText: SA
+    syllableClip: {fileID: 8300000, guid: 3d305eca04e72fb4eae413ea7a7fb010, type: 3}
     correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
-    balloonSyllableSprite: {fileID: 21300000, guid: 544fb619a54e7d148984fb2c810fd32a, type: 3}
-    introSprite: {fileID: 21300000, guid: 745d2bedd1a56054482275cbc762c332, type: 3}
+    balloonSyllableSprite: {fileID: 21300000, guid: b8e43101f32df644694965c7b531055e, type: 3}
+    introSprite: {fileID: 21300000, guid: b8e43101f32df644694965c7b531055e, type: 3}
     flipIntroSprite: 0
-    voicePhaseSprite: {fileID: 21300000, guid: 544fb619a54e7d148984fb2c810fd32a, type: 3}
+    voicePhaseSprite: {fileID: 21300000, guid: b8e43101f32df644694965c7b531055e, type: 3}
     flipVoicePhaseSprite: 0
-    arcSprite: {fileID: 21300000, guid: 745d2bedd1a56054482275cbc762c332, type: 3}
-  - syllableText: PA
-    syllableClip: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
+    arcSprite: {fileID: 21300000, guid: b8e43101f32df644694965c7b531055e, type: 3}
+  - syllableText: TA
+    syllableClip: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
     correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
-    balloonSyllableSprite: {fileID: 21300000, guid: cb47391074732b74bbe502eca36d9d86, type: 3}
-    introSprite: {fileID: 21300000, guid: ec7c69e23e41ae74581bfca75dfea1ca, type: 3}
-    flipIntroSprite: 1
-    voicePhaseSprite: {fileID: 21300000, guid: cb47391074732b74bbe502eca36d9d86, type: 3}
+    balloonSyllableSprite: {fileID: 21300000, guid: eb67af988fcd6a740b6e7f4781593231, type: 3}
+    introSprite: {fileID: 21300000, guid: eb67af988fcd6a740b6e7f4781593231, type: 3}
+    flipIntroSprite: 0
+    voicePhaseSprite: {fileID: 21300000, guid: eb67af988fcd6a740b6e7f4781593231, type: 3}
     flipVoicePhaseSprite: 0
-    arcSprite: {fileID: 21300000, guid: ec7c69e23e41ae74581bfca75dfea1ca, type: 3}
-  - syllableText: QUA
-    syllableClip: {fileID: 8300000, guid: 87cc05ac624dbea49b336e82ea8ee833, type: 3}
+    arcSprite: {fileID: 21300000, guid: eb67af988fcd6a740b6e7f4781593231, type: 3}
+  - syllableText: VA
+    syllableClip: {fileID: 8300000, guid: 1fd611b92e287a04bbf8e125612c1d21, type: 3}
     correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
-    balloonSyllableSprite: {fileID: 21300000, guid: 950c9eb8dd389dc40b4113f5eba32670, type: 3}
-    introSprite: {fileID: 21300000, guid: 69998f54626619c4eb1cf53286857718, type: 3}
-    flipIntroSprite: 1
-    voicePhaseSprite: {fileID: 21300000, guid: 950c9eb8dd389dc40b4113f5eba32670, type: 3}
+    balloonSyllableSprite: {fileID: 21300000, guid: b9a2b1832fbb29e459a1c81727f9c9de, type: 3}
+    introSprite: {fileID: 21300000, guid: b9a2b1832fbb29e459a1c81727f9c9de, type: 3}
+    flipIntroSprite: 0
+    voicePhaseSprite: {fileID: 21300000, guid: b9a2b1832fbb29e459a1c81727f9c9de, type: 3}
     flipVoicePhaseSprite: 0
-    arcSprite: {fileID: 21300000, guid: 69998f54626619c4eb1cf53286857718, type: 3}
-  - syllableText: RA
-    syllableClip: {fileID: 8300000, guid: ec5f88918413db0499c5cfe14436284d, type: 3}
+    arcSprite: {fileID: 21300000, guid: b9a2b1832fbb29e459a1c81727f9c9de, type: 3}
+  - syllableText: XA
+    syllableClip: {fileID: 8300000, guid: e0c7ccbffc70fde4ebc32eae6d3b6cee, type: 3}
     correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
-    balloonSyllableSprite: {fileID: 21300000, guid: 1c58b6397a2f5cf458c4200f5d6e09f5, type: 3}
-    introSprite: {fileID: 21300000, guid: 20be0b19537ed5f488c205420ab3df57, type: 3}
-    flipIntroSprite: 1
-    voicePhaseSprite: {fileID: 21300000, guid: 1c58b6397a2f5cf458c4200f5d6e09f5, type: 3}
+    balloonSyllableSprite: {fileID: 21300000, guid: 252301ea19275564eab2a16b0ecc8c23, type: 3}
+    introSprite: {fileID: 21300000, guid: 252301ea19275564eab2a16b0ecc8c23, type: 3}
+    flipIntroSprite: 0
+    voicePhaseSprite: {fileID: 21300000, guid: 252301ea19275564eab2a16b0ecc8c23, type: 3}
     flipVoicePhaseSprite: 0
-    arcSprite: {fileID: 21300000, guid: 20be0b19537ed5f488c205420ab3df57, type: 3}
+    arcSprite: {fileID: 21300000, guid: 252301ea19275564eab2a16b0ecc8c23, type: 3}
+  - syllableText: ZA
+    syllableClip: {fileID: 8300000, guid: 440c31cdf6232e445b1e3735d4d02ad5, type: 3}
+    correctClip: {fileID: 8300000, guid: 8c3ce657e31edc94190785c024eb78df, type: 3}
+    balloonSyllableSprite: {fileID: 21300000, guid: 74b3904d9e214fb48a8df4884f489b13, type: 3}
+    introSprite: {fileID: 21300000, guid: 74b3904d9e214fb48a8df4884f489b13, type: 3}
+    flipIntroSprite: 0
+    voicePhaseSprite: {fileID: 21300000, guid: 74b3904d9e214fb48a8df4884f489b13, type: 3}
+    flipVoicePhaseSprite: 0
+    arcSprite: {fileID: 21300000, guid: 74b3904d9e214fb48a8df4884f489b13, type: 3}
   currentSyllableIndex: 0
   introPanelGroup: {fileID: 1446656306}
   syllableIntroImage: {fileID: 1370523269}
@@ -9176,7 +9186,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 26
+          m_IntArgument: 49
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -9233,4 +9243,4 @@ SceneRoots:
   - {fileID: 624359484}
   - {fileID: 1727915721}
   - {fileID: 1368599304}
-  - {fileID: 274446902}
+  - {fileID: 1793963620}
