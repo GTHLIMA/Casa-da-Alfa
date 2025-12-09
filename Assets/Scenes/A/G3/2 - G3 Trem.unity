@@ -4095,7 +4095,7 @@ MonoBehaviour:
   maxRecordingTime: 3
   sampleRate: 22050
   backendURL: 
-  openAIKey: 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
+  openAIKey: 
   useBackend: 0
   maxAttemptsBeforeReset: 2
   whisperPrompt: "\"Transcreva em portugu\xEAs brasileiro o nome do objeto falado.

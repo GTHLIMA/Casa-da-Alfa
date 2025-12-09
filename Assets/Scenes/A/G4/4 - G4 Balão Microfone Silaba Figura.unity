@@ -8542,7 +8542,7 @@ MonoBehaviour:
   maxRecordingTime: 3
   sampleRate: 22050
   backendURL: 
-  openAIKey: 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
+  openAIKey: 
   useBackend: 0
   maxAttemptsBeforeReset: 3
   whisperPrompt: "Transcreva em portugu\xEAs brasileiro exatamente como o som, mesmo
