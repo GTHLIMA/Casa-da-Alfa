@@ -7637,21 +7637,21 @@ MonoBehaviour:
       syllableSprite: {fileID: 0}
   allOptions:
   - optionName: NA
-    optionImage: {fileID: 21300000, guid: 5652afc20630de146a98cb9985bf59f7, type: 3}
+    optionImage: {fileID: 21300000, guid: 544fb619a54e7d148984fb2c810fd32a, type: 3}
     optionAudio: {fileID: 8300000, guid: 4c5e9b3794ac2b64eb040d8962f8fc8d, type: 3}
-    syllableSprite: {fileID: 0}
+    syllableSprite: {fileID: 21300000, guid: 544fb619a54e7d148984fb2c810fd32a, type: 3}
   - optionName: PA
-    optionImage: {fileID: 21300000, guid: 7c047ee3ff4220547ad4ca68e395c7c3, type: 3}
+    optionImage: {fileID: 21300000, guid: cb47391074732b74bbe502eca36d9d86, type: 3}
     optionAudio: {fileID: 8300000, guid: 8e5441a0d2225914c83232346dfda96f, type: 3}
-    syllableSprite: {fileID: 0}
+    syllableSprite: {fileID: 21300000, guid: cb47391074732b74bbe502eca36d9d86, type: 3}
   - optionName: QUA
-    optionImage: {fileID: 21300000, guid: d77b177d9dde2234388b17bb4961811f, type: 3}
+    optionImage: {fileID: 21300000, guid: 950c9eb8dd389dc40b4113f5eba32670, type: 3}
     optionAudio: {fileID: 8300000, guid: 87cc05ac624dbea49b336e82ea8ee833, type: 3}
-    syllableSprite: {fileID: 0}
+    syllableSprite: {fileID: 21300000, guid: 950c9eb8dd389dc40b4113f5eba32670, type: 3}
   - optionName: RA
-    optionImage: {fileID: 21300000, guid: 2c5bed1eb0b43a143a28ade2605385b5, type: 3}
+    optionImage: {fileID: 21300000, guid: 1c58b6397a2f5cf458c4200f5d6e09f5, type: 3}
     optionAudio: {fileID: 8300000, guid: ec5f88918413db0499c5cfe14436284d, type: 3}
-    syllableSprite: {fileID: 0}
+    syllableSprite: {fileID: 21300000, guid: 1c58b6397a2f5cf458c4200f5d6e09f5, type: 3}
   checkSprite: {fileID: 21300000, guid: ec4afbf3114368142acf69c71c06700a, type: 3}
   wrongSprite: {fileID: 21300000, guid: 78df9938d99e7114ea7121ce34909898, type: 3}
   endPhasePanel: {fileID: 834097410}

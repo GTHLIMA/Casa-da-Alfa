@@ -7599,7 +7599,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soundIcon: {fileID: 0}
   optionsParent: {fileID: 1936055223}
-  optionPrefab: {fileID: 4082163324305313816, guid: 6d8dbdab331f99e4cb1a709dbe00d712, type: 3}
+  optionPrefab: {fileID: 4082163324305313816, guid: 0b328add8433b954292760982d862e24, type: 3}
   PauseMenu: {fileID: 132933640}
   scoreTextPause: {fileID: 0}
   syllables:
@@ -7637,21 +7637,21 @@ MonoBehaviour:
       syllableSprite: {fileID: 0}
   allOptions:
   - optionName: GA
-    optionImage: {fileID: 21300000, guid: 2eedc9c262396d34f91130a8a30017d9, type: 3}
+    optionImage: {fileID: 21300000, guid: 573d897f93b95a8469fffc4c8259f003, type: 3}
     optionAudio: {fileID: 8300000, guid: e8ac2564d0fa2274fbb75b0410be4f14, type: 3}
-    syllableSprite: {fileID: 0}
+    syllableSprite: {fileID: 21300000, guid: 573d897f93b95a8469fffc4c8259f003, type: 3}
   - optionName: JA
-    optionImage: {fileID: 21300000, guid: 6f4cd7da104c63246999c6c0d9168fd5, type: 3}
+    optionImage: {fileID: 21300000, guid: 1b7c7f8b41b5d0e4f9b756e242a10510, type: 3}
     optionAudio: {fileID: 8300000, guid: c96e17bef7505bb4892d3739af4ecdca, type: 3}
-    syllableSprite: {fileID: 0}
+    syllableSprite: {fileID: 21300000, guid: 1b7c7f8b41b5d0e4f9b756e242a10510, type: 3}
   - optionName: LA
-    optionImage: {fileID: 21300000, guid: 4f46e7572abc2d94dbc513c19df5537a, type: 3}
+    optionImage: {fileID: 21300000, guid: 48bba921ad04aed4fadaf468c66c3850, type: 3}
     optionAudio: {fileID: 8300000, guid: e310244509ef9cc468601fd5c34a89e8, type: 3}
-    syllableSprite: {fileID: 0}
+    syllableSprite: {fileID: 21300000, guid: 48bba921ad04aed4fadaf468c66c3850, type: 3}
   - optionName: MA
-    optionImage: {fileID: 21300000, guid: 62d8104431a972f4e97003093dd332c4, type: 3}
+    optionImage: {fileID: 21300000, guid: 52c215ba658955944813b77314c6a7fb, type: 3}
     optionAudio: {fileID: 8300000, guid: 4fbc52ca50df3e544a697a0aa78c4d06, type: 3}
-    syllableSprite: {fileID: 0}
+    syllableSprite: {fileID: 21300000, guid: 52c215ba658955944813b77314c6a7fb, type: 3}
   checkSprite: {fileID: 21300000, guid: ec4afbf3114368142acf69c71c06700a, type: 3}
   wrongSprite: {fileID: 21300000, guid: 78df9938d99e7114ea7121ce34909898, type: 3}
   endPhasePanel: {fileID: 834097410}

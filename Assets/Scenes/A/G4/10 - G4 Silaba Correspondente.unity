@@ -7599,7 +7599,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soundIcon: {fileID: 0}
   optionsParent: {fileID: 1936055223}
-  optionPrefab: {fileID: 4082163324305313816, guid: 6d8dbdab331f99e4cb1a709dbe00d712, type: 3}
+  optionPrefab: {fileID: 4082163324305313816, guid: 0b328add8433b954292760982d862e24, type: 3}
   PauseMenu: {fileID: 132933640}
   scoreTextPause: {fileID: 0}
   syllables:
@@ -7645,25 +7645,25 @@ MonoBehaviour:
       syllableSprite: {fileID: 0}
   allOptions:
   - optionName: SA
-    optionImage: {fileID: 21300000, guid: c9de3270379a80242bacc2b212c0b4fe, type: 3}
+    optionImage: {fileID: 21300000, guid: b8e43101f32df644694965c7b531055e, type: 3}
     optionAudio: {fileID: 8300000, guid: 3d305eca04e72fb4eae413ea7a7fb010, type: 3}
-    syllableSprite: {fileID: 0}
+    syllableSprite: {fileID: 21300000, guid: b8e43101f32df644694965c7b531055e, type: 3}
   - optionName: TA
-    optionImage: {fileID: 21300000, guid: 722c5e00b7e903c46b694ea081ab89c4, type: 3}
+    optionImage: {fileID: 21300000, guid: eb67af988fcd6a740b6e7f4781593231, type: 3}
     optionAudio: {fileID: 8300000, guid: 87dcb450c57b99243995e0bf6c14c1bb, type: 3}
-    syllableSprite: {fileID: 0}
+    syllableSprite: {fileID: 21300000, guid: eb67af988fcd6a740b6e7f4781593231, type: 3}
   - optionName: VA
-    optionImage: {fileID: 21300000, guid: e9d7b8dbc0d6b2f4ca73129e7142e5fd, type: 3}
+    optionImage: {fileID: 21300000, guid: b9a2b1832fbb29e459a1c81727f9c9de, type: 3}
     optionAudio: {fileID: 8300000, guid: 1fd611b92e287a04bbf8e125612c1d21, type: 3}
-    syllableSprite: {fileID: 0}
+    syllableSprite: {fileID: 21300000, guid: b9a2b1832fbb29e459a1c81727f9c9de, type: 3}
   - optionName: XA
-    optionImage: {fileID: 21300000, guid: f0485d6685cb8904b8ea465f9f0e8974, type: 3}
+    optionImage: {fileID: 21300000, guid: 252301ea19275564eab2a16b0ecc8c23, type: 3}
     optionAudio: {fileID: 8300000, guid: e0c7ccbffc70fde4ebc32eae6d3b6cee, type: 3}
-    syllableSprite: {fileID: 0}
+    syllableSprite: {fileID: 21300000, guid: 252301ea19275564eab2a16b0ecc8c23, type: 3}
   - optionName: ZA
-    optionImage: {fileID: 21300000, guid: 74b3904d9e214fb48a8df4884f489b13, type: 3}
+    optionImage: {fileID: 21300000, guid: 88a6142dc8e6c904491586956c53005e, type: 3}
     optionAudio: {fileID: 8300000, guid: 440c31cdf6232e445b1e3735d4d02ad5, type: 3}
-    syllableSprite: {fileID: 0}
+    syllableSprite: {fileID: 21300000, guid: 88a6142dc8e6c904491586956c53005e, type: 3}
   checkSprite: {fileID: 21300000, guid: ec4afbf3114368142acf69c71c06700a, type: 3}
   wrongSprite: {fileID: 21300000, guid: 78df9938d99e7114ea7121ce34909898, type: 3}
   endPhasePanel: {fileID: 834097410}
