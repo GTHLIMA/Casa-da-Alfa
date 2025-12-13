@@ -4095,14 +4095,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5287f8903dd35f4984be98518346758, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxRecordingTime: 4
+  maxRecordingTime: 2.5
   sampleRate: 16000
   backendURL: 
   openAIKey: 
   useBackend: 0
   maxAttemptsBeforeReset: 2
   whisperPrompt: "\"Transcreva em portugu\xEAs brasileiro o nome do objeto falado.
-    Exemplos: pato, vaca, bola, sapo, etc.\""
+    Exemplos: bal\xE3o, casa, dado, faca, pato, vaca, bola, sapo, etc.\""
   hintAudioSource: {fileID: 0}
 --- !u!1 &1706186865
 GameObject:

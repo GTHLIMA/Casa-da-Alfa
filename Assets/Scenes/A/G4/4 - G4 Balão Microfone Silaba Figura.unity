@@ -8539,14 +8539,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5287f8903dd35f4984be98518346758, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxRecordingTime: 4
+  maxRecordingTime: 2.5
   sampleRate: 16000
   backendURL: 
   openAIKey: 
   useBackend: 0
   maxAttemptsBeforeReset: 3
   whisperPrompt: "Transcreva em portugu\xEAs brasileiro exatamente como o som, mesmo
-    que sejam s\xEDlabas curtas como BA, CA, DA, FA, GA, LA, MA,  etc."
+    que sejam s\xEDlabas curtas como BA, CA, DA, FA, GA, LA, MA,  etc. \xC9 apenas
+    silabas que vai ser falado"
   hintAudioSource: {fileID: 0}
 --- !u!1 &1994280734
 GameObject:
